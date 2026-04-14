@@ -92,6 +92,12 @@ Asha provide instant peace-of-mind for testing.
 She can query the hospital roster to check if 
 **Blood Tests, MRI, or CT Scan reports** are ready.
 
+### IV. Memory & Personalization
+Asha identifies returning patients by phone number to recall 
+historical context (e.g., "Hello Rohan, how is your back pain?"). 
+This personalization engine ensures a premium, human-like 
+experience that builds long-term patient trust.
+
 ---
 
 ## 🏗️ 3. Technical Architecture & System Deep-Dive
@@ -173,6 +179,10 @@ Follow this typical transcript of an interaction:
 | `src/transcript_store.py` | **The Vault** | Permanent DynamoDB audit logs for clinical safety. |
 | `src/analytics/processor.py` | **The Scientist** | Post-call extracts for sentiment and clinical outcomes. |
 | `src/audio_utils.py` | **The Signal** | Conversion between PSTN signals and AI audio formats. |
+| `src/memory_manager.py` | **Memory Engine** | Identification and recall of patient history via phone number. |
+| `src/dashboard/app.py` | **Real-Time UI** | Streamlit-based interface for hospital management analytics. |
+| `src/integrations/local_sink.py` | **Fail-Safe** | Local CSV backup that prevents data loss during cloud outages. |
+| `scripts/export_finetuning_data.py` | **Upgrader** | Prepares historical call data for Nova model fine-tuning. |
 | `src/credential_validation.py` | **Shield** | Pre-flight hardening layer for cloud connectivity. |
 
 ---
@@ -234,4 +244,4 @@ In healthcare, privacy is the first requirement.
 
 ---
 
-*(Doc Version: 11.2.0 | language: English / Hinglish | Target: India)*
+*(Doc Version: 12.0.0 | language: English / Hinglish | Target: India)*
