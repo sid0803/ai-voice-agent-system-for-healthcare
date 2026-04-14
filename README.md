@@ -2,7 +2,7 @@
 
 ## *A Sovereign AI Voice Receptionist Empowering the Indian Healthcare Community*
 
-![Asha Concept Illustration](file:///C:/Users/sid08/.gemini/antigravity/brain/bad7a0af-eca5-47d2-9b20-0385628717b9/asha_ai_receptionist_concept_1776166665831.png)
+![Asha Concept Illustration](img/concept.png)
 
 ---
 
@@ -229,3 +229,9 @@ In healthcare, privacy is the first requirement.
 **AI Voice Agent System for Healthcare**: We don't just answer queries; we build the future of Indian Clinical Intelligence.
 
 ---
+
+![Healthcare AI Analytics Dashboard](img/dashboard.png)
+
+---
+
+*(Doc Version: 11.2.0 | language: English / Hinglish | Target: India)*
