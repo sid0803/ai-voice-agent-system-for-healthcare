@@ -47,6 +47,8 @@ logging.getLogger("smithy_http").setLevel(logging.WARNING)
 from src.nova_client import S2SBidirectionalStreamClient
 from src.audio_utils import exotel_to_pcm, pcm_to_exotel
 from src.memory_manager import AgentCoreMemoryManager, build_system_prompt_with_memory
+from src.routing.intent_router import intent_router
+from src.cache.response_cache import response_cache
 
 logger = logging.getLogger(__name__)
 
@@ -518,6 +520,18 @@ async def exotel_stream(websocket: WebSocket):
         if role == "USER" and len(content.strip()) > 2:
             current_user_text += content + " "
             reset_idle_timer()
+            
+            # --- START CRITICAL OPTIMIZATION: Semantic Router ---
+            intent = intent_router.route(content)
+            if intent != "UNKNOWN":
+                asset_id = intent_router.get_static_response_id(intent)
+                if asset_id:
+                    logger.info("Semantic Router HIT: %s -> %s", intent, asset_id)
+                    cached_audio = response_cache.get_audio(asset_id)
+                    if cached_audio:
+                        asyncio.ensure_future(stream_cached_audio(cached_audio))
+            # --- END OPTIMIZATION ---
+
             if any("\u0900" <= ch <= "\u097F" for ch in content):
                 detected_language = "hi"
             else:
@@ -552,6 +566,19 @@ async def exotel_stream(websocket: WebSocket):
 
     def _handle_stream_complete():
         logger.info("Stream completed for client: %s", session.stream_sid)
+
+    async def stream_cached_audio(pcm_bytes: bytes):
+        """Helper to stream cached audio bytes back to Exotel while model is thinking."""
+        try:
+            exotel_bytes = pcm_to_exotel(pcm_bytes)
+            payload_b64 = base64.b64encode(exotel_bytes).decode("utf-8")
+            await websocket.send_text(json.dumps({
+                "event": "media",
+                "stream_sid": session.stream_sid,
+                "media": {"payload": payload_b64}
+            }))
+        except Exception:
+            logger.error("Failed to stream cached audio")
 
     session.on_event("audioOutput", _handle_audio_output)
     session.on_event("contentEnd", _handle_content_end)
