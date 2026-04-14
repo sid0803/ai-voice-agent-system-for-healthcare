@@ -1,0 +1,35 @@
+# --- CORE WEB & VOICE ---
+fastapi
+uvicorn[standard]
+websockets
+httpx
+python-dotenv
+
+# --- AI & AWS ---
+boto3
+aws-sdk-bedrock-runtime
+audioop-lts
+
+# --- KNOWLEDGE BASE & TOOLS ---
+faiss-cpu
+numpy
+google-search-results
+requests
+
+# --- INTEGRATIONS & SINKS ---
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+pandas
+openpyxl
+
+# --- ANALYTICS & DASHBOARD ---
+psycopg2-binary
+streamlit
+plotly
+
+# --- TESTING ---
+pytest
+pytest-asyncio
+hypothesis

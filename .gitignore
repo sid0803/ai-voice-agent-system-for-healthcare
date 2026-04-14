@@ -1,0 +1,25 @@
+# IDE files
+.vscode/
+
+# Build output
+out/
+
+# Logs
+logs/
+
+# Node modules (if applicable for TypeScript project)
+node_modules/
+
+# Build artifacts
+dist/
+
+output/*
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.pytest_cache/
