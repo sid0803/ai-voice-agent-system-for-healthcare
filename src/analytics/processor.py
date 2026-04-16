@@ -35,6 +35,10 @@ class AnalyticsProcessor:
         4. outcome: (booked, inquiry, abandoned)
         5. summary: A 1-sentence summary of the patient's need.
         6. successful_booking: (true/false)
+        7. urgency_score: (INT 1-5, where 5 is critical emergency)
+        8. is_emergency: (true/false based on clinical severity)
+        9. symptoms_list: (comma-separated list of symptoms mentioned)
+        10. follow_up_priority: (Low, Med, High)
 
         Transcript:
         {formatted_transcript}
@@ -99,8 +103,8 @@ class AnalyticsProcessor:
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO hospital_analytics 
-                    (session_id, phone_number, hospital_id, sentiment, intent, department, outcome, duration_seconds, transcript_summary, is_successful_booking)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    (session_id, phone_number, hospital_id, sentiment, intent, department, outcome, duration_seconds, transcript_summary, is_successful_booking, urgency_score, is_emergency, symptoms_list, follow_up_priority)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (session_id) DO NOTHING;
                 """, (
                     session_id,
@@ -112,7 +116,11 @@ class AnalyticsProcessor:
                     analytics.get("outcome", "inquiry"),
                     duration,
                     analytics.get("summary", ""),
-                    analytics.get("successful_booking", False)
+                    analytics.get("successful_booking", False),
+                    analytics.get("urgency_score", 1),
+                    analytics.get("is_emergency", False),
+                    analytics.get("symptoms_list", ""),
+                    analytics.get("follow_up_priority", "Low")
                 ))
                 conn.commit()
         except Exception:

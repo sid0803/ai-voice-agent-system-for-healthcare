@@ -731,17 +731,15 @@ async def exotel_stream(websocket: WebSocket):
                         }))
                         logger.info("Greeting audio sent to Exotel (%d bytes PCM)", len(hello_audio_bytes))
 
-                        # Build system prompt - enrich with memory context if available
-                        # Inject today's date (IST) so Nova knows the exact current date
+                        # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
                         today_ist = datetime.now(ist).strftime("%d %B %Y")
                         system_prompt = SYSTEM_PROMPT.replace("{{TODAY_DATE}}", today_ist)
+                        
+                        memory_context_task = None
                         if memory_manager and caller_phone:
                             memory_manager.register_session(session_id, caller_phone)
-                            memory_context = await memory_manager.retrieve_context(session_id)
-                            system_prompt = build_system_prompt_with_memory(system_prompt, memory_context)
-                            if memory_context:
-                                logger.info("[MEMORY] Using personalized prompt for %s", caller_phone)
+                            memory_context_task = asyncio.create_task(memory_manager.retrieve_context(session_id))
 
                         # Wait for Bedrock stream to be ready before sending setup events.
                         # initiate_session runs forever (response loop), so we poll
@@ -756,8 +754,18 @@ async def exotel_stream(websocket: WebSocket):
                             break
 
                         # Now set up Nova session
-                        await session.setup_prompt_start()
-                        await session.setup_system_prompt(None, system_prompt)
+                        # 3. Setup system prompt (with memory if task finished)
+                        if memory_context_task:
+                            try:
+                                # Wait a max of 2s for memory to avoid stalling the call
+                                memory_context = await asyncio.wait_for(memory_context_task, timeout=2.0)
+                                if memory_context:
+                                    system_prompt = build_system_prompt_with_memory(system_prompt, memory_context)
+                                    logger.info("[MEMORY] Using personalized prompt for %s", caller_phone)
+                            except (asyncio.TimeoutError, Exception):
+                                logger.warning("[MEMORY] Context retrieval timed out or failed, using base prompt.")
+
+                        await session.setup_system_prompt(system_prompt=system_prompt)
                         await session.setup_start_audio()
                         await session.stream_audio(hello_audio_bytes)
 

@@ -86,9 +86,18 @@ class RDSAnalyticsClient:
                         outcome VARCHAR(20),
                         duration_seconds INT,
                         transcript_summary TEXT,
-                        is_successful_booking BOOLEAN DEFAULT FALSE
+                        is_successful_booking BOOLEAN DEFAULT FALSE,
+                        urgency_score INT DEFAULT 1,
+                        is_emergency BOOLEAN DEFAULT FALSE,
+                        symptoms_list TEXT,
+                        follow_up_priority VARCHAR(20) DEFAULT 'Low'
                     );
                 """)
+                # Migrations for existing tables
+                cur.execute("ALTER TABLE hospital_analytics ADD COLUMN IF NOT EXISTS urgency_score INT DEFAULT 1;")
+                cur.execute("ALTER TABLE hospital_analytics ADD COLUMN IF NOT EXISTS is_emergency BOOLEAN DEFAULT FALSE;")
+                cur.execute("ALTER TABLE hospital_analytics ADD COLUMN IF NOT EXISTS symptoms_list TEXT;")
+                cur.execute("ALTER TABLE hospital_analytics ADD COLUMN IF NOT EXISTS follow_up_priority VARCHAR(20) DEFAULT 'Low';")
 
                 # 2. Tenants Table (Metadata per Clinic)
                 cur.execute("""

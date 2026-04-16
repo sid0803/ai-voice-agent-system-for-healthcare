@@ -15,7 +15,7 @@ TextMediaType = Literal["text/plain", "application/json"]
 
 @dataclass(frozen=True)
 class InferenceConfig:
-    max_tokens: int = 1024
+    max_tokens: int = 512
     top_p: float = 0.9
     temperature: float = 0.7
 
@@ -47,7 +47,7 @@ class ToolConfiguration:
 # Default configuration instances matching TypeScript consts.ts values
 DEFAULT_INFERENCE_CONFIG = InferenceConfig()
 
-DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="MEDIUM")
+DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="HIGH")
 
 DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(voice_id="kiara")
 

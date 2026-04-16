@@ -1,4 +1,4 @@
-# 🏥 AI Voice Agent System for Healthcare
+# 🏥 InDiiServe Asha: AI Voice Agent for Healthcare
 
 ## *A Sovereign AI Voice Receptionist Empowering the Indian Healthcare Community*
 
@@ -97,6 +97,11 @@ Asha identifies returning patients by phone number to recall
 historical context (e.g., "Hello Rohan, how is your back pain?"). 
 This personalization engine ensures a premium, human-like 
 experience that builds long-term patient trust.
+
+### V. Adaptive Audio Hardening (New)
+Asha is engineered for the real-world chaos of an Indian clinic.
+*   **Noise Gating**: Automatically filters out constant hums (Fans/AC) and background chatter.
+*   **Auto-Gain Control**: Electronically boosts quiet patient voices so Asha never misses a detail.
 
 ---
 
@@ -201,7 +206,12 @@ In healthcare, privacy is the first requirement.
 
 ---
 
-## ⚙️ 7. Project Environment Specification (.env)
+## ⚙️ 7. Project Environment Specification (.env.example)
+
+# ----------------------------------------------------------
+# InDiiServe Asha Healthcare AI — Environment Variables
+# Copy this file to .env and fill in your values.
+# ----------------------------------------------------------
 
 | Variable | Scope | Primary Purpose |
 | :--- | :--- | :--- |
