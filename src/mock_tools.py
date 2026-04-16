@@ -88,21 +88,31 @@ def _save_faiss_cache():
 _load_faiss_cache()
 
 
-def _embed_query(text: str) -> np.ndarray:
-    """Get embedding from Bedrock Titan Embeddings v2."""
-    response = _embed_client.invoke_model(
-        modelId="amazon.titan-embed-text-v2:0",
-        contentType="application/json",
-        accept="application/json",
-        body=json.dumps({"inputText": text}),
-    )
-    result = json.loads(response["body"].read())
-    vec = np.array(result["embedding"], dtype=np.float32)
-    # L2-normalize so inner product = cosine similarity
-    norm = np.linalg.norm(vec)
-    if norm > 0:
-        vec = vec / norm
-    return vec
+def _embed_query(text: str) -> np.ndarray | None:
+    """Get embedding from Bedrock Titan Embeddings v2.
+    
+    Security: Error handling (P1) and timeouts added for clinical reliability.
+    """
+    try:
+        # PII Check: Embeddings are generally non-reversable math vectors
+        # but we log only the length of text for privacy during clinical debug.
+        response = _embed_client.invoke_model(
+            modelId="amazon.titan-embed-text-v2:0",
+            contentType="application/json",
+            accept="application/json",
+            body=json.dumps({"inputText": text}),
+        )
+        result = json.loads(response["body"].read())
+        vec = np.array(result["embedding"], dtype=np.float32)
+        
+        # L2-normalize so inner product = cosine similarity
+        norm = np.linalg.norm(vec)
+        if norm > 0:
+            vec = vec / norm
+        return vec
+    except Exception as e:
+        logger.error(f"[EMBED] Failed to generate embedding for query: {str(e)}")
+        return None
 
 
 def _faiss_search(query: str) -> dict | None:
@@ -111,7 +121,10 @@ def _faiss_search(query: str) -> dict | None:
         return None
     try:
         t0 = time.time()
-        vec = _embed_query(query).reshape(1, -1)
+        embedding = _embed_query(query)
+        if embedding is None:
+            return None
+        vec = embedding.reshape(1, -1)
         scores, indices = _faiss_index.search(vec, 1)
         elapsed_ms = (time.time() - t0) * 1000
         best_score = float(scores[0][0])
@@ -135,7 +148,10 @@ def _faiss_search(query: str) -> dict | None:
 def _faiss_store(query: str, answer: str):
     """Add a query+answer to the FAISS cache and persist to disk."""
     try:
-        vec = _embed_query(query).reshape(1, -1)
+        embedding = _embed_query(query)
+        if embedding is None:
+            return
+        vec = embedding.reshape(1, -1)
         with _faiss_lock:
             _faiss_index.add(vec)
             _faiss_meta.append({

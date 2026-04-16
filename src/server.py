@@ -66,9 +66,14 @@ def mask_phone(phone: str) -> str:
     return f"{p[:3]}******{p[-4:]}"
 
 # ---------------------------------------------------------------------------
-# Greeting audio (read once at module level)
+# Greeting audio (read once at module level) - P0 Guard
 # ---------------------------------------------------------------------------
-hello_audio_bytes = (_PROJECT_ROOT / "assets" / "hello.pcm").read_bytes()
+try:
+    hello_audio_bytes = (_PROJECT_ROOT / "assets" / "hello.pcm").read_bytes()
+except Exception:
+    logger.warning("[STARTUP] Missing hello.pcm asset. Using 1s of digital silence.")
+    # 1 second of 8kHz 16-bit PCM silence = 16000 bytes
+    hello_audio_bytes = b'\x00' * 16000
 
 # ---------------------------------------------------------------------------
 # Environment variables
@@ -323,10 +328,16 @@ async def incoming_call(request: Request):
         if call_sid:
             params.append(f"CallSid={call_sid}")
         if call_from:
+            # PII Hardening: We use the raw number in the URL, but MASK it in the log below
             params.append(f"CallFrom={call_from}")
         ws_url = f"{ws_url}?{'&'.join(params)}"
 
-    logger.info("Incoming call - CallSid: %s, CallFrom: %s, returning WS URL: %s", call_sid, mask_phone(call_from), ws_url)
+    # PII Scrubbing: Sanitize the printed URL for logs
+    log_ws_url = ws_url
+    if call_from:
+        log_ws_url = ws_url.replace(call_from, mask_phone(call_from))
+    
+    logger.info("Incoming call - CallSid: %s, CallFrom: %s, returning WS URL: %s", call_sid, mask_phone(call_from), log_ws_url)
     return {"url": ws_url}
 
 
@@ -446,7 +457,9 @@ async def exotel_stream(websocket: WebSocket):
     # Initiate the Bedrock stream in the background.
     # initiate_session runs forever (_process_response_stream is a while-loop),
     # so we fire-and-forget but poll for session.stream to be ready before setup.
-    asyncio.ensure_future(bedrock_client.initiate_session(session_id))
+    task_initiate = asyncio.ensure_future(bedrock_client.initiate_session(session_id))
+    _background_tasks.add(task_initiate)
+    task_initiate.add_done_callback(_background_tasks.discard)
 
     call_sid = ""
     hardener = AudioHardener()
@@ -770,6 +783,8 @@ async def exotel_stream(websocket: WebSocket):
                         await session.stream_audio(hello_audio_bytes)
 
                         idle_monitor_task = asyncio.ensure_future(idle_monitor())
+                        _background_tasks.add(idle_monitor_task)
+                        idle_monitor_task.add_done_callback(_background_tasks.discard)
                         logger.info("Nova session setup complete, idle monitor started")
 
                     elif event_type == "media":

@@ -1,6 +1,7 @@
 import json
 import os
 import logging
+import re
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,10 @@ class TenantManager:
     def get_hospital_data(self, hospital_id: str = None) -> dict:
         """Load and return data for a specific hospital or the current active tenant."""
         tid = hospital_id or self.current_tenant
+        
+        # Security Hardening: Sanitize tid to avoid path traversal (P1)
+        # Allow only alphanumeric, underscores, and dashes
+        tid = re.sub(r'[^a-zA-Z0-9_-]', '', tid)
         
         if not hospital_id and self._cached_data and self._cached_data.get("id") == self.current_tenant:
             return self._cached_data
