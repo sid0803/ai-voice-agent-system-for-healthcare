@@ -1,7 +1,7 @@
-"""Tool implementations for Nova Sonic voice assistant.
+"""Production tool implementations for the Asha voice assistant.
 
-Provides SerpAPI search (with FAISS vector cache), Bedrock Knowledge Base
-RAG search, tool specifications, and the async tool_processor dispatcher.
+Provides Bedrock Knowledge Base RAG (with FAISS semantic cache), tenant-backed
+lookups, booking data sinks, and the async tool_processor dispatcher.
 """
 
 import asyncio
@@ -9,17 +9,13 @@ import json
 import logging
 import os
 import pathlib
-import pickle
 import threading
 import time
 from typing import Any
 
-import aiohttp
 import boto3
 import numpy as np
 import faiss
-import requests as http_requests
-from serpapi import GoogleSearch
 
 from src.integrations.tenant_manager import tenant_manager
 from src.integrations.sheets_client import sheets_client
@@ -36,17 +32,18 @@ _kb_region = os.getenv("KB_REGION", _default_region)
 _kb_client = boto3.client("bedrock-agent-runtime", region_name=_kb_region) if _kb_id else None
 
 # ---------------------------------------------------------------------------
-# FAISS vector cache for SerpAPI queries (shared across all calls)
+# FAISS semantic cache for Bedrock Knowledge Base results
+# Avoids repeated KB roundtrips for semantically similar queries.
 # ---------------------------------------------------------------------------
 _CACHE_DIR = pathlib.Path(__file__).resolve().parent.parent / "cache"
 _CACHE_DIR.mkdir(exist_ok=True)
-_FAISS_INDEX_PATH = _CACHE_DIR / "serp_faiss.index"
-_FAISS_META_PATH = _CACHE_DIR / "serp_faiss_meta.pkl"
+_FAISS_INDEX_PATH = _CACHE_DIR / "kb_faiss.index"
+_FAISS_META_PATH = _CACHE_DIR / "kb_faiss_meta.json"
 
 _EMBED_DIMENSION = 1024  # Titan Embeddings v2 output dimension
 _SIMILARITY_THRESHOLD = 0.85  # cosine similarity threshold for cache hit
 
-# Bedrock client for Titan Embeddings (us-east-1 where Titan is available)
+# Bedrock client for Titan Embeddings (used to embed KB queries for FAISS)
 _embed_region = os.getenv("BEDROCK_REGION", "us-east-1")
 _embed_client = boto3.client("bedrock-runtime", region_name=_embed_region)
 
@@ -65,8 +62,8 @@ def _load_faiss_cache():
     if _FAISS_INDEX_PATH.exists() and _FAISS_META_PATH.exists():
         try:
             _faiss_index = faiss.read_index(str(_FAISS_INDEX_PATH))
-            with open(_FAISS_META_PATH, "rb") as f:
-                _faiss_meta = pickle.load(f)
+            with open(_FAISS_META_PATH, "r", encoding="utf-8") as f:
+                _faiss_meta = json.load(f)
             logger.info("[FAISS] Loaded cache: %d entries", _faiss_index.ntotal)
             return
         except Exception:
@@ -79,9 +76,10 @@ def _load_faiss_cache():
 def _save_faiss_cache():
     """Persist FAISS index and metadata to disk."""
     try:
-        faiss.write_index(_faiss_index, str(_FAISS_INDEX_PATH))
-        with open(_FAISS_META_PATH, "wb") as f:
-            pickle.dump(_faiss_meta, f)
+        with _faiss_lock:
+            faiss.write_index(_faiss_index, str(_FAISS_INDEX_PATH))
+            with open(_FAISS_META_PATH, "w", encoding="utf-8") as f:
+                json.dump(_faiss_meta, f)
     except Exception:
         logger.exception("[FAISS] Failed to save cache to disk")
 
@@ -145,7 +143,7 @@ def _faiss_store(query: str, answer: str):
                 "answer": answer,
                 "timestamp": time.time(),
             })
-            _save_faiss_cache()
+        threading.Thread(target=_save_faiss_cache).start()
         logger.info("[FAISS] Stored: '%s' (total=%d)", query[:60], _faiss_index.ntotal)
     except Exception:
         logger.exception("[FAISS] Store error")
@@ -156,72 +154,148 @@ def _faiss_store(query: str, answer: str):
 # ---------------------------------------------------------------------------
 
 
-def hospital_info(args: dict) -> dict:
-    """Requirement No 1: Fetches hospital info from the current tenant's database."""
-    data = tenant_manager.get_hospital_data()
+def hospital_info(args: dict, hospital_id: str = None) -> dict:
+    """Fetches hospital info. Priority: local tenant JSON → FAISS cache → Bedrock KB → fallback."""
+    data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
-    
-    # Check FAQ/Info from dynamic tenant data
+
+    # 1. Check specific local tenant data (fastest, most reliable)
     faq = data.get("faq", {})
     if any(k in query for k in ["address", "location", "where"]):
         return {"answer": f"{data.get('name')} is located at {data.get('address', 'our main facility')}."}
-    
+
     if any(k in query for k in ["pharmacy", "medicine"]):
         return {"answer": f"Our pharmacy is open {data.get('pharmacy_hours', 'during OPD hours')}. It is located on the ground floor."}
-        
+
     for key, val in faq.items():
         if key in query:
             return {"answer": val}
 
-    # Fallback to general description
+    # 2. Check semantic FAISS cache for a previously-answered similar query
+    cached = _faiss_search(query)
+    if cached:
+        logger.info("[KB] Returning FAISS-cached KB answer")
+        return cached
+
+    # 3. Query Bedrock Knowledge Base (if configured)
+    if _kb_client and _kb_id:
+        try:
+            kb_result = _kb_client.retrieve(
+                knowledgeBaseId=_kb_id,
+                retrievalQuery={"text": query},
+                retrievalConfiguration={
+                    "vectorSearchConfiguration": {"numberOfResults": 2}
+                }
+            )
+            passages = [
+                r["content"]["text"]
+                for r in kb_result.get("retrievalResults", [])
+                if r.get("content", {}).get("text")
+            ]
+            if passages:
+                answer = passages[0]
+                _faiss_store(query, answer)  # Cache for future queries
+                logger.info("[KB] Returning live KB answer and caching")
+                return {"answer": answer}
+        except Exception:
+            logger.exception("[KB] Retrieval error, falling back to general info")
+
+    # 4. Final fallback to general department description
     depts = ", ".join(data.get("departments", ["General Medicine"]))
-    return {"answer": f"{data.get('name')} provides various services including {depts}. How can I help you today?"}
+    return {"answer": f"{data.get('name')} provides services including {depts}. How can I help you today?"}
 
 
-def doctor_availability(args: dict) -> dict:
-    """Requirement No 1 & No 2: Fetches doctor availability from dynamic tenant data."""
-    data = tenant_manager.get_hospital_data()
+def doctor_availability(args: dict, hospital_id: str = None) -> dict:
+    """Fetches doctor schedule. Priority: local roster -> FAISS cache -> Bedrock KB -> fallback."""
+    data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
     doctors = data.get("doctors", [])
-    
-    # Search for specific doctor or department in tenant data
+
+    # 1. Search in local tenant roster (most accurate for configured clinics)
     for doc in doctors:
         if doc["name"].lower() in query or doc["dept"].lower() in query:
-            return {"answer": f"{doc['name']} ({doc['dept']}) is available {doc['schedule']}. Would you like me to book a slot?"}
+            fee_str = f" Consultation fee: Rs. {doc['fee']}." if doc.get("fee") else ""
+            return {
+                "answer": (
+                    f"{doc['name']} ({doc['dept']}) is available {doc['schedule']}.{fee_str} "
+                    "Would you like me to book a slot?"
+                )
+            }
 
-    return {"answer": f"I've checked our current schedule. We have specialists in {', '.join(data.get('departments', []))}. Which department should I check for you?"}
+    # 2. Check FAISS semantic cache for a previously-answered similar query
+    cached = _faiss_search(f"doctor availability {query}")
+    if cached:
+        logger.info("[KB] Returning FAISS-cached doctor answer")
+        return cached
+
+    # 3. Query Bedrock Knowledge Base (for clinics with KB-backed rosters)
+    if _kb_client and _kb_id:
+        try:
+            kb_result = _kb_client.retrieve(
+                knowledgeBaseId=_kb_id,
+                retrievalQuery={"text": f"doctor availability {query}"},
+                retrievalConfiguration={
+                    "vectorSearchConfiguration": {"numberOfResults": 2}
+                }
+            )
+            passages = [
+                r["content"]["text"]
+                for r in kb_result.get("retrievalResults", [])
+                if r.get("content", {}).get("text")
+            ]
+            if passages:
+                answer = passages[0]
+                _faiss_store(f"doctor availability {query}", answer)
+                logger.info("[KB] Returning live KB doctor answer and caching")
+                return {"answer": answer}
+        except Exception:
+            logger.exception("[KB] Doctor retrieval error, falling back")
+
+    # 4. Final fallback to department list
+    depts = ", ".join(data.get("departments", ["General Medicine"]))
+    return {
+        "answer": (
+            f"We have specialists in {depts}. "
+            "Which department should I check availability for?"
+        )
+    }
 
 
-def appointment_booking(args: dict) -> dict:
-    """Requirement No 2: Saves booking intent to Google Sheets and local CSV."""
+def appointment_booking(args: dict, hospital_id: str = None) -> dict:
+    """Requirement No 2: Saves booking intent to hospital-specific Google Sheets."""
     patient = args.get("patient_name", "the patient")
     dept = args.get("doctor_dept", "the requested department")
     date = args.get("date", "soon")
     intent = args.get("symptom_intent", "General Checkup")
-    
-    # Generate reference ID
+    phone = args.get("phone_number", "N/A")
+    doctor = args.get("doctor_name", dept)  # Use dept as doctor fallback
+
+    # Generate unique reference ID
     ref_id = f"IS-APP-{time.strftime('%H%M%S')}"
-    
+
+    # Build complete payload with all fields for Sheets/CSV
     booking_payload = {
         "patient_name": patient,
+        "phone": phone,
+        "doctor": doctor,
         "dept": dept,
         "visit_time": f"{date} at {args.get('time', 'TBD')}",
         "ref_id": ref_id,
-        "intent": intent
+        "intent": intent,
     }
 
-    # Notedown process (Sheets + Local CSV)
+    # Notedown process (Sheets + Local CSV — both run for redundancy)
     local_sink.save_booking(booking_payload)
-    sheets_client.append_booking(booking_payload)
-    
+    sheets_client.append_booking(booking_payload, hospital_id=hospital_id)
+
     return {
-        "answer": f"I have noted your request for {patient} in the {dept} department for {date}. Your temporary Reference ID is {ref_id}. Asha has recorded your needs: '{intent}'.",
+        "answer": f"I have noted your request for {patient} in the {dept} department for {date}. Your reference ID is {ref_id}. We have recorded your concern: '{intent}'.",
         "success": True,
-        "ref_id": ref_id
+        "ref_id": ref_id,
     }
 
 
-def report_status(args: dict) -> dict:
+def report_status(args: dict, hospital_id: str = None) -> dict:
     """Mocked lab/radiology report status based on test type."""
     test = args.get("test_type", "report").lower()
     patient = args.get("patient_name", "the patient")
@@ -235,7 +309,7 @@ def report_status(args: dict) -> dict:
     return {"answer": f"I've checked the records for {patient}. Some reports are still pending. Please check back in a few hours."}
 
 
-def emergency_handoff(args: dict) -> dict:
+def emergency_handoff(args: dict, hospital_id: str = None) -> dict:
     """Handoff for emergencies - logs and signals escalation."""
     logger.warning("!!! EMERGENCY HANDOFF TRIGGERED !!!")
     return {"answer": "Escalating call to emergency staff...", "status": "ESCALATED"}
@@ -273,11 +347,13 @@ _appointment_booking_schema = json.dumps({
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-        "doctor_dept": {"type": "string"},
-        "date": {"type": "string"},
-        "time": {"type": "string"},
-        "patient_name": {"type": "string"},
-        "symptom_intent": {"type": "string", "description": "Patient's primary intent, needs, or symptoms as per Requirement No 2."},
+        "doctor_dept": {"type": "string", "description": "The department or doctor name for the appointment."},
+        "doctor_name": {"type": "string", "description": "Specific doctor's name if mentioned."},
+        "date": {"type": "string", "description": "Appointment date (e.g., 'tomorrow', '17 April 2026')."},
+        "time": {"type": "string", "description": "Preferred appointment time."},
+        "patient_name": {"type": "string", "description": "Full name of the patient."},
+        "phone_number": {"type": "string", "description": "Patient's phone number if provided during the call."},
+        "symptom_intent": {"type": "string", "description": "Patient's primary concern, symptoms, or reason for visit (Requirement No 2)."},
     },
     "required": ["doctor_dept", "date"],
 })
@@ -349,8 +425,8 @@ _tool_handlers: dict[str, Any] = {
 }
 
 
-async def tool_processor(tool_name: str, tool_args: str) -> dict[str, Any]:
-    """Parse tool_args JSON, dispatch to the handler, return result."""
+async def tool_processor(tool_name: str, tool_args: str, hospital_id: str = None) -> dict[str, Any]:
+    """Parse tool_args JSON, dispatch to the handler with hospital_id, return result."""
     try:
         args = json.loads(tool_args)
     except (json.JSONDecodeError, TypeError):
@@ -359,11 +435,6 @@ async def tool_processor(tool_name: str, tool_args: str) -> dict[str, Any]:
     if handler is None:
         return {"message": "I cannot help you with that request", "success": False}
     
-    # Hospital tools are currently mocked as sync functions
-    # (In real project these would be async API calls)
-    if asyncio.iscoroutinefunction(handler):
-        return await handler(args)
-    
     # Run in executor to be safe even if mocked
     loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(None, handler, args)
+    return await loop.run_in_executor(None, handler, args, hospital_id)

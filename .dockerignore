@@ -1,0 +1,40 @@
+# InDiiServe Nova Sonic Voice Agent — Docker Ignore
+
+# Development/scratch files — not needed in production container
+scratch/
+
+# Generated data files — should be managed via AWS (DynamoDB, Sheets, RDS)
+data/bookings/
+data/finetuning/
+
+# Local FAISS cache — will regenerate at runtime from Bedrock KB
+cache/
+
+# Log files — containers log to stdout/stderr for CloudWatch
+logs/
+
+# Python dev artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/.pytest_cache/
+
+# Environment files — secrets MUST be injected via ECS task definition / App Runner env
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+# IDE / OS artifacts
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Credentials (never ship these)
+credentials.json
+*.pem
+*.key

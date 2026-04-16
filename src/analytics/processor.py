@@ -15,10 +15,12 @@ class AnalyticsProcessor:
             region_name=os.environ.get("BEDROCK_REGION", "us-east-1")
         )
         # Use a cost-effective model for post-call analysis
-        self.model_id = os.environ.get("ANALYTICS_MODEL_ID", "amazon.titan-text-express-v1")
+        # amazon.nova-lite-v1:0 replaces the deprecated Titan Text Express v1
+        self.model_id = os.environ.get("ANALYTICS_MODEL_ID", "amazon.nova-lite-v1:0")
 
     async def process_call(self, session_id: str, phone: str, hospital_id: str, transcript: list, duration: int):
         """Analyze the transcript using AI and save results to RDS."""
+        import asyncio
         if not transcript:
             return
 
@@ -41,21 +43,30 @@ class AnalyticsProcessor:
         """
 
         try:
-            response = self.bedrock_runtime.invoke_model(
+            # Wrap blocking sync call in a thread
+            response = await asyncio.to_thread(
+                self.bedrock_runtime.invoke_model,
                 modelId=self.model_id,
                 body=json.dumps({
-                    "inputText": prompt,
-                    "textGenerationConfig": {
-                        "maxTokenCount": 512,
+                    "messages": [
+                        {"role": "user", "content": [{"text": prompt}]}
+                    ],
+                    "inferenceConfig": {
+                        "maxTokens": 512,
                         "temperature": 0.1,
                         "topP": 0.9
                     }
                 })
             )
             result = json.loads(response["body"].read())
-            # Handle different model output formats
-            output_text = result.get("results", [{}])[0].get("outputText", "{}")
-            
+            # Nova response format: output.message.content[0].text
+            output_text = (
+                result.get("output", {})
+                      .get("message", {})
+                      .get("content", [{}])[0]
+                      .get("text", "{}")
+            )
+
             # Extract JSON from output text (handle conversational preamble)
             try:
                 start_idx = output_text.find('{')
@@ -69,8 +80,10 @@ class AnalyticsProcessor:
                 logger.error(f"Invalid JSON from AI for {session_id}")
                 analytics = {}
 
-            # Save to RDS
-            self._save_to_rds(session_id, phone, hospital_id, analytics, duration)
+            # Save to RDS in a non-blocking thread
+            await asyncio.to_thread(
+                self._save_to_rds, session_id, phone, hospital_id, analytics, duration
+            )
             logger.info(f"[ANALYTICS] Processed call {session_id[:8]} - Outcome: {analytics.get('outcome')}")
 
         except Exception:

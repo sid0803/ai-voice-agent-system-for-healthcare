@@ -6,15 +6,14 @@ import json
 import os
 import logging
 import time
-import uvicorn
+from contextlib import asynccontextmanager
 from uuid import uuid4
 from datetime import datetime, timezone, timedelta
 
-import boto3
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import PlainTextResponse, Response
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Response
+from fastapi.responses import PlainTextResponse
 
 load_dotenv()
 
@@ -23,15 +22,12 @@ load_dotenv()
 # ---------------------------------------------------------------------------
 import pathlib
 _PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent
-_LOG_DIR = _PROJECT_ROOT / "logs"
-_LOG_DIR.mkdir(exist_ok=True)
 
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(name)s %(levelname)s %(message)s",
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler(_LOG_DIR / "server.log", mode="a"),
     ],
 )
 
@@ -45,12 +41,29 @@ logging.getLogger("smithy_aws_event_stream").setLevel(logging.WARNING)
 logging.getLogger("smithy_http").setLevel(logging.WARNING)
 
 from src.nova_client import S2SBidirectionalStreamClient
-from src.audio_utils import exotel_to_pcm, pcm_to_exotel
+from src.audio_utils import exotel_to_pcm, pcm_to_exotel, AudioHardener
 from src.memory_manager import AgentCoreMemoryManager, build_system_prompt_with_memory
 from src.routing.intent_router import intent_router
 from src.cache.response_cache import response_cache
 
 logger = logging.getLogger(__name__)
+
+# Track active background tasks to ensure safe shutdown
+_background_tasks = set()
+
+# ---------------------------------------------------------------------------
+# Security & Concurrency Utilities
+# ---------------------------------------------------------------------------
+_session_lock = asyncio.Lock()
+
+def mask_phone(phone: str) -> str:
+    """Mask phone number for privacy (PII protection)."""
+    if not phone:
+        return "unknown"
+    p = str(phone).strip()
+    if len(p) < 7:
+        return p
+    return f"{p[:3]}******{p[-4:]}"
 
 # ---------------------------------------------------------------------------
 # Greeting audio (read once at module level)
@@ -101,6 +114,7 @@ exotel_http = httpx.AsyncClient(
 
 from src.transcript_store import save_transcript
 from src.analytics.processor import analytics_processor
+from src.analytics.rds_client import rds_analytics
 
 
 # ---------------------------------------------------------------------------
@@ -219,15 +233,66 @@ HANGUP_GRACE_SECONDS = 15 # Hang up if no response within 15s after follow-up
 session_map: dict = {}
 
 # ---------------------------------------------------------------------------
+# FastAPI lifespan: startup tasks + SIGTERM graceful shutdown
+# ---------------------------------------------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle server startup and graceful shutdown (SIGTERM from Docker/ECS)."""
+    # --- STARTUP ---
+    logger.info("[STARTUP] InDiiServe Asha Voice Agent starting...")
+    try:
+        if rds_analytics.host and "your_aws_rds_endpoint" not in rds_analytics.host.lower() and "mock" not in rds_analytics.host.lower():
+            rds_analytics.init_schema()
+            logger.info("[STARTUP] RDS analytics schema verified/created.")
+        else:
+            logger.info("[STARTUP] RDS initialization skipped (Mock/Offline mode).")
+    except Exception:
+        logger.warning("[STARTUP] RDS init_schema failed - analytics writes will be skipped.")
+
+    yield  # Server is running and handling requests
+
+    # --- SHUTDOWN (triggered by SIGTERM from container orchestrator) ---
+    logger.info("[SHUTDOWN] SIGTERM received. Closing %d active sessions...", len(session_map))
+    async with _session_lock:
+        close_tasks = [session.close() for session in list(session_map.values())]
+    if close_tasks:
+        await asyncio.gather(*close_tasks, return_exceptions=True)
+        
+    if _background_tasks:
+        logger.info("[SHUTDOWN] Waiting for %d pending background tasks...", len(_background_tasks))
+        await asyncio.gather(*_background_tasks, return_exceptions=True)
+    
+    # Close global HTTP client
+    await exotel_http.aclose()
+    logger.info("[SHUTDOWN] Exotel HTTP client closed. All sessions cleaned up. Exiting.")
+
+
+# ---------------------------------------------------------------------------
 # FastAPI application
 # ---------------------------------------------------------------------------
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """Silence favicon 404 logs."""
+    return Response(status_code=204)
 
 
 @app.get("/")
 async def root():
     """Root route returning JSON status message."""
     return {"message": "Exotel Media Stream Server is running!"}
+
+
+@app.get("/health")
+async def health():
+    """Health check endpoint for AWS load balancers, ECS, and App Runner."""
+    return {
+        "status": "healthy",
+        "active_sessions": len(session_map),
+        "service": "InDiiServe-Asha-Voice-Agent",
+    }
 
 
 @app.get("/incoming-call")
@@ -261,7 +326,7 @@ async def incoming_call(request: Request):
             params.append(f"CallFrom={call_from}")
         ws_url = f"{ws_url}?{'&'.join(params)}"
 
-    logger.info("Incoming call - CallSid: %s, CallFrom: %s, returning WS URL: %s", call_sid, call_from, ws_url)
+    logger.info("Incoming call - CallSid: %s, CallFrom: %s, returning WS URL: %s", call_sid, mask_phone(call_from), ws_url)
     return {"url": ws_url}
 
 
@@ -276,8 +341,8 @@ async def outbound_call(request: Request):
         try:
             form = await request.form()
             to_number = form.get("to")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Failed to parse form parameter 'to' in outbound_call: %s", e)
 
     if not to_number:
         return PlainTextResponse("Missing 'to' parameter", status_code=400)
@@ -325,8 +390,8 @@ async def failover(request: Request):
         try:
             form = await request.form()
             call_sid = form.get("call_sid")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Failed to parse form parameter 'call_sid' in failover: %s", e)
 
     if not call_sid:
         return PlainTextResponse("Missing 'call_sid' parameter", status_code=400)
@@ -375,7 +440,8 @@ async def exotel_stream(websocket: WebSocket):
     # Create a session for this connection
     session_id = str(uuid4())
     session = bedrock_client.create_stream_session(session_id)
-    session_map[session_id] = session
+    async with _session_lock:
+        session_map[session_id] = session
 
     # Initiate the Bedrock stream in the background.
     # initiate_session runs forever (_process_response_stream is a while-loop),
@@ -383,6 +449,7 @@ async def exotel_stream(websocket: WebSocket):
     asyncio.ensure_future(bedrock_client.initiate_session(session_id))
 
     call_sid = ""
+    hardener = AudioHardener()
 
     # -----------------------------------------------------------------------
     # Transcript tracking
@@ -421,7 +488,7 @@ async def exotel_stream(websocket: WebSocket):
         try:
             await bedrock_client.send_text_message(
                 session_id,
-                "[The caller has been silent for a while. Ask them if they are still there and if they need help with their Bhutan trip.]"
+                "[The caller has been silent for a while. Ask them if they are still there and if they need help with their appointment booking.]"
             )
             last_activity_time = time.time()
             logger.info("Cross-modal text sent successfully, waiting for Nova to generate audio")
@@ -503,7 +570,7 @@ async def exotel_stream(websocket: WebSocket):
         logger.info("Tool called: %s", data.get("toolName", "unknown"))
 
     def _handle_text_output(data):
-        nonlocal detected_language, caller_phone, current_user_text, current_assistant_text
+        nonlocal detected_language, current_user_text, current_assistant_text
         content = str(data.get("content", ""))
         role = data.get("role", "")
         logger.info("Text output [%s]: %s", role, content[:80])
@@ -532,7 +599,8 @@ async def exotel_stream(websocket: WebSocket):
                         asyncio.ensure_future(stream_cached_audio(cached_audio))
             # --- END OPTIMIZATION ---
 
-            if any("\u0900" <= ch <= "\u097F" for ch in content):
+            hinglish_keywords = ["hai", "kare", "kaise", "booking", "chahiye", "mera", "mujhe", "aap", "karna", "sunye"]
+            if any("\u0900" <= ch <= "\u097F" for ch in content) or any(kw in content.lower() for kw in hinglish_keywords):
                 detected_language = "hi"
             else:
                 detected_language = "en"
@@ -609,6 +677,15 @@ async def exotel_stream(websocket: WebSocket):
 
                     elif event_type == "start":
                         start_data = data.get("start", {})
+                        # 1. Resolve Hospital ID from WS query params or start event
+                        hospital_id = (
+                            websocket.query_params.get("HospitalId") 
+                            or websocket.query_params.get("hospital_id")
+                            or start_data.get("hospital_id")
+                            or "default_tier2"
+                        )
+                        session.hospital_id = hospital_id
+                        
                         call_sid = (
                             start_data.get("call_sid")
                             or start_data.get("callSid")
@@ -638,7 +715,7 @@ async def exotel_stream(websocket: WebSocket):
                             "Exotel stream started - streamSid: %s, callSid: %s, caller: %s, raw start keys: %s",
                             session.stream_sid,
                             call_sid,
-                            caller_phone or "unknown",
+                            mask_phone(caller_phone),
                             list(start_data.keys()),
                         )
 
@@ -694,7 +771,9 @@ async def exotel_stream(websocket: WebSocket):
                             try:
                                 raw_bytes = base64.b64decode(payload)
                                 pcm_samples = exotel_to_pcm(raw_bytes)
-                                await session.stream_audio(pcm_samples)
+                                # Apply Noise Gate & Auto-Gain before AI ingestion
+                                hardened_pcm = hardener.process_chunk(pcm_samples)
+                                await session.stream_audio(hardened_pcm)
                             except Exception:
                                 logger.exception("Error processing Exotel media payload")
 
@@ -716,7 +795,8 @@ async def exotel_stream(websocket: WebSocket):
             elif "bytes" in msg and msg["bytes"]:
                 try:
                     pcm_samples = exotel_to_pcm(msg["bytes"])
-                    await session.stream_audio(pcm_samples)
+                    hardened_pcm = hardener.process_chunk(pcm_samples)
+                    await session.stream_audio(hardened_pcm)
                 except Exception:
                     logger.exception("Error processing Exotel audio frame")
 
@@ -738,17 +818,16 @@ async def exotel_stream(websocket: WebSocket):
         # Trigger AI Analytics Processor (Post-call Data Science)
         if transcripts:
             # Run in background to not block the WebSocket closure
-            asyncio.create_task(analytics_processor.process_call(
+            task = asyncio.create_task(analytics_processor.process_call(
                 session_id=session_id,
                 phone=caller_phone,
-                hospital_id=os.getenv("HOSPITAL_ID", "default_tier2"),
+                hospital_id=session.hospital_id,
                 transcript=transcripts,
                 duration=int((datetime.now(IST) - call_start_time.astimezone(IST)).total_seconds()) if call_start_time else 0
             ))
+            _background_tasks.add(task)
+            task.add_done_callback(_background_tasks.discard)
 
         await session.close()
-        session_map.pop(session_id, None)
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=3000)
+        async with _session_lock:
+            session_map.pop(session_id, None)

@@ -14,16 +14,18 @@ class TenantManager:
         self.current_tenant = os.environ.get("HOSPITAL_ID", "default_tier2")
         self._cached_data = None
 
-    def get_hospital_data(self) -> dict:
-        """Load and return data for the current active hospital/tenant."""
-        if self._cached_data and self._cached_data.get("id") == self.current_tenant:
+    def get_hospital_data(self, hospital_id: str = None) -> dict:
+        """Load and return data for a specific hospital or the current active tenant."""
+        tid = hospital_id or self.current_tenant
+        
+        if not hospital_id and self._cached_data and self._cached_data.get("id") == self.current_tenant:
             return self._cached_data
 
-        data_path = self.data_dir / f"{self.current_tenant}.json"
+        data_path = self.data_dir / f"{tid}.json"
         
         # Fallback to default if tenant file missing
         if not data_path.exists():
-            logger.warning(f"Data for tenant {self.current_tenant} missing. Using default.")
+            logger.warning(f"Data for tenant {tid} missing. Using default.")
             data_path = self.data_dir / "default_tier2.json"
             
         if not data_path.exists():
@@ -31,11 +33,19 @@ class TenantManager:
 
         try:
             with open(data_path, "r", encoding="utf-8") as f:
-                self._cached_data = json.load(f)
-                return self._cached_data
+                data = json.load(f)
+                if not hospital_id:
+                    self._cached_data = data
+                return data
         except Exception:
-            logger.exception(f"Failed to load data for {self.current_tenant}")
+            logger.exception(f"Failed to load data for {tid}")
             return self._get_hardcoded_fallback()
+
+    def get_sheets_id(self, hospital_id: str) -> str:
+        """Requirement: Resolve the specific Google Sheets ID for a given hospital."""
+        data = self.get_hospital_data(hospital_id)
+        # Return the specific sheet ID or fallback to the global environment variable
+        return data.get("spreadsheet_id") or os.environ.get("GOOGLE_SHEET_ID")
 
     def _get_hardcoded_fallback(self) -> dict:
         """Emergency fallback data for Tier 2/3 city hospital."""

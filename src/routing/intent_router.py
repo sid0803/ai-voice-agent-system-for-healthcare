@@ -20,7 +20,7 @@ KEYWORDS: Dict[IntentType, list[str]] = {
         "hey", "kaise ho", "sunye"
     ],
     "EMERGENCY": [
-        "emergency", "bachao", "accidnet", "blood", "severe pain", "chest pain",
+        "emergency", "bachao", "accident", "blood", "severe pain", "chest pain",
         "saans", "breathing", "stroke", "dil ka daura", "unconscious"
     ],
     "HANDOFF": [
@@ -72,9 +72,9 @@ class IntentRouter:
     def get_static_response_id(self, intent: IntentType) -> Optional[str]:
         """Maps an intent back to a static PCM asset ID if available."""
         mapping = {
-            "GREETING": "greet_pcm",
-            "EMERGENCY": "emergency_transfer_pcm",
-            "HANDOFF": "transfer_pcm"
+            "GREETING": "hello",
+            "EMERGENCY": "emergency",
+            "HANDOFF": "transfer"
         }
         return mapping.get(intent)
 

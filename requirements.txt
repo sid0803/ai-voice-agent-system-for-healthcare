@@ -13,7 +13,6 @@ audioop-lts
 # --- KNOWLEDGE BASE & TOOLS ---
 faiss-cpu
 numpy
-google-search-results
 requests
 
 # --- INTEGRATIONS & SINKS ---

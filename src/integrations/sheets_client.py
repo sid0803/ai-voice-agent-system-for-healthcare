@@ -35,10 +35,18 @@ class GoogleSheetsClient:
         except Exception:
             logger.exception("[SHEETS] Failed to initialize Google Sheets service")
 
-    def append_booking(self, booking_data: dict):
-        """Requirement No 2: Append booking data with Intent/Needs column."""
+    def append_booking(self, booking_data: dict, hospital_id: str = None):
+        """Requirement No 2: Append booking data with Intent/Needs column to clinic-specific sheet."""
         if not self.service:
             logger.info("[SHEETS] Sheets service unavailable, skipping cloud upload.")
+            return False
+
+        # Resolve target spreadsheet for multi-tenancy
+        from src.integrations.tenant_manager import tenant_manager
+        target_sheet_id = tenant_manager.get_sheets_id(hospital_id) if hospital_id else self.spreadsheet_id
+        
+        if not target_sheet_id:
+            logger.error("[SHEETS] No target spreadsheet ID found. Cannot append booking.")
             return False
 
         try:
@@ -51,21 +59,21 @@ class GoogleSheetsClient:
                 booking_data.get("dept", "General"),
                 booking_data.get("visit_time", "N/A"),
                 booking_data.get("ref_id", "N/A"),
-                booking_data.get("intent", "Checkup/Inquiry") # Patient intent added as per user request
+                booking_data.get("intent", "Checkup/Inquiry")
             ]]
             
             body = {'values': values}
             result = self.service.spreadsheets().values().append(
-                spreadsheetId=self.spreadsheet_id,
+                spreadsheetId=target_sheet_id,
                 range="Sheet1!A:H",
                 valueInputOption="RAW",
                 body=body
             ).execute()
             
-            logger.info(f"[SHEETS] Successfully appended booking: {result.get('updates').get('updatedRange')}")
+            logger.info(f"[SHEETS] Successfully appended booking to {target_sheet_id}: {result.get('updates').get('updatedRange')}")
             return True
         except Exception:
-            logger.exception("[SHEETS] Error appending to Google Sheets")
+            logger.exception(f"[SHEETS] Error appending to Google Sheets ({target_sheet_id})")
             return False
 
 # Global instance

@@ -27,6 +27,10 @@ COPY . .
 ENV PORT=8080
 ENV PYTHONPATH=/app
 
+# Create a non-root user and change ownership of the application directory
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
 # Expose the server port
 EXPOSE 8080
 

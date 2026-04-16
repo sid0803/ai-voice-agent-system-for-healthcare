@@ -29,17 +29,29 @@ class AgentCoreMemoryManager:
             region = os.getenv("MEMORY_REGION") or os.getenv("AWS_REGION") or "ap-south-1"
         self.memory_id = memory_id
 
+        from src.nova_client import get_ec2_iam_role_credentials
+        
         # AgentCore needs EC2 IAM role, not the .env Bedrock creds.
-        saved = {k: os.environ.pop(k, None) for k in
-                 ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN")}
+        # Fetch EC2 creds explicitly instead of mutating os.environ.
+        ec2_creds = get_ec2_iam_role_credentials(timeout=2)
+        
         try:
-            session = boto3.Session(region_name=region)
+            if ec2_creds.get("aws_access_key_id"):
+                session = boto3.Session(
+                    region_name=region,
+                    aws_access_key_id=ec2_creds.get("aws_access_key_id"),
+                    aws_secret_access_key=ec2_creds.get("aws_secret_access_key"),
+                    aws_session_token=ec2_creds.get("aws_session_token")
+                )
+                logger.info("[MEMORY] Using explicitly fetched EC2 IAM role credentials")
+            else:
+                session = boto3.Session(region_name=region)
+                
             self.data_client = session.client("bedrock-agentcore")
             control = session.client("bedrock-agentcore-control")
-        finally:
-            for k, v in saved.items():
-                if v:
-                    os.environ[k] = v
+        except Exception as e:
+            logger.warning("[MEMORY] Failed to initialize Boto3 session explicitly: %s", e)
+            raise
 
         self._sessions: dict[str, str] = {}  # session_id -> actor_id
         self._strategy_ids: dict[str, str] = {}

@@ -1,6 +1,7 @@
 {
     "id": "default_tier2",
     "name": "InDiiServe Healthcare Tier-2 Model Clinic",
+    "spreadsheet_id": "REPLACE_WITH_TIER2_SHEET_ID",
     "address": "123 Main Street, Tier-2 City District, India",
     "pharmacy_hours": "24/7",
     "departments": [

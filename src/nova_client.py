@@ -41,11 +41,8 @@ def get_imdsv2_token(timeout: int = 2) -> str:
     return r.text
 
 
-def load_ec2_iam_role_credentials(timeout: int = 2) -> bool:
-    """Load IAM role credentials from EC2 metadata (IMDSv2) into environment variables.
-    
-    The smithy EnvironmentCredentialsResolver reads from env vars.
-    """
+def get_ec2_iam_role_credentials(timeout: int = 2) -> dict:
+    """Load IAM role credentials from EC2 metadata (IMDSv2)."""
     try:
         token = get_imdsv2_token(timeout=timeout)
         headers = {"X-aws-ec2-metadata-token": token}
@@ -57,7 +54,7 @@ def load_ec2_iam_role_credentials(timeout: int = 2) -> bool:
         ).text.strip()
         
         if not role_name:
-            return False
+            return {}
         
         creds = requests.get(
             f"http://169.254.169.254/latest/meta-data/iam/security-credentials/{role_name}",
@@ -65,14 +62,15 @@ def load_ec2_iam_role_credentials(timeout: int = 2) -> bool:
             timeout=timeout,
         ).json()
         
-        os.environ["AWS_ACCESS_KEY_ID"] = creds["AccessKeyId"]
-        os.environ["AWS_SECRET_ACCESS_KEY"] = creds["SecretAccessKey"]
-        os.environ["AWS_SESSION_TOKEN"] = creds["Token"]
-        return True
+        return {
+            "aws_access_key_id": creds["AccessKeyId"],
+            "aws_secret_access_key": creds["SecretAccessKey"],
+            "aws_session_token": creds["Token"]
+        }
     except Exception:
-        return False
+        return {}
 
-from .mock_tools import available_tools, tool_processor
+from .tools import available_tools, tool_processor
 from .types_config import (
     DEFAULT_AUDIO_INPUT_CONFIG,
     DEFAULT_AUDIO_OUTPUT_CONFIG,
@@ -104,6 +102,7 @@ class SessionData:
     is_audio_content_start_sent: bool = False
     audio_content_id: str = field(default_factory=lambda: str(uuid4()))
     audio_paused: bool = False
+    hospital_id: str = "default_tier2"
 
 
 class StreamSession:
@@ -121,6 +120,7 @@ class StreamSession:
         self._is_processing_audio: bool = False
         self._is_active: bool = True
         self.stream_sid: str = ""
+        self.hospital_id: str = "default_tier2"
 
     @property
     def session_id(self) -> str:
@@ -209,22 +209,21 @@ class S2SBidirectionalStreamClient:
         inference_config: Optional[InferenceConfig] = None,
         model_id: str = "amazon.nova-2-sonic-v1:0",
     ) -> None:
-        creds = credentials or {}
-        # Set AWS credentials as env vars for EnvironmentCredentialsResolver
-        if creds.get("aws_access_key_id"):
-            os.environ["AWS_ACCESS_KEY_ID"] = creds["aws_access_key_id"]
-        if creds.get("aws_secret_access_key"):
-            os.environ["AWS_SECRET_ACCESS_KEY"] = creds["aws_secret_access_key"]
-        if creds.get("aws_session_token"):
-            os.environ["AWS_SESSION_TOKEN"] = creds["aws_session_token"]
-
-        # Try loading IAM role credentials from EC2 IMDS if no explicit creds
-        if not os.environ.get("AWS_ACCESS_KEY_ID"):
-            loaded = load_ec2_iam_role_credentials(timeout=2)
-            if loaded:
+        # Use implicit environment resolution via smithy resolver, which works fine
+        # if the variables are set via python-dotenv upstream. We won't mutate os.environ explicitly.
+        
+        credentials = credentials or {}
+        
+        # Try loading IAM role credentials from EC2 IMDS if no explicit creds or env vars
+        if not os.environ.get("AWS_ACCESS_KEY_ID") and not credentials.get("aws_access_key_id"):
+            ec2_creds = get_ec2_iam_role_credentials(timeout=2)
+            if ec2_creds.get("aws_access_key_id"):
+                os.environ["AWS_ACCESS_KEY_ID"] = ec2_creds["aws_access_key_id"]
+                os.environ["AWS_SECRET_ACCESS_KEY"] = ec2_creds["aws_secret_access_key"]
+                os.environ["AWS_SESSION_TOKEN"] = ec2_creds["aws_session_token"]
                 logger.info("Using IAM role credentials from EC2 metadata (IMDSv2)")
             else:
-                logger.info("Could not fetch IAM role creds from metadata; using env vars")
+                logger.info("Could not fetch IAM role creds from metadata; relying on IAM identity or defaults")
 
         self._region = region
         self._model_id = model_id
@@ -444,6 +443,7 @@ class S2SBidirectionalStreamClient:
                             external_result = await tool_processor(
                                 session.tool_name.lower(),
                                 session.tool_use_content.get("content", "{}"),
+                                hospital_id=session.hospital_id,
                             )
                             await self._send_tool_result(session_id, session.tool_use_id, external_result)
                             self._dispatch_event(session_id, "toolResult", {
@@ -800,7 +800,7 @@ class S2SBidirectionalStreamClient:
             if session.stream:
                 await session.stream.input_stream.close()
         except Exception:
-            pass
+            logger.debug("Failed to close stream input in send_session_end", exc_info=True)
         self._active_sessions.pop(session_id, None)
         self._session_last_activity.pop(session_id, None)
 
@@ -822,7 +822,7 @@ class S2SBidirectionalStreamClient:
                     if session.stream:
                         await session.stream.input_stream.close()
                 except Exception:
-                    pass
+                    logger.debug("Failed to close stream input during forceful cleanup", exc_info=True)
                 self._active_sessions.pop(session_id, None)
                 self._session_last_activity.pop(session_id, None)
         finally:
