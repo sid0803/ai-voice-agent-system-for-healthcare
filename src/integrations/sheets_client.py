@@ -53,6 +53,7 @@ class GoogleSheetsClient:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             urgency = booking_data.get("priority", "NORMAL")
             
+            # Prepare payload for API
             values = [[
                 timestamp,
                 booking_data.get("patient_name", "Unknown"),
@@ -79,9 +80,15 @@ class GoogleSheetsClient:
             
             logger.info(f"[SHEETS] Successfully appended clinical booking ({urgency}) to {target_sheet_id}")
             return True
-        except Exception:
-            logger.exception(f"[SHEETS] Error appending to Google Sheets ({target_sheet_id})")
-            return False
+        except Exception as e:
+            logger.warning(f"[RELIABILITY] Google Sheets failure for {target_sheet_id}: {str(e)}. Triggering Local Sink fallback.")
+            # Critical Fallback: Save to Local Sink if Cloud fails
+            try:
+                from src.integrations.local_sink import local_sink
+                return local_sink.save_booking(booking_data)
+            except Exception:
+                logger.error("[RELIABILITY] CRITICAL FAILURE: Both Cloud and Local sinks failed.")
+                return False
 
 # Global instance
 sheets_client = GoogleSheetsClient()

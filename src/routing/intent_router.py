@@ -28,22 +28,31 @@ KEYWORDS: Dict[IntentType, list[str]] = {
     "DISTRESS": [
         "scared", "darr lag raha hai", "help", "please", "unbearable", "severely", "bahut zyada"
     ],
+    "CHEST_SIGNALS": [
+        "chest", "seena", "bhari", "pressure", "heavy", "stiffness"
+    ],
     "HANDOFF": [
         "receptionist", "staff", "human", "insan", "baat karado", "admin", "connect me"
     ]
 }
 
 class IntentRouter:
-    """Predicts user intent from transcription with Signal Fusion (Strong vs Weak)."""
+    """Predicts user intent with Signal Fusion & 'False Calm' Safety detection."""
 
     def route(self, text: str) -> IntentType:
-        """Route text using Clinical Fusion Logic: Strong > (Weak + Weak) > Normal."""
+        """Clinical Fusion Logic: (Strong) OR (Chest-Signal) OR (Weak+Weak) -> EMERGENCY."""
         if not text:
             return "UNKNOWN"
         
         normalized = text.lower().strip()
         
-        # 1. Check for STRONG Emergency Signals (Immediate Trigger)
+        # 1. 'False Calm' & STRONG Emergency Signals (Safety First Override)
+        # Any mention of chest signals is forced to emergency intent
+        for kw in KEYWORDS["CHEST_SIGNALS"]:
+            if kw in normalized:
+                logger.warning(f"[SAFETY] 'False Calm' override: Chest-Related signal '{kw}' detected.")
+                return "EMERGENCY"
+
         for kw in KEYWORDS["EMERGENCY_STRONG"]:
             if kw in normalized:
                 logger.info(f"[ROUTING] Strong emergency signal detected: {kw}")
