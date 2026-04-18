@@ -4,6 +4,8 @@ uvicorn[standard]
 websockets
 httpx
 python-dotenv
+bcrypt
+cryptography
 
 # --- AI & AWS ---
 boto3

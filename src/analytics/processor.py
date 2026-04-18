@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import boto3
+import re
 from src.analytics.rds_client import rds_analytics
 
 logger = logging.getLogger(__name__)
@@ -73,10 +74,10 @@ class AnalyticsProcessor:
 
             # Extract JSON from output text (handle conversational preamble)
             try:
-                start_idx = output_text.find('{')
-                end_idx = output_text.rfind('}') + 1
-                if start_idx != -1 and end_idx != -1:
-                    analytics = json.loads(output_text[start_idx:end_idx])
+                # Robust extraction using regex to find the first '{' and last '}'
+                match = re.search(r'\{.*\}', output_text, re.DOTALL)
+                if match:
+                    analytics = json.loads(match.group(0))
                 else:
                     logger.warning(f"No JSON found in AI response for {session_id}")
                     analytics = {}
@@ -100,6 +101,9 @@ class AnalyticsProcessor:
             return
 
         try:
+            # Encrypt PII before saving to analytics (Requirement P1 Hardening)
+            encrypted_phone = rds_analytics.encrypt_data(phone)
+            
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO hospital_analytics 
@@ -108,7 +112,7 @@ class AnalyticsProcessor:
                     ON CONFLICT (session_id) DO NOTHING;
                 """, (
                     session_id,
-                    phone,
+                    encrypted_phone,
                     hospital_id,
                     analytics.get("sentiment", "Neutral"),
                     analytics.get("intent", "General"),

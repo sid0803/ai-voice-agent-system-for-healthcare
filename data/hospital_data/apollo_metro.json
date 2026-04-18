@@ -1,0 +1,159 @@
+{
+  "id": "apollo_metro",
+  "name": "Apollo Metro Super-Specialty",
+  "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
+  "contact": "+91 80 4000 9000",
+
+  "departments": [
+    "Cardiology",
+    "Neurology",
+    "Diabetes Clinic",
+    "Physiotherapy",
+    "Emergency"
+  ],
+
+  "doctors": [
+    {
+      "id": "doc_001",
+      "name": "Dr. Sameer Kulkarni",
+      "dept": "Cardiology",
+      "experience": "12 years",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Follow-up"],
+      "fee": 1200,
+      "location": "Block A, 1st Floor",
+
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "time_slots": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ]
+      }
+    },
+
+    {
+      "id": "doc_002",
+      "name": "Dr. Megha Rao",
+      "dept": "Neurology",
+      "experience": "10 years",
+      "languages": ["English"],
+      "consultation_type": ["OPD"],
+      "fee": 1500,
+      "location": "Neuro Wing, 4th Floor",
+
+      "availability": {
+        "days": ["Mon", "Wed", "Fri"],
+        "time_slots": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ]
+      }
+    },
+
+    {
+      "id": "doc_003",
+      "name": "Dr. Prateek Jain",
+      "dept": "Diabetes Clinic",
+      "experience": "8 years",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Routine Check"],
+      "fee": 800,
+      "location": "OPD Block G",
+
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        "time_slots": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ]
+      }
+    }
+  ],
+
+  "services": [
+    {
+      "name": "Cardiac Checkup",
+      "price": 2500,
+      "duration": "2 hours"
+    },
+    {
+      "name": "Brain MRI",
+      "price": 12000,
+      "duration": "45 mins"
+    },
+    {
+      "name": "Blood Sugar (HbA1c)",
+      "price": 650,
+      "duration": "15 mins"
+    },
+    {
+      "name": "Physiotherapy Session",
+      "price": 1000,
+      "duration": "30 mins"
+    }
+  ],
+
+  "emergency": {
+    "available": true,
+    "contact": "1066",
+    "instruction": "Immediate assistance available. Connecting to emergency desk."
+  },
+
+  "faq": [
+    {
+      "intent": "pharmacy_location",
+      "questions": [
+        "Where is pharmacy?",
+        "Pharmacy location?",
+        "Is pharmacy open?"
+      ],
+      "answer": "Our pharmacy is near the main exit and is open 24/7."
+    },
+    {
+      "intent": "parking",
+      "questions": [
+        "Is parking available?",
+        "Where to park?"
+      ],
+      "answer": "Multi-level parking is available for all visitors."
+    },
+    {
+      "intent": "food",
+      "questions": [
+        "Is there food?",
+        "Any cafeteria?"
+      ],
+      "answer": "The food court is on the 5th floor with healthy meal options."
+    }
+  ],
+
+  "integration": {
+    "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
+    "crm_enabled": true,
+    "api_enabled": true
+  },
+
+  "ai_settings": {
+    "default_language": "English",
+    "fallback_language": "Hindi",
+    "confidence_threshold": 0.7,
+    "enable_memory": true
+  }
+}

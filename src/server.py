@@ -41,10 +41,11 @@ logging.getLogger("smithy_aws_event_stream").setLevel(logging.WARNING)
 logging.getLogger("smithy_http").setLevel(logging.WARNING)
 
 from src.nova_client import S2SBidirectionalStreamClient
-from src.audio_utils import exotel_to_pcm, pcm_to_exotel, AudioHardener
+from src.audio_utils import exotel_to_pcm, pcm_to_exotel, AudioHardener, AudioPolisher
 from src.memory_manager import AgentCoreMemoryManager, build_system_prompt_with_memory
 from src.routing.intent_router import intent_router
 from src.cache.response_cache import response_cache
+from src.integrations.tenant_manager import tenant_manager
 
 logger = logging.getLogger(__name__)
 
@@ -143,15 +144,19 @@ Only greet ONCE at the start.
 ---
 
 ## SAFETY & EMERGENCY (ABSOLUTE PRIORITY)
-If the caller mentions any of the following symptoms or signs of emergency:
-- Chest pain, difficulty breathing, severe bleeding, unconsciousness, severe injury, or potential stroke.
-- If they say "Help" or "Emergency" urgently.
-- If they insist on speaking to a doctor or human staff immediately.
+If the caller mentions signs of an emergency (Chest pain, breathing difficulty, severe bleeding, unconsciousness, stroke) or says "Emergency" urgently:
+1. IMMEDIATELY Say: "This sounds urgent. Please stay on the line, I am connecting you to our emergency desk immediately."
+2. DO NOT provide any medical advice, diagnosis, or self-care tips.
+3. CALL the `handoffTool` immediately.
+4. STOP speaking once the tool is called.
 
-ACTION: 
-1. Say: "I understand this is an emergency. Please stay on the line, I am transferring you to our emergency medical staff right now."
-2. IMMEDIATELY call the handoffTool.
-3. Once the handoffTool is called, STOP speaking. Do NOT attempt to give medical advice or diagnosis.
+---
+
+## HANDLING MESSY & VAGUE SPEECH
+In real hospital environments, patients are often hesitant or unclear (e.g., "Doctor hai kya kal?", "Mera sir bhari lag raha hai"). 
+- BE PATIENT: Do not give up if the query is messy. 
+- CLARIFY: Ask polite follow-up questions to understand the department needed. (e.g., "I understand. Is the pain sharp, or are you looking to consult a general physician?")
+- GUIDE: If they are unsure of the doctor's name, suggest the relevant department specialists.
 
 ---
 
@@ -165,10 +170,17 @@ ACTION:
 ---
 
 ## RESPONSE STYLE
-- Maximum 2 short sentences per response. 
-- Be professional, warm, and concise.
-- Never repeat greetings or transfer messages.
-- ADDRESS the caller by their first name if known from context.
+- Maximum 2 short, crisp sentences per response. 
+- Use natural, warm, and professional language.
+- ADDRESS the caller by their first name if known to build trust.
+- NO MEDICAL ADVICE: You are a receptionist, not a doctor. Never suggest medications or treatments.
+
+---
+
+## SECURE MEMORY & PRIVACY
+You recognize returning patients via secure, encrypted identifiers to provide a premium experience.
+- If you recognize a name (e.g., Rohan), mention it warmly: "Hello [Name], welcome back. I see you've visited us before. How can I assist you today?"
+- Never disclose sensitive medical history aloud. Use context only to speed up the current request.
 
 ---
 
@@ -198,6 +210,30 @@ Collect details one by one (ask only what is missing):
 - After gathering all details, say:
   "Thank you [Name]. I have noted your request for [Doctor/Dept] on [Date] at [Time]. I am recording these details in our system now and we will send a confirmation to your WhatsApp."
 - The `appointmentBookingTool` will be called internally to save this data.
+
+---
+
+---
+
+## CLINICAL TRIAGE & SAFETY (SURGICAL PRECISION)
+You are a healthcare assistant. Your priority is patient safety.
+Rules:
+1.  **RED-FLAG SYMPTOMS**: If the caller mentions Chest pain, Breathing difficulty, Severe bleeding, or Stroke symptoms:
+    -   DO NOT ask follow-up questions.
+    -   IMMEDIATELY say: "I'm connecting you to our emergency desk right now. Please stay on the line. If we are disconnected, please dial 10-6-6 immediately."
+    -   Call `handoffTool`.
+2.  **EMPATHY FIRST**: Always respond with empathy ("I'm sorry you're feeling this") before any question.
+3.  **NO NUMERIC RATINGS**: Never ask for a pain score. Infer it or ask "Does it feel sharp or is it a dull ache?"
+4.  **1-STEP CLARIFICATION**: If the caller says "something feels wrong" or is vague, ask ONE soft question ("Are you having any pain or breathlessness?"). If still unsure, escalate.
+5.  **SAFETY OVER COMPLETENESS**: If you suspect a crisis, prioritize safety and escalate.
+
+---
+
+## DEMO STABILITY (FOR PRESENTATIONS)
+If `DEMO_MODE` is active:
+- Prioritize clear, deterministic answers.
+- For emergency simulations, always escalate within 1 turn.
+- Ensure the user feels the "Safety Net" is always present.
 
 ---
 
@@ -245,14 +281,47 @@ async def lifespan(app: FastAPI):
     """Handle server startup and graceful shutdown (SIGTERM from Docker/ECS)."""
     # --- STARTUP ---
     logger.info("[STARTUP] InDiiServe Asha Voice Agent starting...")
+    
+    # Run System Health Check (P0 Hardening)
+    try:
+        from src.diagnostics.health import HealthChecker
+        diag = HealthChecker.run_full_diagnostic()
+        
+        status_emoji = "🟢" if diag["overall_status"] == "HEALTHY" else "⚠️"
+        logger.info(f"\n{'='*40}\n🏥 SYSTEM HEALTH: {diag['overall_status']} {status_emoji}\n{'='*40}")
+        
+        if diag["overall_status"] != "HEALTHY":
+            missing_assets = [k for k,v in diag["assets"].items() if not v]
+            if missing_assets:
+                logger.warning(f"❌ MISSING AUDIO ASSETS: {', '.join(missing_assets)}")
+            
+            missing_env = [k for k,v in diag["environment"].items() if not v]
+            if missing_env:
+                logger.warning(f"❌ MISSING ENV VARS: {', '.join(missing_env)}")
+        
+        db_ok, db_msg = diag["database"]
+        logger.info(f"📁 Database: {db_msg} {'✅' if db_ok else '❌'}")
+        
+        aws_ok, aws_msg = diag["aws"]
+        logger.info(f"☁️ AWS Cloud: {aws_msg} {'✅' if aws_ok else '❌'}")
+        logger.info(f"{'='*40}\n")
+    except Exception:
+        logger.exception("[STARTUP] Health diagnostic failed to run")
+
     try:
         if rds_analytics.host and "your_aws_rds_endpoint" not in rds_analytics.host.lower() and "mock" not in rds_analytics.host.lower():
             rds_analytics.init_schema()
             logger.info("[STARTUP] RDS analytics schema verified/created.")
         else:
             logger.info("[STARTUP] RDS initialization skipped (Mock/Offline mode).")
+            
+        # Start Background Sync Worker (SaaS Tier)
+        from src.integrations.sync_engine import sync_engine
+        sync_task = asyncio.create_task(sync_engine.scheduled_pull_worker())
+        _background_tasks.add(sync_task)
+        sync_task.add_done_callback(_background_tasks.discard)
     except Exception:
-        logger.warning("[STARTUP] RDS init_schema failed - analytics writes will be skipped.")
+        logger.warning("[STARTUP] Initial background tasks failed - system may be partially functional.")
 
     yield  # Server is running and handling requests
 
@@ -328,8 +397,10 @@ async def incoming_call(request: Request):
         if call_sid:
             params.append(f"CallSid={call_sid}")
         if call_from:
-            # PII Hardening: We use the raw number in the URL, but MASK it in the log below
-            params.append(f"CallFrom={call_from}")
+            # PII Hardening (P1): Encrypt the phone number in the URL so it's not visible
+            # to anyone intercepting the public JSON response.
+            encrypted_from = rds_analytics.encrypt_data(call_from)
+            params.append(f"CallFrom={encrypted_from}")
         ws_url = f"{ws_url}?{'&'.join(params)}"
 
     # PII Scrubbing: Sanitize the printed URL for logs
@@ -444,13 +515,30 @@ async def exotel_stream(websocket: WebSocket):
     # Extract call metadata from WebSocket URL query params
     # (passed from /incoming-call endpoint)
     ws_call_sid = websocket.query_params.get("CallSid", "")
-    ws_call_from = websocket.query_params.get("CallFrom", "")
+    encrypted_call_from = websocket.query_params.get("CallFrom", "")
+    
+    # Decrypt phone number (PII Hardening P1)
+    ws_call_from = rds_analytics.decrypt_data(encrypted_call_from)
+    
     if ws_call_sid or ws_call_from:
-        logger.info("WS query params - CallSid: %s, CallFrom: %s", ws_call_sid, ws_call_from)
+        logger.info("WS query params - CallSid: %s, CallFrom: %s", ws_call_sid, mask_phone(ws_call_from))
 
     # Create a session for this connection
     session_id = str(uuid4())
+    
+    # SaaS Hardening: Validate Tenant Status (P0)
+    # Check if the hospital is set in query params or default
+    hospital_id = websocket.query_params.get("hospital_id", os.environ.get("HOSPITAL_ID", "default_tier2"))
+    from src.integrations.tenant_manager import tenant_manager
+    tenant_status = tenant_manager.get_status(hospital_id)
+    
+    if tenant_status == "pending":
+        logger.warning(f"[AUTH] Rejecting call for PENDING tenant {hospital_id}")
+        await websocket.close(code=1008) # Policy Violation
+        return
+
     session = bedrock_client.create_stream_session(session_id)
+    session.hospital_id = hospital_id # Inject for downstream use
     async with _session_lock:
         session_map[session_id] = session
 
@@ -463,6 +551,7 @@ async def exotel_stream(websocket: WebSocket):
 
     call_sid = ""
     hardener = AudioHardener()
+    polisher = AudioPolisher()
 
     # -----------------------------------------------------------------------
     # Transcript tracking
@@ -478,11 +567,17 @@ async def exotel_stream(websocket: WebSocket):
     call_start_time = None
 
     # -----------------------------------------------------------------------
-    # Idle timeout state
+    # Refined Silence Thresholds (Requirement: Clinical Safety)
     # -----------------------------------------------------------------------
     last_activity_time = time.time()
     idle_prompt_sent = False
-    idle_monitor_task = None
+    escalation_triggered = False
+    
+    DEMO_MODE = os.environ.get("DEMO_MODE", "false").lower() == "true"
+    
+    SOFT_FOLLOW_UP_SEC = 4 if not DEMO_MODE else 6
+    ESCALATION_SEC = 9 if not DEMO_MODE else 12 
+    
     detected_language = "en"
     tool_in_progress = False
 
@@ -491,22 +586,34 @@ async def exotel_stream(websocket: WebSocket):
         last_activity_time = time.time()
         idle_prompt_sent = False
 
-    async def send_idle_followup():
-        """Send follow-up via cross-modal text input - Nova will respond with audio."""
-        nonlocal idle_prompt_sent, last_activity_time
-        if idle_prompt_sent or not call_sid:
+    async def send_idle_followup(is_escalation: bool = False):
+        """Send follow-up or trigger emergency escalation on silence."""
+        nonlocal idle_prompt_sent, last_activity_time, escalation_triggered
+        if not call_sid:
             return
+            
+        if is_escalation:
+            if escalation_triggered: return
+            escalation_triggered = True
+            logger.warning("[SAFETY] Silence escalation triggered for call %s", call_sid)
+            await bedrock_client.send_text_message(
+                session_id,
+                "[The caller has been silent for too long during a clinical inquiry. They may be unable to speak. Say a reassuring message and connect them to the emergency desk immediately.]"
+            )
+            return
+
+        if idle_prompt_sent:
+            return
+            
         idle_prompt_sent = True
-        logger.info("Idle timeout reached - sending cross-modal text to Nova")
+        logger.info("Soft silence follow-up for call %s", call_sid)
         try:
             await bedrock_client.send_text_message(
                 session_id,
-                "[The caller has been silent for a while. Ask them if they are still there and if they need help with their appointment booking.]"
+                "[The caller has been silent for a few seconds. Gently check if they are still there or if they need a moment.]"
             )
-            last_activity_time = time.time()
-            logger.info("Cross-modal text sent successfully, waiting for Nova to generate audio")
         except Exception:
-            logger.exception("Error sending idle follow-up text")
+            logger.exception("Error sending soft idle follow-up")
 
     async def hangup_call():
         """Terminate the call by closing the WebSocket connection.
@@ -524,24 +631,24 @@ async def exotel_stream(websocket: WebSocket):
             logger.exception("Error closing WebSocket for call %s", call_sid)
 
     async def idle_monitor():
-        """Background task: check for idle timeout and hangup grace period."""
+        """Background task: Clinical safety silence monitoring."""
         try:
             while True:
-                await asyncio.sleep(5)
+                await asyncio.sleep(2) # Faster polling for clinical safety
                 if tool_in_progress:
+                    last_activity_time = time.time() # Reset during tool calls
                     continue
+                    
                 elapsed = time.time() - last_activity_time
 
-                if not idle_prompt_sent and elapsed >= IDLE_TIMEOUT_SECONDS:
-                    await send_idle_followup()
-                elif idle_prompt_sent and elapsed >= HANGUP_GRACE_SECONDS:
+                if not idle_prompt_sent and elapsed >= SOFT_FOLLOW_UP_SEC:
+                    await send_idle_followup(is_escalation=False)
+                elif elapsed >= ESCALATION_SEC:
+                    # CRITICAL: Trigger emergency handoff on persistent silence
+                    await send_idle_followup(is_escalation=True)
+                    # After escalation message is sent, hang up to trigger Exotel handoff
+                    await asyncio.sleep(5) # Give Nova time to speak safety message
                     await hangup_call()
-                    nonlocal transcript_saved
-                    if not transcript_saved:
-                        save_transcript(
-                            caller_phone, session_id, transcripts, call_start_time
-                        )
-                        transcript_saved = True
                     return
         except asyncio.CancelledError:
             pass
@@ -555,7 +662,9 @@ async def exotel_stream(websocket: WebSocket):
         async def _send():
             try:
                 pcm_bytes = base64.b64decode(data["content"])
-                exotel_bytes = pcm_to_exotel(pcm_bytes)
+                # Apply outbound polishing (Compression + Treble Boost)
+                polished_bytes = polisher.process_chunk(pcm_bytes)
+                exotel_bytes = pcm_to_exotel(polished_bytes)
                 payload_b64 = base64.b64encode(exotel_bytes).decode("utf-8")
                 await websocket.send_text(json.dumps({
                     "event": "media",
@@ -736,18 +845,26 @@ async def exotel_stream(websocket: WebSocket):
 
                         # Send greeting audio IMMEDIATELY so Exotel hears something
                         # before the Nova session setup (which takes time)
-                        greeting_b64 = base64.b64encode(hello_audio_bytes).decode("utf-8")
+                        # Polish greeting for clarity
+                        polished_greeting = polisher.process_chunk(hello_audio_bytes)
+                        greeting_b64 = base64.b64encode(polished_greeting).decode("utf-8")
                         await websocket.send_text(json.dumps({
                             "event": "media",
                             "stream_sid": session.stream_sid,
                             "media": {"payload": greeting_b64}
                         }))
-                        logger.info("Greeting audio sent to Exotel (%d bytes PCM)", len(hello_audio_bytes))
+                        logger.info("Greeting audio sent to Exotel (%d bytes PCM, polished)", len(hello_audio_bytes))
 
                         # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
                         today_ist = datetime.now(ist).strftime("%d %B %Y")
                         system_prompt = SYSTEM_PROMPT.replace("{{TODAY_DATE}}", today_ist)
+                        
+                        # Sandbox Transparency (Requirement: 1-line disclosure)
+                        if tenant_status == "sandbox":
+                            sandbox_notice = "\n\n[SYSTEM NOTICE: This AI is currently in SANDBOX/TESTING mode. You MUST disclose this by starting your first response with: 'Hello, this is Asha, the AI assistant currently in testing mode for your hospital.']"
+                            system_prompt += sandbox_notice
+                            logger.info("[SANDBOX] Injected testing disclosure for %s", hospital_id)
                         
                         memory_context_task = None
                         if memory_manager and caller_phone:

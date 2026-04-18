@@ -23,3 +23,10 @@ __pycache__/
 *.pyc
 venv/
 .pytest_cache/
+
+# Local Data & DBs
+*.db
+*.sqlite
+data/bookings/
+data/triage/
+logs/

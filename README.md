@@ -98,7 +98,13 @@ historical context (e.g., "Hello Rohan, how is your back pain?").
 This personalization engine ensures a premium, human-like 
 experience that builds long-term patient trust.
 
-### V. Adaptive Audio Hardening (New)
+### V. Revenue Recovery & Growth (Financial ROI)
+Asha is not just an expense; she is a revenue generator.
+*   **Recovering Lost Calls**: By capturing the ~30% of calls that go unanswered during peak hours, Asha directly converts missed inquiries into confirmed OPD bookings.
+*   **24/7 Availability**: Asha works round-the-clock, ensuring that a patient calling at 2 AM for a 9 AM appointment is captured immediately, reducing patient leakage to competitors.
+*   **Operational Cost Efficiency**: Asha costs significantly less than running a 24/7 manual receptionist desk, providing higher consistency at a fraction of the cost.
+
+### VI. Adaptive Audio Hardening
 Asha is engineered for the real-world chaos of an Indian clinic.
 *   **Noise Gating**: Automatically filters out constant hums (Fans/AC) and background chatter.
 *   **Auto-Gain Control**: Electronically boosts quiet patient voices so Asha never misses a detail.
@@ -123,10 +129,11 @@ graph TD
 
     subgraph "Action Phase"
         NS -->|Trigger Tool| TH[Tool Handler]
-        TH -->|Real-time Sink| GS[Google Sheets]
-        TH -->|Audit Log| DDB[(AWS DynamoDB)]
+        TH -->|Universal Adapter| UA[Production HIS/CRM API]
+        TH -->|Visualization Sink| GS[Google Sheets]
+        TH -->|Encrypted Audit| DDB[(AWS DynamoDB)]
         WS -->|Post-Disconnect| AP[Analytics Processor]
-        AP -->|Structured SQL| RDS[(AWS RDS Postgres)]
+        AP -->|Clinical Insights| RDS[(AWS RDS Postgres)]
     end
 ```
 
@@ -140,36 +147,27 @@ If a patient goes silent for **25 seconds**:
 
 ---
 
-## 🚶 4. A Day in the Life: The Rohan Case Study
+---
 
-Follow this typical transcript of an interaction:
+## 🚶 4. Clinical Case Studies: Real-World Resilience
 
-1. **Patient (Rohan)**:
-   *"Hello? I need a doctor for my stomach."*
-2. **Asha**:
-   *"I can help with that! We have Dr. Sen."*
-3. **Internal Logic**:
-   `Executing tool hospitalInfoTool...`
-4. **Asha**:
-   *"Dr. Sen is available at 11:30 AM tomorrow."*
-5. **Patient**:
-   *"What is the consultation fee?"*
-6. **Internal Logic**:
-   `RAG Search result: ₹500`
-7. **Asha**:
-   *"The fee is ₹500. Should I book this for you?"*
-8. **Patient**:
-   *"Yes, please book it for Rohan Kumar."*
-9. **Internal Logic**:
-   `Executing appointmentBookingTool...`
-10. **Sink Result**:
-    `SUCCESS: Record written to Google Sheets.`
-11. **Asha**:
-    *"All set, Rohan! Your reference is AS-521."*
-12. **Analytics Loop**:
-    `Triggering Post-Call Analytics Processor...`
-13. **Result**:
-    `RDS Entry: Sentiment='Satisfied', Result='Converted'`
+### Scenario A: The "Messy" Real-World Query
+*Building trust through patience and clarification.*
+1. **Patient**: *"Hello? Doctor hai kya kal? Heart wala... kya naam tha uska..."*
+2. **Asha**: *"Hello! I can help you with that. You are likely looking for our Cardiologist, Dr. Ramesh Sen. He is available tomorrow at 10 AM. Should I book that slot for you?"*
+3. **Logic**: AI handles hesitant speech and resolves vague doctor names via the RAG Knowledge Base.
+
+### Scenario B: The Emergency Safety Hand-off
+*Protecting patients when seconds count.*
+1. **Patient**: *"I... I have severe chest pain. It's hard to breathe."*
+2. **Asha**: *"This sounds urgent. Please stay on the line, I am connecting you to our emergency desk immediately."*
+3. **Logic**: High-priority keyword trigger immediately executes the `handoffTool` and stops AI processing to avoid medical misinformation.
+
+### Scenario C: The Returning Patient (Secure Recall)
+*Premium experience via encrypted identifiers.*
+1. **Patient (Returning)**: *"I need to check my report."*
+2. **Asha**: *"Welcome back, Rohan! I see you had a Blood Sugar test yesterday. Let me check the status for you."*
+3. **Logic**: AES-256 encrypted phone numbers are matched in RDS to provide personalized context without compromising clinical privacy.
 
 ---
 
@@ -192,17 +190,12 @@ Follow this typical transcript of an interaction:
 
 ---
 
-## 🛡️ 6. Enterprise Security, Privacy & Integrity
-
-In healthcare, privacy is the first requirement.
-*   **Sovereign Data Storage**: All records remain 
-    on your secure clinical AWS account.
-*   **IAM Identity Center**: RDS and Bedrock 
-    use passwordless, role-based auth.
-*   **The Handoff Protocol**: Asha is hard-coded 
-    to recognize emergency keywords.
-*   **Audit Vault**: Every word is logged 
-    with IST-timezone millisecond accuracy.
+## 🛡️ 6. Sovereign Security & Clinical Privacy
+In healthcare, privacy is the first requirement. Our "Bulletproof" security layer ensures:
+*   **Clinical Sovereignty**: All records remain on your clinical AWS account. We do not use third-party "shared data" pools.
+*   **Enterprise-Grade Encryption**: We use **NIST-standard encryption** for patient phone numbers. Even we cannot read the data without your specific authorization.
+*   **Safety Handoff Protocol**: Asha is hard-coded to recognize emergency distress and immediately bridge the caller to a human staff member.
+*   **SaaS Governance**: A 3-tiered access system ensures that only authorized administrators can view sensitive clinical analytics.
 
 ---
 

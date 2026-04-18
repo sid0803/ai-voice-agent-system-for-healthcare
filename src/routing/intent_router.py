@@ -16,66 +16,62 @@ IntentType = Literal["GREETING", "EMERGENCY", "HANDOFF", "HOSPITAL_INFO", "UNKNO
 # Keyword mappings for Indian Healthcare Context (English + Hindi/Hinglish)
 KEYWORDS: Dict[IntentType, list[str]] = {
     "GREETING": [
-        "hello", "hi", "namaste", "namaskar", "good morning", "asalaam", 
-        "hey", "kaise ho", "sunye"
+        "hello", "hi", "namaste", "namaskar", "good morning", "hey", "kaise ho", "sunye"
     ],
-    "EMERGENCY": [
-        "emergency", "bachao", "accident", "blood", "severe pain", "chest pain",
-        "saans", "breathing", "stroke", "dil ka daura", "unconscious"
+    "EMERGENCY_STRONG": [
+        "chest pain", "seena dard", "saans nahi aa rahi", "ghutan", "saans ruk rahi",
+        "accident", "blood", "stroke", "dil ka daura", "unconscious", "emergency", "bachao"
+    ],
+    "EMERGENCY_WEAK": [
+        "pain", "dard", "jalan", "be-chaini", "chakkar", "dizziness", "uneasy", "heavy"
+    ],
+    "DISTRESS": [
+        "scared", "darr lag raha hai", "help", "please", "unbearable", "severely", "bahut zyada"
     ],
     "HANDOFF": [
-        "receptionist", "staff", "human", "insan", "baat karado", "junior",
-        "senior", "manager", "admin", "connect me"
-    ],
-    "HOSPITAL_INFO": [
-        "hospital kahan hai", "location", "address", "timing", "open", "fee",
-        "doctor kaun hai", "list of doctors", "fees"
+        "receptionist", "staff", "human", "insan", "baat karado", "admin", "connect me"
     ]
 }
 
 class IntentRouter:
-    """Predicts user intent from transcription or raw heuristics."""
-
-    def __init__(self):
-        # We can expand this with a small local embedding check if needed
-        pass
+    """Predicts user intent from transcription with Signal Fusion (Strong vs Weak)."""
 
     def route(self, text: str) -> IntentType:
-        """Route text to an intent type."""
+        """Route text using Clinical Fusion Logic: Strong > (Weak + Weak) > Normal."""
         if not text:
             return "UNKNOWN"
         
         normalized = text.lower().strip()
         
-        # Priority 1: Emergency check
-        for kw in KEYWORDS["EMERGENCY"]:
+        # 1. Check for STRONG Emergency Signals (Immediate Trigger)
+        for kw in KEYWORDS["EMERGENCY_STRONG"]:
             if kw in normalized:
+                logger.info(f"[ROUTING] Strong emergency signal detected: {kw}")
                 return "EMERGENCY"
+
+        # 2. Check for Signal Fusion (Weak + Weak OR Weak + Distress)
+        weak_count = sum(1 for kw in KEYWORDS["EMERGENCY_WEAK"] if kw in normalized)
+        distress_count = sum(1 for kw in KEYWORDS["DISTRESS"] if kw in normalized)
         
-        # Priority 2: Handoff check
+        if (weak_count >= 2) or (weak_count >= 1 and distress_count >= 1):
+            logger.info(f"[ROUTING] Signal fusion triggered (Weak={weak_count}, Distress={distress_count})")
+            return "EMERGENCY"
+        
+        # 3. Priority 2: Handoff check
         for kw in KEYWORDS["HANDOFF"]:
             if kw in normalized:
                 return "HANDOFF"
         
-        # Priority 3: Simple Greeting
+        # 4. Priority 3: Simple Greeting
         for kw in KEYWORDS["GREETING"]:
             if normalized == kw or normalized.startswith(kw + " "):
                 return "GREETING"
         
-        # Priority 4: Hospital Basic Info
-        for kw in KEYWORDS["HOSPITAL_INFO"]:
-            if kw in normalized:
-                return "HOSPITAL_INFO"
-        
         return "UNKNOWN"
 
     def get_static_response_id(self, intent: IntentType) -> Optional[str]:
-        """Maps an intent back to a static PCM asset ID if available."""
-        mapping = {
-            "GREETING": "hello",
-            "EMERGENCY": "emergency",
-            "HANDOFF": "transfer"
-        }
+        """Maps an intent back to a static PCM asset ID."""
+        mapping = {"GREETING": "hello", "EMERGENCY": "emergency", "HANDOFF": "transfer"}
         return mapping.get(intent)
 
 # Singleton instance

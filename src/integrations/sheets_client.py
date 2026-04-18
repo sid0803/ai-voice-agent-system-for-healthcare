@@ -51,6 +51,8 @@ class GoogleSheetsClient:
 
         try:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            urgency = booking_data.get("priority", "NORMAL")
+            
             values = [[
                 timestamp,
                 booking_data.get("patient_name", "Unknown"),
@@ -59,18 +61,23 @@ class GoogleSheetsClient:
                 booking_data.get("dept", "General"),
                 booking_data.get("visit_time", "N/A"),
                 booking_data.get("ref_id", "N/A"),
-                booking_data.get("intent", "Checkup/Inquiry")
+                booking_data.get("intent", "Checkup/Inquiry"),
+                urgency,
+                booking_data.get("action_status", "PENDING"),
+                booking_data.get("assigned_to", "Unassigned"),
+                "AI_CALL",
+                booking_data.get("decision_reason", "N/A")
             ]]
             
             body = {'values': values}
             result = self.service.spreadsheets().values().append(
                 spreadsheetId=target_sheet_id,
-                range="Sheet1!A:H",
+                range="Sheet1!A:M",
                 valueInputOption="RAW",
                 body=body
             ).execute()
             
-            logger.info(f"[SHEETS] Successfully appended booking to {target_sheet_id}: {result.get('updates').get('updatedRange')}")
+            logger.info(f"[SHEETS] Successfully appended clinical booking ({urgency}) to {target_sheet_id}")
             return True
         except Exception:
             logger.exception(f"[SHEETS] Error appending to Google Sheets ({target_sheet_id})")
