@@ -317,6 +317,11 @@ class S2SBidirectionalStreamClient:
             return
         self._update_session_activity(session_id)
         event_json = json.dumps(payload)
+        # Support Mock Engine interface
+        if hasattr(session.stream, "send_event"):
+            await session.stream.send_event(event_json)
+            return
+
         chunk = InvokeModelWithBidirectionalStreamInputChunk(
             value=BidirectionalInputPayloadPart(
                 bytes_=event_json.encode("utf-8")
@@ -352,6 +357,14 @@ class S2SBidirectionalStreamClient:
         if session is None:
             raise ValueError(f"Stream session {session_id} not found")
 
+        # --- FORCE MOCK MODE IF DUMMY CREDENTIALS (P0 Hardening for Demos) ---
+        aws_id = str(os.environ.get("AWS_ACCESS_KEY_ID", ""))
+        has_creds = os.environ.get("AWS_ACCESS_KEY_ID") and os.environ.get("AWS_SECRET_ACCESS_KEY")
+        if not has_creds or "your_access_key" in aws_id or "mock_" in aws_id:
+            logger.warning("[BEDROCK] Missing or dummy credentials. Forcing Clinical Mock Mode.")
+            await self._activate_mock_mode(session_id, "Incomplete Environment Configuration")
+            return
+
         try:
             stream = await asyncio.wait_for(
                 self._bedrock_client.invoke_model_with_bidirectional_stream(
@@ -359,7 +372,7 @@ class S2SBidirectionalStreamClient:
                         model_id=self._model_id
                     )
                 ),
-                timeout=30.0,
+                timeout=12.0, # Faster timeout to trigger Mock Mode
             )
             session.stream = stream
             session.is_active = True
@@ -380,21 +393,33 @@ class S2SBidirectionalStreamClient:
                 }
             })
 
-            # Start processing response stream in background
+            # Start processing response stream (blocks until error or completion)
             await self._process_response_stream(session_id)
         except Exception as exc:
-            logger.exception("Error in bidirectional stream for session %s", session_id)
-            self._dispatch_event(session_id, "error", {
-                "source": "bidirectionalStream",
-                "error": str(exc),
-            })
-            if session.is_active:
-                try:
-                    await self.close_session(session_id)
-                except Exception:
-                    logger.exception(
-                        "Error closing session %s after stream failure", session_id
-                    )
+            await self._activate_mock_mode(session_id, str(exc))
+
+    async def _activate_mock_mode(self, session_id: str, reason: str) -> None:
+        """Activate the Clinical Mock Engine for a session."""
+        session = self._active_sessions.get(session_id)
+        if not session:
+            return
+
+        logger.warning(f"[BEDROCK] Switching to Clinical Mock Mode: {reason}")
+        
+        # --- START CLINICAL MOCK MODE (Requirement: Offline Demo Stability) ---
+        from .mock_engine import MockS2SStream
+        session.stream = MockS2SStream(session_id, self)
+        await session.stream.start_processing()
+        
+        # Ensure session is active before notify/start
+        session.is_active = True
+        
+        # Notify of fallback
+        self._dispatch_event(session_id, "textOutput", {
+            "role": "ASSISTANT", 
+            "content": "[SYSTEM] Bedrock Offline. Clinical Mock Mode Active."
+        })
+        # --- END MOCK MODE ---
 
     # ------------------------------------------------------------------
     # Response stream processing
@@ -430,7 +455,7 @@ class S2SBidirectionalStreamClient:
                             self._dispatch_event(session_id, "toolUse", evt["toolUse"])
                             session.tool_use_content = evt["toolUse"]
                             session.tool_use_id = evt["toolUse"].get("toolUseId", "")
-                            session.tool_name = evt["toolUse"].get("toolName", "")
+                            session.tool_name = evt["toolUse"].get("name") or evt["toolUse"].get("toolName", "")
                         elif (
                             evt.get("contentEnd")
                             and evt["contentEnd"].get("type") == "TOOL"
@@ -478,9 +503,16 @@ class S2SBidirectionalStreamClient:
                         logger.debug("Raw text response (parse error): %s", text_response)
                 except StopAsyncIteration:
                     break
-                except Exception:
+                except Exception as e:
                     if not session.is_active:
                         break
+                    
+                    err_msg = str(e)
+                    if "403" in err_msg or "UnrecognizedClientException" in err_msg or "401" in err_msg:
+                        logger.error("[BEDROCK] Critical Auth Error: %s. Terminating stream.", err_msg)
+                        session.is_active = False 
+                        raise # Re-raise to trigger Mock Fallback in initiate_session
+                        
                     logger.exception("Error processing response chunk")
 
             self._dispatch_event(session_id, "streamComplete", {

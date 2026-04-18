@@ -45,7 +45,6 @@ from src.audio_utils import exotel_to_pcm, pcm_to_exotel, AudioHardener, AudioPo
 from src.memory_manager import AgentCoreMemoryManager, build_system_prompt_with_memory
 from src.routing.intent_router import intent_router
 from src.cache.response_cache import response_cache
-from src.integrations.tenant_manager import tenant_manager
 from src.security.audit_logger import audit_logger
 
 logger = logging.getLogger(__name__)
@@ -593,12 +592,13 @@ async def exotel_stream(websocket: WebSocket):
 
     async def send_idle_followup(is_escalation: bool = False):
         """Send follow-up or trigger emergency escalation on silence."""
-        nonlocal idle_prompt_sent, last_activity_time, escalation_triggered
+        nonlocal idle_prompt_sent, escalation_triggered
         if not call_sid:
             return
             
         if is_escalation:
-            if escalation_triggered: return
+            if escalation_triggered:
+                return
             escalation_triggered = True
             logger.warning("[SAFETY] Silence escalation triggered for call %s", call_sid)
             # Audit: Log automatic silence-based escalation
@@ -697,13 +697,19 @@ async def exotel_stream(websocket: WebSocket):
         """Log tool invocation and pause idle timer."""
         nonlocal tool_in_progress
         tool_in_progress = True
-        logger.info("Tool called: %s", data.get("toolName", "unknown"))
+        tool_name = data.get("name") or data.get("toolName", "unknown")
+        logger.info("Tool called: %s", tool_name)
+        if DEMO_MODE:
+            asyncio.ensure_future(websocket.send_text(json.dumps({"event": "tool", "name": tool_name})))
 
     def _handle_text_output(data):
         nonlocal detected_language, current_user_text, current_assistant_text
         content = str(data.get("content", ""))
         role = data.get("role", "")
         logger.info("Text output [%s]: %s", role, content[:80])
+
+        if DEMO_MODE and role == "ASSISTANT":
+            asyncio.ensure_future(websocket.send_text(json.dumps({"event": "text", "text": content})))
 
         # Dedup key - defined before any branch so it's always available
         dedup_key = (role, content)
@@ -934,6 +940,12 @@ async def exotel_stream(websocket: WebSocket):
                         )
                         break
 
+                    elif data.get("type") == "chat" and DEMO_MODE:
+                        # E2E Test Backdoor
+                        text_input = data.get("text", "")
+                        logger.info("[DEMO] Received test input: %s", text_input)
+                        asyncio.ensure_future(bedrock_client.send_text_message(session_id, text_input))
+
                 except json.JSONDecodeError:
                     logger.exception("Error parsing Exotel JSON")
                 except Exception:
@@ -979,3 +991,8 @@ async def exotel_stream(websocket: WebSocket):
         await session.close()
         async with _session_lock:
             session_map.pop(session_id, None)
+
+if __name__ == "__main__":
+    import uvicorn
+    # Use 0.0.0.0 for container compatibility, but 127.0.0.1 is fine for local verification
+    uvicorn.run(app, host="0.0.0.0", port=8000)

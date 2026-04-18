@@ -1,4 +1,4 @@
-import os
+import json
 import logging
 import bcrypt
 
@@ -26,29 +26,32 @@ def check_login(username, password):
         st.error("Cannot connect to database for authentication.")
         return None
     
+    cur = conn.cursor()
     try:
-        with conn.cursor() as cur:
-            cur.execute(
-                rds_analytics.format_query("SELECT hospital_id, password_hash, role FROM users WHERE username = %s"),
-                (username,)
-            )
-            result = cur.fetchone()
-            if result:
-                hospital_id, stored_hash, role = result
-                # Support both old SHA-256 (for migration) and new bcrypt
-                if len(stored_hash) == 64: # Old SHA-256 length
-                    import hashlib
-                    old_hash = hashlib.sha256(password.encode()).hexdigest()
-                    if old_hash == stored_hash:
-                        # Auto-migrate to bcrypt on successful login
-                        new_hash = hash_password(password)
-                        cur.execute(rds_analytics.format_query("UPDATE users SET password_hash = %s WHERE username = %s"), (new_hash, username))
-                        conn.commit()
-                        logger.info(f"User {username} migrated to bcrypt.")
-                        return {"hospital_id": hospital_id, "role": role}
-                elif bcrypt.checkpw(password.encode(), stored_hash.encode()):
+        cur.execute(
+            rds_analytics.format_query("SELECT hospital_id, password_hash, role FROM users WHERE username = %s"),
+            (username,)
+        )
+        result = cur.fetchone()
+        if result:
+            hospital_id, stored_hash, role = result
+            # Support both old SHA-256 (for migration) and new bcrypt
+            if len(stored_hash) == 64: # Old SHA-256 length
+                import hashlib
+                old_hash = hashlib.sha256(password.encode()).hexdigest()
+                if old_hash == stored_hash:
+                    # Auto-migrate to bcrypt on successful login
+                    new_hash = hash_password(password)
+                    cur.execute(rds_analytics.format_query("UPDATE users SET password_hash = %s WHERE username = %s"), (new_hash, username))
+                    conn.commit()
+                    logger.info(f"User {username} migrated to bcrypt.")
+                    cur.close()
                     return {"hospital_id": hospital_id, "role": role}
-            return None
+            elif bcrypt.checkpw(password.encode(), stored_hash.encode()):
+                cur.close()
+                return {"hospital_id": hospital_id, "role": role}
+        cur.close()
+        return None
     except Exception as e:
         logger.error(f"Login failure: {e}")
         return None
@@ -58,33 +61,37 @@ def check_login(username, password):
 def register_hospital(name, hospital_id, admin_user, admin_pass):
     """Create a new pending tenant and admin account with atomic checks."""
     conn = rds_analytics.get_connection()
-    if not conn: return False
+    if not conn:
+        return False
+    cur = conn.cursor()
     try:
-        with conn.cursor() as cur:
-            # 1. Pre-flight check: Check for existing ID or Username (Requirement: Reliability P1)
-            cur.execute(rds_analytics.format_query("SELECT 1 FROM tenants WHERE hospital_id = %s"), (hospital_id,))
-            if cur.fetchone():
-                logger.warning(f"Registration aborted: Hospital ID {hospital_id} already exists.")
-                return False
-            
-            cur.execute(rds_analytics.format_query("SELECT 1 FROM users WHERE username = %s"), (admin_user,))
-            if cur.fetchone():
-                logger.warning(f"Registration aborted: Username {admin_user} already exists.")
-                return False
+        # 1. Pre-flight check: Check for existing ID or Username (Requirement: Reliability P1)
+        cur.execute(rds_analytics.format_query("SELECT 1 FROM tenants WHERE hospital_id = %s"), (hospital_id,))
+        if cur.fetchone():
+            logger.warning(f"Registration aborted: Hospital ID {hospital_id} already exists.")
+            cur.close()
+            return False
+        
+        cur.execute(rds_analytics.format_query("SELECT 1 FROM users WHERE username = %s"), (admin_user,))
+        if cur.fetchone():
+            logger.warning(f"Registration aborted: Username {admin_user} already exists.")
+            cur.close()
+            return False
 
-            # 2. Create Tenant
-            cur.execute(
-                rds_analytics.format_query("INSERT INTO tenants (hospital_id, hospital_name, status) VALUES (%s, %s, 'pending')"),
-                (hospital_id, name)
-            )
-            # 3. Create User
-            hashed = hash_password(admin_pass)
-            cur.execute(
-                rds_analytics.format_query("INSERT INTO users (username, password_hash, hospital_id, role) VALUES (%s, %s, %s, 'admin')"),
-                (admin_user, hashed, hospital_id)
-            )
-            conn.commit()
-            return True
+        # 2. Create Tenant
+        cur.execute(
+            rds_analytics.format_query("INSERT INTO tenants (hospital_id, hospital_name, status) VALUES (%s, %s, 'pending')"),
+            (hospital_id, name)
+        )
+        # 3. Create User
+        hashed = hash_password(admin_pass)
+        cur.execute(
+            rds_analytics.format_query("INSERT INTO users (username, password_hash, hospital_id, role) VALUES (%s, %s, %s, 'admin')"),
+            (admin_user, hashed, hospital_id)
+        )
+        conn.commit()
+        cur.close()
+        return True
     except Exception as e:
         logger.error(f"Registration failed: {e}")
         # Psycopg2 with context manager handles rollback automatically on exception
@@ -283,6 +290,17 @@ if nav == "Analytics Dashboard":
             fig_outcome = px.pie(df["outcome"].value_counts().reset_index(), names="outcome", values="count", title="Outcomes")
             st.plotly_chart(fig_outcome, use_container_width=True)
 
+        # --- Hospital OS Layer: Operational Analytics ---
+        st.markdown("---")
+        st.subheader("🏥 Operational Intelligence (Hospital OS Layer)")
+        op_c1, op_c2 = st.columns(2)
+        
+        billing_calls = len(df[df["intent"].str.contains("Billing", case=False, na=False)])
+        ot_calls = len(df[df["intent"].str.contains("OT", case=False, na=False)])
+        
+        op_c1.metric("💰 Billing Inquiries", f"{billing_calls}")
+        op_c2.metric("🏥 OT Scheduling", f"{ot_calls}")
+
         st.dataframe(df.head(100), use_container_width=True)
     else:
         st.info("No call logs found for this period.")
@@ -295,9 +313,10 @@ elif nav == "Integration Settings":
     st.markdown("Configure how Asha connects to your hospital's system.")
     
     conn = rds_analytics.get_connection()
-    with conn.cursor() as cur:
-        cur.execute(rds_analytics.format_query("SELECT status, ingestion_strategy, pull_config, push_token, spreadsheet_id FROM tenants WHERE hospital_id = %s"), (st.session_state.hospital_id,))
-        res = cur.fetchone()
+    cur = conn.cursor()
+    cur.execute(rds_analytics.format_query("SELECT status, ingestion_strategy, ingestion_config, push_token, spreadsheet_id FROM tenants WHERE hospital_id = %s"), (st.session_state.hospital_id,))
+    res = cur.fetchone()
+    cur.close()
     
     if res:
         status, strategy, config, token, sheet_id = res
@@ -310,12 +329,13 @@ elif nav == "Integration Settings":
             
             if st.form_submit_button("Update Configuration"):
                 new_config = {"pull_url": new_url}
-                with conn.cursor() as cur:
-                    cur.execute(
-                        rds_analytics.format_query("UPDATE tenants SET ingestion_strategy = %s, spreadsheet_id = %s, ingestion_config = %s WHERE hospital_id = %s"),
-                        (new_strategy, new_sheet, json.dumps(new_config), st.session_state.hospital_id)
-                    )
+                cur = conn.cursor()
+                cur.execute(
+                    rds_analytics.format_query("UPDATE tenants SET ingestion_strategy = %s, spreadsheet_id = %s, ingestion_config = %s WHERE hospital_id = %s"),
+                    (new_strategy, new_sheet, json.dumps(new_config), st.session_state.hospital_id)
+                )
                 conn.commit()
+                cur.close()
                 st.success("Configuration saved!")
 
         st.markdown("---")

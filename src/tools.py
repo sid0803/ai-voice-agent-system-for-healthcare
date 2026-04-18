@@ -169,6 +169,27 @@ def _faiss_store(query: str, answer: str):
     except Exception:
         logger.exception("[FAISS] Store error")
 
+def sync_community_knowledge():
+    """Requirement: Automatic Learning. Indexes distilled facts from local knowledge store into FAISS."""
+    knowledge_file = pathlib.Path(__file__).resolve().parent.parent / "data" / "knowledge" / "distilled_facts.json"
+    if not knowledge_file.exists():
+        return
+    
+    try:
+        with open(knowledge_file, "r") as f:
+            facts = json.load(f)
+            
+        logger.info(f"[LEARNING] Syncing {len(facts)} pieces of community knowledge into Vector Brain.")
+        for item in facts:
+            q = item.get("question")
+            a = item.get("answer")
+            if q and a:
+                # Check if already in meta to avoid duplicates
+                if not any(m["query"] == q for m in _faiss_meta):
+                    _faiss_store(q, a)
+    except Exception as e:
+        logger.error(f"[LEARNING] Failed to sync community knowledge: {e}")
+
 
 # ---------------------------------------------------------------------------
 # Hospital Tool Implementations (Asha / InDiiServe Healthcare)
@@ -391,8 +412,7 @@ def clinical_triage(args: dict, hospital_id: str = None) -> dict:
         
     status = "URGENT" if priority in ["CRITICAL", "HIGH"] else "STABLE"
     
-    logger.info(f"[TRIAGE] {priority} - Symptoms: {symptoms}, Reason: {reason}")
-    
+    logger.info(f"[TRIAGE] {priority} - Symptoms: {symptoms}, Onset: {onset}, History: {history}, Reason: {reason}")    
     # Save to diagnostic journal with audit metadata
     triage_dir = pathlib.Path(__file__).resolve().parent.parent / "data" / "triage"
     triage_dir.mkdir(parents=True, exist_ok=True)
@@ -417,6 +437,154 @@ def clinical_triage(args: dict, hospital_id: str = None) -> dict:
     return {"answer": response, "status": status, "priority": priority, "triage_noted": True, "reason": reason}
 
 
+def get_billing_info(args: dict, hospital_id: str = None) -> dict:
+    """Requirement: Hospital OS Layer - Billing Intelligence.
+    Provides breakdown, status, and actionable mock payment link.
+    """
+    patient_id = args.get("patient_id", "unknown")
+    patient_name = args.get("patient_name", "the patient")
+    
+    # 1. Fetch prices from tenant data
+    data = tenant_manager.get_hospital_data(hospital_id)
+    services = data.get("services", [])
+    
+    # Mock items based on common inquiries
+    items = []
+    total = 0
+    
+    # If query mentions a specific service, use that
+    query = str(args.get("query", "")).lower()
+    found_any = False
+    for s in services:
+        if s["name"].lower() in query:
+            items.append({"name": s["name"], "price": s["price"]})
+            total += s["price"]
+            found_any = True
+            
+    if not found_any:
+        # Default mock bill for demonstration
+        items = [
+            {"name": "Consultation", "price": 1200},
+            {"name": "Routine Lab Tests", "price": 850}
+        ]
+        total = 2050
+        
+    payment_link = f"https://pay.indiiserve.demo/bill/{time.strftime('%Y%m%d')}-{patient_id[:5]}"
+    
+    response = (
+        f"For {patient_name}, the current billing status is PENDING. "
+        f"The breakdown includes: " + ", ".join([f"{i['name']} (Rs. {i['price']})" for i in items]) + ". "
+        f"The total amount due is Rs. {total}. "
+        f"I can send you a secure payment link at {payment_link} if you'd like to pay now."
+    )
+    
+    return {
+        "answer": response,
+        "patient_name": patient_name,
+        "items": items,
+        "total": total,
+        "status": "PENDING",
+        "payment_link": payment_link,
+        "success": True
+    }
+
+
+def predict_ot_schedule(args: dict, hospital_id: str = None) -> dict:
+    """Requirement: Hospital OS Layer - OT Intelligence.
+    Predicts duration breakdown and suggests nearest available slot.
+    """
+    procedure = args.get("procedure_name", "General Surgery").title()
+    doctor = args.get("doctor_name", "the attending specialist")
+    
+    # Mock Clinical OT Data
+    durations = {
+        "Angioplasty": {"prep": 30, "proc": 90, "rec": 60},
+        "Appendectomy": {"prep": 30, "proc": 60, "rec": 60},
+        "Knee Replacement": {"prep": 60, "proc": 120, "rec": 90},
+        "Cataract": {"prep": 20, "proc": 30, "rec": 30},
+        "General Surgery": {"prep": 30, "proc": 60, "rec": 60}
+    }
+    
+    timing = durations.get(procedure, durations["General Surgery"])
+    total_block = timing["prep"] + timing["proc"] + timing["rec"]
+    
+    # Mock scheduling intelligence: "Nearest available slot"
+    # In production, this would bridge to an OT Management System (OMS)
+    import datetime
+    tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+    slot_time = tomorrow.replace(hour=11, minute=0, second=0, microsecond=0)
+    slot_str = slot_time.strftime("%Y-%m-%d %I:%M %p")
+    
+    response = (
+        f"The predicted OT block for {procedure} with {doctor} is {total_block} minutes. "
+        f"This includes {timing['prep']} minutes for prep, {timing['proc']} minutes for the procedure, "
+        f"and {timing['rec']} minutes for recovery. "
+        f"The nearest available OT slot is tomorrow, {slot_str}. Would you like me to reserve it?"
+    )
+    
+    return {
+        "answer": response,
+        "procedure": procedure,
+        "prep_time": timing["prep"],
+        "procedure_time": timing["proc"],
+        "recovery_time": timing["rec"],
+        "total_time": total_block,
+        "next_available_slot": slot_str,
+        "success": True
+    }
+
+
+_hospital_info_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "query": {"type": "string", "description": "Specific question about the hospital (address, pharmacy, etc.)"}
+    },
+    "required": ["query"],
+})
+
+_doctor_availability_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "query": {"type": "string", "description": "Doctor name or department to check."}
+    },
+    "required": ["query"],
+})
+
+_appointment_booking_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "patient_name": {"type": "string"},
+        "doctor_name": {"type": "string"},
+        "doctor_dept": {"type": "string"},
+        "date": {"type": "string"},
+        "time": {"type": "string"},
+        "symptom_intent": {"type": "string"},
+        "phone_number": {"type": "string"},
+    },
+    "required": ["patient_name", "date"],
+})
+
+_report_status_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "patient_name": {"type": "string"},
+        "test_type": {"type": "string"},
+    },
+    "required": ["patient_name", "test_type"],
+})
+
+_handoff_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "reason": {"type": "string", "description": "Reason for handoff (Emergency, Complex Request)."}
+    },
+})
+
 _clinical_triage_schema = json.dumps({
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -429,6 +597,26 @@ _clinical_triage_schema = json.dumps({
         "uncertainty_flag": {"type": "boolean", "description": "Flag if the AI is unsure about the severity (Internal)."},
     },
     "required": ["symptoms", "pain_intensity", "onset_duration"],
+})
+
+_billing_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "patient_id": {"type": "string"},
+        "patient_name": {"type": "string"},
+        "query": {"type": "string", "description": "Specific billing question (e.g. price of MRI)."}
+    },
+})
+
+_ot_prediction_schema = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "procedure_name": {"type": "string", "description": "Type of surgery (e.g. Angioplasty)."},
+        "doctor_name": {"type": "string"}
+    },
+    "required": ["procedure_name"],
 })
 
 available_tools: list[dict] = [
@@ -474,6 +662,20 @@ available_tools: list[dict] = [
             "inputSchema": {"json": _handoff_schema},
         }
     },
+    {
+        "toolSpec": {
+            "name": "getBillingInfoTool",
+            "description": "Fetch patient billing breakdown, outstanding balance, and payment status. Can provide payment links.",
+            "inputSchema": {"json": _billing_schema},
+        }
+    },
+    {
+        "toolSpec": {
+            "name": "predictOTScheduleTool",
+            "description": "Predict total OT block time (prep, surgery, recovery) and find the next available scheduling slot.",
+            "inputSchema": {"json": _ot_prediction_schema},
+        }
+    },
 ]
 
 # Handler map keyed by lowercase tool name
@@ -484,6 +686,8 @@ _tool_handlers: dict[str, Any] = {
     "clinicaltriagetool": clinical_triage,
     "reportstatustool": report_status,
     "handofftool": emergency_handoff,
+    "getbillinginfotool": get_billing_info,
+    "predictotscheduletool": predict_ot_schedule,
 }
 
 

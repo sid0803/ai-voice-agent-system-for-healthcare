@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 import httpx
 from src.analytics.rds_client import rds_analytics
 from src.integrations.adapter import data_adapter
+from src.learning.distiller import learning_distiller
+from src.tools import sync_community_knowledge
 
 logger = logging.getLogger(__name__)
 
@@ -53,29 +55,30 @@ class SyncEngine:
         if not conn:
             return False
             
+        cur = conn.cursor()
         try:
-            with conn.cursor() as cur:
-                # 1. Verify Token
-                cur.execute("SELECT push_token FROM tenants WHERE hospital_id = %s", (hospital_id,))
-                res = cur.fetchone()
-                if not res or res[0] != push_token:
-                    logger.warning(f"[SYNC] Unauthorized push attempt for {hospital_id}")
-                    return False
+            # 1. Verify Token
+            cur.execute("SELECT push_token FROM tenants WHERE hospital_id = %s", (hospital_id,))
+            res = cur.fetchone()
+            if not res or res[0] != push_token:
+                logger.warning(f"[SYNC] Unauthorized push attempt for {hospital_id}")
+                return False
 
-                # 2. Normalize and Save
-                normalized = data_adapter.normalize(raw_data)
-                cur.execute("""
-                    UPDATE tenants 
-                    SET hospital_data_normalized = %s, last_sync_at = NOW() 
-                    WHERE hospital_id = %s
-                """, (json.dumps(normalized), hospital_id))
-                conn.commit()
-                logger.info(f"[SYNC] Real-time push successful for {hospital_id}")
-                return True
+            # 2. Normalize and Save
+            normalized = data_adapter.normalize(raw_data)
+            cur.execute("""
+                UPDATE tenants 
+                SET hospital_data_normalized = %s, last_sync_at = NOW() 
+                WHERE hospital_id = %s
+            """, (json.dumps(normalized), hospital_id))
+            conn.commit()
+            logger.info(f"[SYNC] Real-time push successful for {hospital_id}")
+            return True
         except Exception:
             logger.exception(f"[SYNC] Push processing failed for {hospital_id}")
             return False
         finally:
+            cur.close()
             conn.close()
 
     async def scheduled_pull_worker(self):
@@ -87,6 +90,13 @@ class SyncEngine:
             except Exception:
                 logger.exception("[SYNC] Background worker iteration failed")
             
+            # 2. Run Automatic Learning (Knowledge Distillation)
+            try:
+                if learning_distiller.run_learning_cycle():
+                    sync_community_knowledge()
+            except Exception:
+                logger.exception("[LEARNING] Automatic distillation cycle failed")
+
             # Default sleep 5 minutes between checks
             await asyncio.sleep(300)
 
@@ -96,16 +106,17 @@ class SyncEngine:
         if not conn:
             return
             
+        cur = conn.cursor()
         try:
-            with conn.cursor() as cur:
-                # Select only 'live' or 'sandbox' tenants set for hybrid/pull
-                cur.execute("""
-                    SELECT hospital_id, ingestion_config, sync_interval_mins, last_sync_at 
-                    FROM tenants 
-                    WHERE status IN ('live', 'sandbox') 
-                    AND ingestion_strategy IN ('pull', 'hybrid')
-                """)
-                tenants = cur.fetchall()
+            # Select only 'live' or 'sandbox' tenants set for hybrid/pull
+            cur.execute("""
+                SELECT hospital_id, ingestion_config, sync_interval_mins, last_sync_at 
+                FROM tenants 
+                WHERE status IN ('live', 'sandbox') 
+                AND ingestion_strategy IN ('pull', 'hybrid')
+            """)
+            tenants = cur.fetchall()
+            cur.close()
                 
             # Implementation Hardening: Parallel Sync (P1)
             # We use a semaphore to avoid overloading the DB or CPU
@@ -155,14 +166,15 @@ class SyncEngine:
             
             conn = rds_analytics.get_connection()
             if conn:
-                with conn.cursor() as cur:
-                    cur.execute("""
-                        UPDATE tenants 
-                        SET hospital_data_normalized = %s, last_sync_at = NOW() 
-                        WHERE hospital_id = %s
-                    """, (json.dumps(normalized), hospital_id))
-                    conn.commit()
-                    conn.close()
+                cur = conn.cursor()
+                cur.execute("""
+                    UPDATE tenants 
+                    SET hospital_data_normalized = %s, last_sync_at = NOW() 
+                    WHERE hospital_id = %s
+                """, (json.dumps(normalized), hospital_id))
+                conn.commit()
+                cur.close()
+                conn.close()
                 logger.info(f"[SYNC] Scheduled pull successful for {hospital_id}")
         except Exception as e:
             logger.error(f"[SYNC] Failed to pull data for {hospital_id}: {str(e)}")

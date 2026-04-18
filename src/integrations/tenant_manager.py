@@ -1,6 +1,9 @@
 import re
 import time
 import random
+import os
+import json
+import logging
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -55,21 +58,28 @@ class TenantManager:
         conn = rds_analytics.get_connection()
         if not conn:
             return None
+        cur = conn.cursor()
         try:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT status, hospital_data_normalized, spreadsheet_id, hospital_name 
-                    FROM tenants WHERE hospital_id = %s
-                """, (hospital_id,))
-                res = cur.fetchone()
-                if res:
-                    status, normalized_data, sheet_id, name = res
-                    # Merge metadata into the data object
+            cur.execute(rds_analytics.format_query("""
+                SELECT status, hospital_data_normalized, spreadsheet_id, hospital_name 
+                FROM tenants WHERE hospital_id = %s
+            """), (hospital_id,))
+            res = cur.fetchone()
+            if res:
+                status, normalized_data, sheet_id, name = res
+                # Safety check for SQLite/Postgres JSON parsing
+                if isinstance(normalized_data, str):
+                    try:
+                        data = json.loads(normalized_data)
+                    except json.JSONDecodeError:
+                        data = {}
+                else:
                     data = normalized_data or {}
-                    data["status"] = status
-                    data["spreadsheet_id"] = sheet_id
-                    data["name"] = name
-                    return data
+                    
+                data["status"] = status
+                data["spreadsheet_id"] = sheet_id
+                data["name"] = name
+                return data
             return None
         except Exception:
             logger.exception(f"DB Tenant lookup failed for {hospital_id}")

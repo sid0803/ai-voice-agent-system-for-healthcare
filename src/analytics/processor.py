@@ -31,7 +31,7 @@ class AnalyticsProcessor:
         System: You are an expert healthcare data scientist. Analyze the following call transcript from 'Asha', a hospital AI receptionist.
         Extract the following fields in JSON format:
         1. sentiment: (Positive, Neutral, Worried, Angry)
-        2. intent: (Appointment Booking, Doctor Inquiry, Report Status, Hospital Visit, Other)
+        2. intent: (Appointment Booking, Doctor Inquiry, Report Status, Hospital Visit, Billing Inquiry, OT Scheduling, Other)
         3. department: (Cardiology, Pediatrics, General, Orthopedics, etc.)
         4. outcome: (booked, inquiry, abandoned)
         5. summary: A 1-sentence summary of the patient's need.
@@ -104,29 +104,30 @@ class AnalyticsProcessor:
             # Encrypt PII before saving to analytics (Requirement P1 Hardening)
             encrypted_phone = rds_analytics.encrypt_data(phone)
             
-            with conn.cursor() as cur:
-                cur.execute("""
-                    INSERT INTO hospital_analytics 
-                    (session_id, phone_number, hospital_id, sentiment, intent, department, outcome, duration_seconds, transcript_summary, is_successful_booking, urgency_score, is_emergency, symptoms_list, follow_up_priority)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (session_id) DO NOTHING;
-                """, (
-                    session_id,
-                    encrypted_phone,
-                    hospital_id,
-                    analytics.get("sentiment", "Neutral"),
-                    analytics.get("intent", "General"),
-                    analytics.get("department", "General"),
-                    analytics.get("outcome", "inquiry"),
-                    duration,
-                    analytics.get("summary", ""),
-                    analytics.get("successful_booking", False),
-                    analytics.get("urgency_score", 1),
-                    analytics.get("is_emergency", False),
-                    analytics.get("symptoms_list", ""),
-                    analytics.get("follow_up_priority", "Low")
-                ))
-                conn.commit()
+            cur = conn.cursor()
+            cur.execute(rds_analytics.format_query("""
+                INSERT INTO hospital_analytics 
+                (session_id, phone_number, hospital_id, sentiment, intent, department, outcome, duration_seconds, transcript_summary, is_successful_booking, urgency_score, is_emergency, symptoms_list, follow_up_priority)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (session_id) DO NOTHING;
+            """), (
+                session_id,
+                encrypted_phone,
+                hospital_id,
+                analytics.get("sentiment", "Neutral"),
+                analytics.get("intent", "General"),
+                analytics.get("department", "General"),
+                analytics.get("outcome", "inquiry"),
+                duration,
+                analytics.get("summary", ""),
+                analytics.get("successful_booking", False),
+                analytics.get("urgency_score", 1),
+                analytics.get("is_emergency", False),
+                analytics.get("symptoms_list", ""),
+                analytics.get("follow_up_priority", "Low")
+            ))
+            conn.commit()
+            cur.close()
         except Exception:
             logger.exception("Failed to insert analytics row")
         finally:
