@@ -46,6 +46,7 @@ from src.memory_manager import AgentCoreMemoryManager, build_system_prompt_with_
 from src.routing.intent_router import intent_router
 from src.cache.response_cache import response_cache
 from src.integrations.tenant_manager import tenant_manager
+from src.security.audit_logger import audit_logger
 
 logger = logging.getLogger(__name__)
 
@@ -539,6 +540,10 @@ async def exotel_stream(websocket: WebSocket):
 
     session = bedrock_client.create_stream_session(session_id)
     session.hospital_id = hospital_id # Inject for downstream use
+    
+    # Audit: Log connection start
+    audit_logger.log_event(session_id, "SESSION_START", hospital_id, {"caller": mask_phone(ws_call_from)})
+    
     async with _session_lock:
         session_map[session_id] = session
 
@@ -596,6 +601,9 @@ async def exotel_stream(websocket: WebSocket):
             if escalation_triggered: return
             escalation_triggered = True
             logger.warning("[SAFETY] Silence escalation triggered for call %s", call_sid)
+            # Audit: Log automatic silence-based escalation
+            audit_logger.log_event(session_id, "SILENCE_ESCALATION", hospital_id, {"caller": mask_phone(caller_phone)})
+            
             await bedrock_client.send_text_message(
                 session_id,
                 "[The caller has been silent for too long during a clinical inquiry. They may be unable to speak. Say a reassuring message and connect them to the emergency desk immediately.]"

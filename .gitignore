@@ -5,7 +5,8 @@
 out/
 
 # Logs
-logs/
+logs/*.log
+logs/security_audit.log
 
 # Node modules (if applicable for TypeScript project)
 node_modules/

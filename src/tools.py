@@ -20,6 +20,7 @@ import faiss
 from src.integrations.tenant_manager import tenant_manager
 from src.integrations.sheets_client import sheets_client
 from src.integrations.local_sink import local_sink
+from src.security.audit_logger import audit_logger
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +96,11 @@ def _embed_query(text: str) -> np.ndarray | None:
     """
     try:
         # PII Check: Embeddings are generally non-reversable math vectors
-        # but we log only the length of text for privacy during clinical debug.
+        # Audit: Log clinical data commitment
+        audit_logger.log_tool_use("manual_exec", "default", "clinical_triage")
+        
+        # 1. Update Cloud Sink (Google Sheets)
+        # we log only the length of text for privacy during clinical debug.
         response = _embed_client.invoke_model(
             modelId="amazon.titan-embed-text-v2:0",
             contentType="application/json",
@@ -299,7 +304,10 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
 
 
 def appointment_booking(args: dict, hospital_id: str = None) -> dict:
-    """Requirement No 2: Saves booking intent to hospital-specific Google Sheets."""
+    """Tool: appointmentBookingTool. Logged in security audit."""
+    # Audit Trace
+    audit_logger.log_tool_use("active_session", hospital_id or "default", "appointment_booking")
+    
     patient = args.get("patient_name", "the patient")
     dept = args.get("doctor_dept", "the requested department")
     date = args.get("date", "soon")
@@ -362,6 +370,9 @@ def emergency_handoff(args: dict, hospital_id: str = None) -> dict:
 
 def clinical_triage(args: dict, hospital_id: str = None) -> dict:
     """Requirement: Clinical Excellence. Gathers systematic symptom data with audit trail."""
+    # Audit Trace
+    audit_logger.log_tool_use("active_session", hospital_id or "default", "clinical_triage")
+    
     symptoms = args.get("symptoms", "Not specified")
     pain = args.get("pain_intensity", 0)
     onset = args.get("onset_duration", "Not specified")

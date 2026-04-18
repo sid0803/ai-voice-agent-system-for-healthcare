@@ -79,13 +79,21 @@ class GoogleSheetsClient:
             ).execute()
             
             logger.info(f"[SHEETS] Successfully appended clinical booking ({urgency}) to {target_sheet_id}")
+            # Security Audit: Data Commit record
+            from src.security.audit_logger import audit_logger
+            audit_logger.log_access("CLOUD_SYNC", hospital_id or "default", "GOOG_SHEETS", booking_data.get("patient_name", "Unknown"))
+            
             return True
         except Exception as e:
             logger.warning(f"[RELIABILITY] Google Sheets failure for {target_sheet_id}: {str(e)}. Triggering Local Sink fallback.")
             # Critical Fallback: Save to Local Sink if Cloud fails
             try:
                 from src.integrations.local_sink import local_sink
-                return local_sink.save_booking(booking_data)
+                success = local_sink.save_booking(booking_data)
+                if success:
+                    from src.security.audit_logger import audit_logger
+                    audit_logger.log_access("LOCAL_FALLBACK", hospital_id or "default", "LOCAL_CSV", booking_data.get("patient_name", "Unknown"))
+                return success
             except Exception:
                 logger.error("[RELIABILITY] CRITICAL FAILURE: Both Cloud and Local sinks failed.")
                 return False
