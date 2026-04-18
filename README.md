@@ -87,7 +87,12 @@ Asha is optimized for **Action** and **Outcomes**:
     to be a high-performance assistant. 
     She proactively secures the booking.
 
-### III. Laboratory & Radiology Insight
+### III. Hospital OS: Advanced Operations
+Asha acts as the central brain of the clinic:
+*   **Level 3 Billing Intelligence**: Not only retrieves pending bills but breaks down line items and dynamically generates secure payment links for instant patient resolution.
+*   **OT Predictive Scheduling**: Automatically calculates surgical block durations (Prep + Surgery + Recovery) and forecasts the nearest available OT slot to optimize clinical resources.
+
+### IV. Laboratory & Radiology Insight
 Asha provide instant peace-of-mind for testing. 
 She can query the hospital roster to check if 
 **Blood Tests, MRI, or CT Scan reports** are ready.
@@ -178,7 +183,7 @@ If a patient goes silent for **25 seconds**:
 | `src/server.py` | **The Heart** | WebSocket loops, Exotel handshakes, IST Time. |
 | `src/nova_client.py` | **The Nexus** | Bidirectional S2S audio stream and tool translation. |
 | `src/integrations/tenant_manager.py` | **The Brain** | Dynamic identity loading for Requirement #1 scaling. |
-| `src/mock_tools.py` | **The Toolkit** | Functional tools for Search, Booking, and pricing. |
+| `src/tools.py` | **The Toolkit** | Hospital OS tools for Triage, Billing Sync, OT Prediction, and Search. |
 | `src/transcript_store.py` | **The Vault** | Permanent DynamoDB audit logs for clinical safety. |
 | `src/analytics/processor.py` | **The Scientist** | Post-call extracts for sentiment and clinical outcomes. |
 | `src/audio_utils.py` | **The Signal** | Conversion between PSTN signals and AI audio formats. |
