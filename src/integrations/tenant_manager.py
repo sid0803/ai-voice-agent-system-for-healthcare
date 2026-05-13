@@ -103,6 +103,9 @@ class TenantManager:
         return {
             "id": "default_tier2",
             "name": "Standard Tier-2 Healthcare Center",
+            # [D-08] CRITICAL: status MUST be 'live' or 'sandbox' or server.py rejects the call.
+            # This fallback activates when DB/JSON lookup fails (SQLite/offline mode).
+            "status": "live",
             "departments": ["Cardiology", "Pediatrics", "Orthopedics", "General Medicine"],
             "doctors": [
                 {"name": "Dr. Sen", "dept": "Cardiology", "schedule": "Mon-Fri 10AM-2PM"},

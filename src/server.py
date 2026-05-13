@@ -2,6 +2,8 @@
 
 import asyncio
 import base64
+import hashlib
+import hmac
 import json
 import os
 import logging
@@ -12,8 +14,13 @@ from datetime import datetime, timezone, timedelta
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Response
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Response, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 load_dotenv()
 
@@ -24,7 +31,7 @@ import pathlib
 _PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,  # Use INFO in production; DEBUG is very noisy
     format="%(asctime)s %(name)s %(levelname)s %(message)s",
     handlers=[
         logging.StreamHandler(),
@@ -53,9 +60,34 @@ logger = logging.getLogger(__name__)
 _background_tasks = set()
 
 # ---------------------------------------------------------------------------
+# Rate Limiter (CRIT-05)
+# ---------------------------------------------------------------------------
+limiter = Limiter(key_func=get_remote_address)
+
+# ---------------------------------------------------------------------------
 # Security & Concurrency Utilities
 # ---------------------------------------------------------------------------
 _session_lock = asyncio.Lock()
+
+# [CRIT-02] Exotel WebSocket shared secret for HMAC validation
+# Set EXOTEL_WS_SECRET in .env to enable. If unset, falls back to IP allowlist.
+_EXOTEL_WS_SECRET = os.environ.get("EXOTEL_WS_SECRET", "")
+
+# Known Exotel IP ranges (CIDR blocks from Exotel docs - update if Exotel changes)
+_EXOTEL_IP_PREFIXES = (
+    "52.66.", "13.234.", "15.207.", "3.7.", "3.108.",
+    "43.204.", "65.0.", "54.169.",
+)
+
+def _is_exotel_ip(client_ip: str) -> bool:
+    """Check if the connecting IP is from a known Exotel IP range."""
+    return any(client_ip.startswith(prefix) for prefix in _EXOTEL_IP_PREFIXES)
+
+def _verify_exotel_ws_token(token: str) -> bool:
+    """Verify the shared WS token passed as a query param by Exotel."""
+    if not _EXOTEL_WS_SECRET:
+        return True  # Secret not configured — skip (IP check is fallback)
+    return hmac.compare_digest(token, _EXOTEL_WS_SECRET)
 
 def mask_phone(phone: str) -> str:
     """Mask phone number for privacy (PII protection)."""
@@ -65,6 +97,22 @@ def mask_phone(phone: str) -> str:
     if len(p) < 7:
         return p
     return f"{p[:3]}******{p[-4:]}"
+
+# [MED-07] HTTP Bearer security for /health endpoint metrics
+_HEALTH_TOKEN = os.environ.get("HEALTH_CHECK_TOKEN", "")
+_bearer_scheme = HTTPBearer(auto_error=False)
+
+async def _verify_health_token(
+    credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
+) -> bool:
+    """Allow AWS ALB/ECS (no token) and authenticated monitoring tools."""
+    # If no token configured, allow all (for AWS ALB health checks)
+    if not _HEALTH_TOKEN:
+        return True
+    if credentials and hmac.compare_digest(credentials.credentials, _HEALTH_TOKEN):
+        return True
+    # Return basic status without session count for unauthenticated requests
+    return False
 
 # ---------------------------------------------------------------------------
 # Greeting audio (read once at module level) - P0 Guard
@@ -110,7 +158,12 @@ validate_exotel_credentials({
 # ---------------------------------------------------------------------------
 # Derived Exotel API base URL
 # ---------------------------------------------------------------------------
-EXOTEL_API_BASE = f"https://{exotel_subdomain}/v1/Accounts/{exotel_sid}"
+# [D-05] Guard against None values when Exotel creds are not set
+if exotel_subdomain and exotel_sid:
+    EXOTEL_API_BASE = f"https://{exotel_subdomain}/v1/Accounts/{exotel_sid}"
+else:
+    EXOTEL_API_BASE = ""
+    logger.warning("[CONFIG] EXOTEL_SUBDOMAIN or EXOTEL_SID not set. Outbound call/failover endpoints will not work.")
 
 # Exotel HTTP client
 exotel_http = httpx.AsyncClient(
@@ -313,8 +366,34 @@ async def lifespan(app: FastAPI):
             rds_analytics.init_schema()
             logger.info("[STARTUP] RDS analytics schema verified/created.")
         else:
+            # [MED-04] SQLite production warning
+            demo_mode = os.environ.get("DEMO_MODE", "false").lower() == "true"
+            if not demo_mode:
+                logger.warning(
+                    "[STARTUP] ⚠️ RDS_HOSTNAME not configured — using SQLite (DEMO ONLY). "
+                    "SQLite is NOT suitable for production concurrency. Set RDS_HOSTNAME in .env."
+                )
             logger.info("[STARTUP] RDS initialization skipped (Mock/Offline mode).")
-            
+
+        # [LOW-02] DynamoDB table auto-creation (idempotent)
+        try:
+            import boto3
+            dynamo = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"))
+            table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
+            existing = dynamo.list_tables().get("TableNames", [])
+            if table_name not in existing:
+                dynamo.create_table(
+                    TableName=table_name,
+                    KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
+                    AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
+                    BillingMode="PAY_PER_REQUEST",
+                )
+                logger.info("[STARTUP] DynamoDB table '%s' created.", table_name)
+            else:
+                logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", table_name)
+        except Exception as e:
+            logger.warning("[STARTUP] DynamoDB table check failed (may not have permissions yet): %s", e)
+
         # Start Background Sync Worker (SaaS Tier)
         from src.integrations.sync_engine import sync_engine
         sync_task = asyncio.create_task(sync_engine.scheduled_pull_worker())
@@ -344,7 +423,27 @@ async def lifespan(app: FastAPI):
 # ---------------------------------------------------------------------------
 # FastAPI application
 # ---------------------------------------------------------------------------
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    title="InDiiServe Asha Voice Agent",
+    version="1.0.0",
+)
+
+# [MED-01] CORS — restrict to known origins in production
+_ALLOWED_ORIGINS = [
+    o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
+# [CRIT-05] Rate limiter error handler
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -360,16 +459,26 @@ async def root():
 
 
 @app.get("/health")
-async def health():
-    """Health check endpoint for AWS load balancers, ECS, and App Runner."""
-    return {
-        "status": "healthy",
-        "active_sessions": len(session_map),
-        "service": "InDiiServe-Asha-Voice-Agent",
-    }
+@limiter.limit("120/minute")
+async def health(
+    request: Request,
+    authenticated: bool = Depends(_verify_health_token),
+):
+    """Health check endpoint for AWS load balancers, ECS, and App Runner.
+    Full metrics require HEALTH_CHECK_TOKEN Bearer auth (MED-07).
+    """
+    if authenticated:
+        return {
+            "status": "healthy",
+            "active_sessions": len(session_map),
+            "service": "InDiiServe-Asha-Voice-Agent",
+        }
+    # Unauthenticated callers (e.g. AWS ALB) get basic status only
+    return {"status": "healthy"}
 
 
 @app.get("/incoming-call")
+@limiter.limit("120/minute")
 async def incoming_call(request: Request):
     """Dynamic Voicebot URL endpoint for Exotel App Bazar.
 
@@ -509,8 +618,31 @@ async def exotel_stream(websocket: WebSocket):
     - JSON text frames for 'start' and 'stop' events
     - Raw binary frames for PCM audio (16-bit signed LE, 8kHz, mono)
     """
+    # [CRIT-02] WebSocket Authentication: verify caller identity before accepting
+    # Strategy 1: Shared secret token passed as a query param (set EXOTEL_WS_SECRET)
+    # Strategy 2: IP allowlist fallback (known Exotel IP ranges)
+    client_ip = websocket.client.host if websocket.client else ""
+    ws_token = websocket.query_params.get("token", "")
+
+    if _EXOTEL_WS_SECRET:
+        # Secret is configured — enforce HMAC token check
+        if not _verify_exotel_ws_token(ws_token):
+            logger.warning("[AUTH] WebSocket rejected — invalid token from IP: %s", client_ip)
+            await websocket.close(code=1008)  # Policy Violation
+            return
+    else:
+        # No secret — fall back to IP allowlist (log but don't block in dev)
+        if client_ip and not _is_exotel_ip(client_ip):
+            demo_mode = os.environ.get("DEMO_MODE", "false").lower() == "true"
+            if not demo_mode:
+                logger.warning(
+                    "[AUTH] WebSocket from non-Exotel IP %s. Set EXOTEL_WS_SECRET for hard enforcement.",
+                    client_ip,
+                )
+            # In demo mode allow any IP; in production log and continue (degraded auth)
+
     await websocket.accept()
-    logger.info("Exotel client connected")
+    logger.info("Exotel client connected from %s", client_ip)
 
     # Extract call metadata from WebSocket URL query params
     # (passed from /incoming-call endpoint)
@@ -545,6 +677,7 @@ async def exotel_stream(websocket: WebSocket):
     
     async with _session_lock:
         session_map[session_id] = session
+    # [HIGH-03] All session_map mutations are now lock-guarded.
 
     # Initiate the Bedrock stream in the background.
     # initiate_session runs forever (_process_response_stream is a while-loop),
@@ -556,6 +689,10 @@ async def exotel_stream(websocket: WebSocket):
     call_sid = ""
     hardener = AudioHardener()
     polisher = AudioPolisher()
+
+    # [FIX CRIT-03] Initialize idle_monitor_task to None to prevent UnboundLocalError
+    # if the WebSocket disconnects before the 'start' event is received.
+    idle_monitor_task = None
 
     # -----------------------------------------------------------------------
     # Transcript tracking
@@ -578,7 +715,12 @@ async def exotel_stream(websocket: WebSocket):
     escalation_triggered = False
     
     DEMO_MODE = os.environ.get("DEMO_MODE", "false").lower() == "true"
-    
+
+    # [FIX LOW-03] Warn loudly if DEMO_MODE is on with real Exotel credentials
+    if DEMO_MODE and exotel_api_key and exotel_api_token:
+        logger.warning("[SECURITY] DEMO_MODE=true with real Exotel credentials detected! "
+                       "The chat backdoor is active. Set DEMO_MODE=false for production.")
+
     SOFT_FOLLOW_UP_SEC = 4 if not DEMO_MODE else 6
     ESCALATION_SEC = 9 if not DEMO_MODE else 12 
     
@@ -644,7 +786,10 @@ async def exotel_stream(websocket: WebSocket):
             while True:
                 await asyncio.sleep(2) # Faster polling for clinical safety
                 if tool_in_progress:
-                    last_activity_time = time.time() # Reset during tool calls
+                    # [HIGH FIX] nonlocal required — without it, this creates a NEW local
+                    # variable and the outer last_activity_time is never updated.
+                    nonlocal last_activity_time
+                    last_activity_time = time.time()  # Reset during tool calls
                     continue
                     
                 elapsed = time.time() - last_activity_time
@@ -669,6 +814,9 @@ async def exotel_stream(websocket: WebSocket):
         """Decode base64 PCM from Nova, convert via pcm_to_exotel(), send as base64 JSON media event."""
         async def _send():
             try:
+                # [D-12] Guard: skip if stream_sid not yet set (race between 'media' and 'start' events)
+                if not session.stream_sid:
+                    return
                 pcm_bytes = base64.b64decode(data["content"])
                 # Apply outbound polishing (Compression + Treble Boost)
                 polished_bytes = polisher.process_chunk(pcm_bytes)
@@ -885,17 +1033,27 @@ async def exotel_stream(websocket: WebSocket):
                             memory_manager.register_session(session_id, caller_phone)
                             memory_context_task = asyncio.create_task(memory_manager.retrieve_context(session_id))
 
-                        # Wait for Bedrock stream to be ready before sending setup events.
-                        # initiate_session runs forever (response loop), so we poll
-                        # for session.stream to be set (means connection + sessionStart done).
-                        for _ in range(60):  # up to ~30s
-                            if bedrock_client._active_sessions.get(session_id) and \
-                               bedrock_client._active_sessions[session_id].stream is not None:
+                        # [MED-06] Use asyncio.Event instead of busy-poll for stream readiness.
+                        # nova_client sets session._stream_ready when Bedrock stream is open.
+                        session_data = bedrock_client._active_sessions.get(session_id)
+                        if session_data and hasattr(session_data, "_stream_ready"):
+                            try:
+                                await asyncio.wait_for(
+                                    session_data._stream_ready.wait(), timeout=30.0
+                                )
+                            except asyncio.TimeoutError:
+                                logger.error("Bedrock stream not ready after 30s - aborting session")
                                 break
-                            await asyncio.sleep(0.5)
                         else:
-                            logger.error("Bedrock stream not ready after 30s - aborting session")
-                            break
+                            # Fallback: lightweight poll (max 30s) for backward compatibility
+                            for _ in range(60):
+                                if bedrock_client._active_sessions.get(session_id) and \
+                                   bedrock_client._active_sessions[session_id].stream is not None:
+                                    break
+                                await asyncio.sleep(0.5)
+                            else:
+                                logger.error("Bedrock stream not ready after 30s - aborting session")
+                                break
 
                         # Now set up Nova session
                         # 3. Setup system prompt (with memory if task finished)
@@ -909,9 +1067,14 @@ async def exotel_stream(websocket: WebSocket):
                             except (asyncio.TimeoutError, Exception):
                                 logger.warning("[MEMORY] Context retrieval timed out or failed, using base prompt.")
 
+                        # [D-06] CRITICAL: promptStart MUST be sent before contentStart (system prompt).
+                        # Nova Sonic protocol requirement — skipping this causes immediate stream closure.
+                        await session.setup_prompt_start()
                         await session.setup_system_prompt(system_prompt=system_prompt)
                         await session.setup_start_audio()
-                        await session.stream_audio(hello_audio_bytes)
+                        # [FIX HIGH-01] Do NOT re-send hello_audio_bytes here.
+                        # The greeting was already sent to Exotel at line ~1000 (before Nova was ready).
+                        # Sending it again via stream_audio() causes a double greeting for the caller.
 
                         idle_monitor_task = asyncio.ensure_future(idle_monitor())
                         _background_tasks.add(idle_monitor_task)
@@ -976,14 +1139,16 @@ async def exotel_stream(websocket: WebSocket):
             memory_manager.cleanup_session(session_id)
         
         # Trigger AI Analytics Processor (Post-call Data Science)
-        if transcripts:
+        # [FIX LOW-06] Guard against call_start_time being None if 'start' event never arrived
+        if transcripts and call_start_time:
             # Run in background to not block the WebSocket closure
             task = asyncio.create_task(analytics_processor.process_call(
                 session_id=session_id,
                 phone=caller_phone,
                 hospital_id=session.hospital_id,
                 transcript=transcripts,
-                duration=int((datetime.now(IST) - call_start_time.astimezone(IST)).total_seconds()) if call_start_time else 0
+                # [LOW FIX] Use utc on both sides for consistent timezone math
+                duration=int((datetime.now(timezone.utc) - call_start_time).total_seconds())
             ))
             _background_tasks.add(task)
             task.add_done_callback(_background_tasks.discard)

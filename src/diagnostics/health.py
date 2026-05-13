@@ -72,11 +72,11 @@ class HealthChecker:
             sts.get_caller_identity()
             
             # 2. Bedrock Access Check (Nova Mini check)
-            bedrock = boto3.client('bedrock-runtime', region_name=os.environ.get("BEDROCK_REGION", "us-east-1"))
-            # Just a tiny list call or similar to check access
-            # We'll use a cheap check: list foundation models (needs bedrock:ListFoundationModels)
-            # Or just assume identity is enough for 'AWS Connectivity'
-            return True, "Connected (IAM Validated)"
+            # [MED FIX] Actually invoke Bedrock to verify IAM allows Bedrock actions
+            bedrock = boto3.client('bedrock', region_name=os.environ.get("BEDROCK_REGION", "us-east-1"))
+            bedrock.list_foundation_models(byProvider="Amazon", maxResults=1)
+            
+            return True, "Connected (IAM & Bedrock Validated)"
         except Exception as e:
             return False, f"AWS Error: {str(e)}"
 
@@ -88,7 +88,8 @@ class HealthChecker:
             "assets": cls.check_assets(),
             "database": cls.check_database(),
             "aws": cls.check_aws(),
-            "timestamp": pathlib.Path().stat().st_ctime # Just a placeholder for 'freshness'
+            # [LOW FIX] Use actual current timestamp
+            "timestamp": __import__("datetime").datetime.now().isoformat()
         }
         
         # Summary status

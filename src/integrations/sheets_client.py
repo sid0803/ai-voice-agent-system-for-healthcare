@@ -71,12 +71,21 @@ class GoogleSheetsClient:
             ]]
             
             body = {'values': values}
-            result = self.service.spreadsheets().values().append(
-                spreadsheetId=target_sheet_id,
-                range="Sheet1!A:M",
-                valueInputOption="RAW",
-                body=body
-            ).execute()
+            # [HIGH-02] Add timeout to prevent thread pool exhaustion under high concurrency
+            # The Google Sheets client uses synchronous HTTP (google-api-python-client),
+            # so we rely on socket-level timeout via the underlying httplib2 library.
+            import socket
+            original_timeout = socket.getdefaulttimeout()
+            socket.setdefaulttimeout(30)  # 30s max for any sheets API call
+            try:
+                result = self.service.spreadsheets().values().append(
+                    spreadsheetId=target_sheet_id,
+                    range="Sheet1!A:M",
+                    valueInputOption="RAW",
+                    body=body
+                ).execute()
+            finally:
+                socket.setdefaulttimeout(original_timeout)  # Always restore
             
             logger.info(f"[SHEETS] Successfully appended clinical booking ({urgency}) to {target_sheet_id}")
             # Security Audit: Data Commit record

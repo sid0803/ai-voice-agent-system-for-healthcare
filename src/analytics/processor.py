@@ -11,9 +11,20 @@ class AnalyticsProcessor:
     """The AI 'Data Scientist' - extracts structured metrics from call transcripts."""
     
     def __init__(self):
+        from botocore.config import Config as _BotoConfig
+        
+        # [MED FIX] Ensure connection pooling and tcp_keepalive (OPT-07 parity)
+        _BOTO_POOL_CONFIG = _BotoConfig(
+            max_pool_connections=10,
+            connect_timeout=5,
+            read_timeout=30,
+            retries={"max_attempts": 2, "mode": "standard"},
+            tcp_keepalive=True,
+        )
         self.bedrock_runtime = boto3.client(
             service_name="bedrock-runtime", 
-            region_name=os.environ.get("BEDROCK_REGION", "us-east-1")
+            region_name=os.environ.get("BEDROCK_REGION", "us-east-1"),
+            config=_BOTO_POOL_CONFIG
         )
         # Use a cost-effective model for post-call analysis
         # amazon.nova-lite-v1:0 replaces the deprecated Titan Text Express v1

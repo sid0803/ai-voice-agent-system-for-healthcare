@@ -20,7 +20,7 @@ class SyncEngine:
         self.http_client = httpx.AsyncClient(timeout=30.0)
         self.semaphore = asyncio.Semaphore(5) # Limit concurrency (Requirement: Reliability)
 
-    def is_safe_url(self, url: str) -> bool:
+    async def is_safe_url(self, url: str) -> bool:
         """Requirement Hardening: SSRF Protection. Blocks non-public IP ranges."""
         try:
             parsed = urlparse(url)
@@ -31,8 +31,8 @@ class SyncEngine:
             if not hostname:
                 return False
 
-            # Resolve hostname to IP
-            ip = socket.gethostbyname(hostname)
+            # [MED FIX] Use asyncio.to_thread for blocking DNS resolution
+            ip = await asyncio.to_thread(socket.gethostbyname, hostname)
             ip_obj = ipaddress.ip_address(ip)
 
             # Block loopback, private, link-local, and multicast addresses
@@ -106,17 +106,20 @@ class SyncEngine:
         if not conn:
             return
             
-        cur = conn.cursor()
         try:
-            # Select only 'live' or 'sandbox' tenants set for hybrid/pull
-            cur.execute("""
-                SELECT hospital_id, ingestion_config, sync_interval_mins, last_sync_at 
-                FROM tenants 
-                WHERE status IN ('live', 'sandbox') 
-                AND ingestion_strategy IN ('pull', 'hybrid')
-            """)
-            tenants = cur.fetchall()
-            cur.close()
+            # [FIX MED-08] Use nested try/finally to guarantee cursor is always closed
+            cur = conn.cursor()
+            try:
+                # Select only 'live' or 'sandbox' tenants set for hybrid/pull
+                cur.execute("""
+                    SELECT hospital_id, ingestion_config, sync_interval_mins, last_sync_at 
+                    FROM tenants 
+                    WHERE status IN ('live', 'sandbox') 
+                    AND ingestion_strategy IN ('pull', 'hybrid')
+                """)
+                tenants = cur.fetchall()
+            finally:
+                cur.close()
                 
             # Implementation Hardening: Parallel Sync (P1)
             # We use a semaphore to avoid overloading the DB or CPU
@@ -147,17 +150,34 @@ class SyncEngine:
             await self._sync_single_tenant(hospital_id, config)
 
     async def _sync_single_tenant(self, hospital_id: str, config: dict):
-        """Pull data from external HIS API."""
+        """Pull data from external HIS API with DNS-pinned connection (CRIT-04)."""
         url = config.get("pull_url")
         headers = config.get("headers", {})
         
         # SSRF Protection (P0 Hardening)
-        if not self.is_safe_url(url):
+        if not await self.is_safe_url(url):
             logger.error(f"[SECURITY] Sync skipped for {hospital_id} due to unsafe URL: {url}")
             return
 
         try:
-            resp = await self.http_client.get(url, headers=headers)
+            # [CRIT-04] DNS Pinning: resolve once and inject resolved IP as the target
+            # [MED FIX] Use asyncio.to_thread for blocking DNS resolution
+            from urllib.parse import urlparse, urlunparse
+            parsed = urlparse(url)
+            resolved_ip = await asyncio.to_thread(socket.gethostbyname, parsed.hostname)
+            
+            # Re-validate the resolved IP (redundant safety check)
+            ip_obj = ipaddress.ip_address(resolved_ip)
+            if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_link_local:
+                logger.error(f"[SECURITY] IP re-validation failed for {hospital_id}: {resolved_ip}")
+                return
+
+            # Build pinned URL: replace hostname with resolved IP, preserve Host header
+            pinned = parsed._replace(netloc=f"{resolved_ip}:{parsed.port}" if parsed.port else resolved_ip)
+            pinned_url = urlunparse(pinned)
+            pinned_headers = {**headers, "Host": parsed.hostname}  # Keep original Host header
+
+            resp = await self.http_client.get(pinned_url, headers=pinned_headers)
             resp.raise_for_status()
             raw_data = resp.json()
             

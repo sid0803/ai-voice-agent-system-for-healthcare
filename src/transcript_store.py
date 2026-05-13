@@ -12,7 +12,18 @@ IST = timezone(timedelta(hours=5, minutes=30))
 
 _table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
 _region = os.environ.get("AWS_REGION") or "ap-south-1"
-_table = boto3.Session(region_name=_region).resource("dynamodb").Table(_table_name)
+
+# [HIGH FIX] Lazy initialization — do NOT create boto3 resource at module load time.
+# server.py calls load_dotenv() before importing this module, but if this file is
+# imported standalone (tests, scripts), creds may be empty => MissingCredentialsError.
+_table = None
+
+def _get_table():
+    """Lazily create the DynamoDB Table resource on first use."""
+    global _table
+    if _table is None:
+        _table = boto3.Session(region_name=_region).resource("dynamodb").Table(_table_name)
+    return _table
 
 
 def save_transcript(phone_number: str, session_id: str,
@@ -30,7 +41,7 @@ def save_transcript(phone_number: str, session_id: str,
 
         mins, secs = divmod(duration_secs, 60)
 
-        _table.put_item(
+        _get_table().put_item(
             Item={
                 "phone_number": phone_number or "unknown",
                 "timestamp": start_ist.strftime("%Y-%m-%d %H:%M:%S IST"),

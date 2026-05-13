@@ -26,7 +26,23 @@ class RDSAnalyticsClient:
         # PII Encryption Key (Loaded from environment)
         # To generate a key: Fernet.generate_key().decode()
         self.encryption_key = os.environ.get("ENCRYPTION_KEY")
-        self._cipher = Fernet(self.encryption_key.encode()) if self.encryption_key else None
+        # [D-03] Guard against empty ENCRYPTION_KEY — Fernet raises ValueError on empty string
+        if self.encryption_key:
+            try:
+                self._cipher = Fernet(self.encryption_key.encode())
+            except Exception as e:
+                logger.error(
+                    "[SECURITY] Invalid ENCRYPTION_KEY: %s. PII encryption DISABLED. "
+                    "Generate a valid key with: python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\"",
+                    e
+                )
+                self._cipher = None
+        else:
+            logger.warning(
+                "[SECURITY] ENCRYPTION_KEY not set. PII encryption DISABLED. "
+                "Set ENCRYPTION_KEY in .env for production."
+            )
+            self._cipher = None
 
     def _get_auth_token(self):
         """Generate a short-lived IAM Auth Token for RDS access."""

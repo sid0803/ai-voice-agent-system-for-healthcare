@@ -157,18 +157,57 @@ if "role" not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown("""
         <style>
-        .login-box {
-            background-color: #f0f2f6;
-            padding: 2rem;
-            border-radius: 10px;
-            max-width: 400px;
-            margin: auto;
+        /* Base Page Styling */
+        .main { background-color: #F8FAFC; }
+        
+        /* Bento Grid Card Styling */
+        .bento-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .bento-card:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Metric Styling */
+        .metric-label { color: #64748B; font-weight: 500; font-size: 0.875rem; }
+        .metric-value { color: #1E293B; font-weight: 700; font-size: 1.5rem; }
+        
+        /* AI Insight Banner */
+        .insight-banner {
+            background: linear-gradient(90deg, #EFF6FF 0%, #DBEAFE 100%);
+            border-left: 4px solid #3B82F6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        /* Emergency Alert */
+        .emergency-pill {
+            background-color: #FEE2E2;
+            color: #DC2626;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Sidebar Polish */
+        [data-testid="stSidebar"] {
+            background-color: #FFFFFF;
+            border-right: 1px solid #E2E8F0;
         }
         </style>
     """, unsafe_allow_html=True)
     
     st.title("🏥 InDiiServe Healthcare")
-    st.subheader("SaaS Governance & Analytics")
+    st.subheader("Autonomous Clinical Intelligence System")
 
     tab_login, tab_signup = st.tabs(["Login", "Clinic Sign-up"])
 
@@ -253,55 +292,115 @@ if st.sidebar.button("Logout"):
 # TAB 1: Analytics Dashboard
 # ---------------------------------------------------------------------------
 if nav == "Analytics Dashboard":
-    st.title(f"📈 Analytics: {st.session_state.hospital_id.replace('_', ' ').title()}")
+    # 🎨 Custom Bento Header
+    col_t1, col_t2 = st.columns([3, 1])
+    with col_t1:
+        st.title(f"📈 {st.session_state.hospital_id.replace('_', ' ').title()} Command Center")
+        st.caption("Autonomous Clinical Intelligence & Operational Triage")
     
-    # Check status for non-super admins
-    if st.session_state.role != 'super_admin':
-        from src.integrations.tenant_manager import tenant_manager
-        status = tenant_manager.get_status(st.session_state.hospital_id)
-        if status == 'pending':
-            st.warning("⚠️ YOUR CLINIC IS PENDING REVIEW. The AI agent is currently disabled.")
-        elif status == 'sandbox':
-            st.info("🧪 SANDBOX MODE: Asha will disclose she is in testing mode during calls.")
-
-    days_filter = st.slider("Date Range (Days)", 1, 90, 30)
-    
-    with st.spinner("Analyzing call metadata..."):
+    # --- Data Retrieval ---
+    days_filter = st.sidebar.slider("Historical View (Days)", 1, 90, 7)
+    with st.spinner("Decoding clinical signals..."):
         df = load_analytics(st.session_state.hospital_id, days_filter)
+    
+    # 🧠 SECTION: AI Command Center (Actionable Insights)
+    def get_ai_insights(df):
+        insights = []
+        if not df.empty:
+            now = pd.to_datetime('now')
+            calls_today = len(df[pd.to_datetime(df['timestamp']).dt.date == now.date()])
+            emergencies = len(df[df['is_emergency'] == True])
+            booking_rate = round(df['is_successful_booking'].mean() * 100, 1)
+            
+            if calls_today > 10:
+                insights.append(f"📈 **High Demand**: Calls are peaking. Consider scaling morning shifts.")
+            if emergencies > 0:
+                insights.append(f"⚠️ **Clinical Alert**: {emergencies} emergency cases detected. Review triage logs.")
+            if booking_rate < 40:
+                insights.append(f"💡 **Growth Insight**: Booking rate ({booking_rate}%) is below target. Review ASHA follow-up.")
+        return insights[:3]
 
     if not df.empty:
-        total_calls = len(df)
-        bookings = int(df["is_successful_booking"].sum())
-        avg_duration = int(df["duration_seconds"].mean())
-        positive_pct = round((df["sentiment"] == "Positive").sum() / total_calls * 100, 1)
+        insights = get_ai_insights(df)
+        if insights:
+            st.markdown("<div class='insight-banner'>", unsafe_allow_html=True)
+            cols = st.columns(len(insights))
+            for i, ins in enumerate(insights):
+                cols[i].markdown(ins)
+            st.markdown("</div>", unsafe_allow_html=True)
 
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("📞 Total Calls", f"{total_calls:,}")
-        c2.metric("✅ Bookings", f"{bookings:,}")
-        c3.metric("⏱️ Avg. Duration", f"{avg_duration // 60}m {avg_duration % 60}s")
-        c4.metric("😊 Positive %", f"{positive_pct}%")
+    if not df.empty:
+        # 🍱 SECTION: Bento Grid Metrics
+        m1, m2, m3, m4 = st.columns(4)
+        
+        with m1:
+            st.markdown(f"""<div class="bento-card"><div class="metric-label">📞 TOTAL CALLS</div><div class="metric-value">{len(df):,}</div></div>""", unsafe_allow_html=True)
+        with m2:
+            successful_pct = round(df['is_successful_booking'].mean() * 100, 1)
+            st.markdown(f"""<div class="bento-card"><div class="metric-label">✅ SUCCESS RATE</div><div class="metric-value">{successful_pct}%</div></div>""", unsafe_allow_html=True)
+        with m3:
+            avg_sec = int(df['duration_seconds'].mean())
+            st.markdown(f"""<div class="bento-card"><div class="metric-label">⏱️ AVG. DURATION</div><div class="metric-value">{avg_sec // 60}m {avg_sec % 60}s</div></div>""", unsafe_allow_html=True)
+        with m4:
+            pos_pct = round((df['sentiment'] == 'Positive').mean() * 100, 1)
+            st.markdown(f"""<div class="bento-card"><div class="metric-label">😊 POSITIVE SENTIMENT</div><div class="metric-value">{pos_pct}%</div></div>""", unsafe_allow_html=True)
 
-        ch1, ch2 = st.columns(2)
-        with ch1:
-            df["date"] = pd.to_datetime(df["timestamp"]).dt.date
-            fig_vol = px.line(df.groupby("date").size().reset_index(name="Calls"), x="date", y="Calls", title="Call Volume")
-            st.plotly_chart(fig_vol, use_container_width=True)
-        with ch2:
-            fig_outcome = px.pie(df["outcome"].value_counts().reset_index(), names="outcome", values="count", title="Outcomes")
-            st.plotly_chart(fig_outcome, use_container_width=True)
-
-        # --- Hospital OS Layer: Operational Analytics ---
+        # 📊 SECTION: Advanced Analytics (Funnel + Trends)
         st.markdown("---")
-        st.subheader("🏥 Operational Intelligence (Hospital OS Layer)")
-        op_c1, op_c2 = st.columns(2)
+        col_f1, col_f2 = st.columns([2, 1])
         
-        billing_calls = len(df[df["intent"].str.contains("Billing", case=False, na=False)])
-        ot_calls = len(df[df["intent"].str.contains("OT", case=False, na=False)])
-        
-        op_c1.metric("💰 Billing Inquiries", f"{billing_calls}")
-        op_c2.metric("🏥 OT Scheduling", f"{ot_calls}")
+        with col_f1:
+            st.subheader("🔥 Conversion Funnel (Operational Intelligence)")
+            # 5-Layer Funnel Logic
+            total = len(df)
+            engaged = len(df[df['duration_seconds'] > 10])
+            inquiry = len(df[df['intent'].notna()])
+            qualified = len(df[(df['urgency_score'] > 2) | (df['intent'].isin(['Appointment', 'Emergency']))])
+            booking = int(df['is_successful_booking'].sum())
+            
+            import plotly.graph_objects as go
+            fig_funnel = go.Figure(go.Funnel(
+                y = ["Total Calls", "Engaged", "Inquiry", "Qualified", "Booking"],
+                x = [total, engaged, inquiry, qualified, booking],
+                textinfo = "value+percent initial",
+                marker = {"color": ["#E2E8F0", "#CBD5E1", "#94A3B8", "#475569", "#1E293B"]}
+            ))
+            fig_funnel.update_layout(margin=dict(l=20, r=20, t=20, b=20), height=300)
+            st.plotly_chart(fig_funnel, use_container_width=True)
 
-        st.dataframe(df.head(100), use_container_width=True)
+        with col_f2:
+            st.subheader("🚨 Live Clinical Pulse")
+            emergencies = df[df['is_emergency'] == True].sort_values('timestamp', ascending=False).head(5)
+            if not emergencies.empty:
+                for _, row in emergencies.iterrows():
+                    st.markdown(f"""
+                        <div style="border-left: 3px solid #DC2626; padding-left: 10px; margin-bottom: 10px; background-color: #FFF5F5; padding: 10px; border-radius: 4px;">
+                            <span class="emergency-pill">CRITICAL</span><br>
+                            <b>{row['phone_number'][:5]}***</b><br>
+                            <small>{row['transcript_summary'][:60]}...</small>
+                        </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.success("No active critical alerts in this period.")
+
+        # 📞 SECTION: Call Playback & Insights
+        st.markdown("---")
+        st.subheader("🕵️ Deep-Dive: Call Backlogs & Transcripts")
+        
+        # Add Search/Filter for Logs
+        search = st.text_input("🔍 Search Transcripts (e.g. 'chest pain', 'billing')")
+        display_df = df
+        if search:
+            display_df = df[df['transcript_summary'].str.contains(search, case=False, na=False)]
+            
+        st.dataframe(
+            display_df[['timestamp', 'phone_number', 'sentiment', 'intent', 'outcome', 'transcript_summary']],
+            use_container_width=True,
+            column_config={
+                "timestamp": st.column_config.DatetimeColumn("Date/Time", format="D MMM, HH:mm"),
+                "transcript_summary": st.column_config.TextColumn("AI Summary", width="large")
+            }
+        )
     else:
         st.info("No call logs found for this period.")
 

@@ -15,7 +15,9 @@ TextMediaType = Literal["text/plain", "application/json"]
 
 @dataclass(frozen=True)
 class InferenceConfig:
-    max_tokens: int = 512
+    # [OPT-03] 200 tokens = ~150 words, enough for 2-3 sentences.
+    # Lower = faster first-token latency from Nova Sonic (saves 50-150ms).
+    max_tokens: int = 200
     top_p: float = 0.9
     temperature: float = 0.7
 

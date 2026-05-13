@@ -17,6 +17,7 @@ class LocalBookingSink:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.file_path = self.output_dir / "hospital_bookings.csv"
         self._lock = threading.Lock()
+        self._recent_criticals: dict = {}  # [LOW FIX] Track criticals for anti-spam
         self._ensure_header()
 
     def _ensure_header(self):
@@ -39,9 +40,13 @@ class LocalBookingSink:
             
             # Anti-Spam: Skip duplicate CRITICAL entries from same phone in last 10 mins
             if urgency == "CRITICAL" and phone != "N/A":
-                # (In a real system, we'd query the DB; here we check local throttle)
-                # For demo, we skip duplicate row creation to prevent 'Alert Fatigue'
-                pass 
+                import time
+                now = time.time()
+                last_time = self._recent_criticals.get(phone, 0)
+                if now - last_time < 600:  # 10 minutes
+                    logger.info(f"[SINK] Anti-Spam blocked duplicate CRITICAL for {phone}")
+                    return True
+                self._recent_criticals[phone] = now
 
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             with self._lock:

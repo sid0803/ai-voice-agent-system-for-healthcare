@@ -83,7 +83,7 @@ from .types_config import (
 )
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+# NOTE: Do NOT call logging.basicConfig() here. server.py owns the root log config.
 
 
 @dataclass
@@ -103,6 +103,9 @@ class SessionData:
     audio_content_id: str = field(default_factory=lambda: str(uuid4()))
     audio_paused: bool = False
     hospital_id: str = "default_tier2"
+    # [MED-06] asyncio.Event to signal when Bedrock stream is ready
+    # Server waits on this instead of polling, eliminating the busy-wait loop.
+    _stream_ready: asyncio.Event = field(default_factory=asyncio.Event)
 
 
 class StreamSession:
@@ -116,7 +119,10 @@ class StreamSession:
         self._session_id = session_id
         self._client = client
         self._audio_buffer_queue: list[bytes] = []
-        self._max_queue_size: int = 200
+        # [OPT-09] 10 frames = 200ms max buffer (was 200 frames = 4 seconds!).
+        # Audio is forwarded to Nova Sonic immediately instead of being queued,
+        # reducing perceived response start latency.
+        self._max_queue_size: int = 10
         self._is_processing_audio: bool = False
         self._is_active: bool = True
         self.stream_sid: str = ""
@@ -163,7 +169,8 @@ class StreamSession:
         self._is_processing_audio = True
         try:
             processed_chunks = 0
-            max_chunks_per_batch = 5
+            # [LOW FIX] Matched to queue size (OPT-09) to ensure consistent drain
+            max_chunks_per_batch = 10
             while (
                 self._audio_buffer_queue
                 and processed_chunks < max_chunks_per_batch
@@ -265,6 +272,8 @@ class S2SBidirectionalStreamClient:
             is_prompt_start_sent=False,
             is_audio_content_start_sent=False,
             audio_content_id=str(uuid4()),
+            # [D-11] hospital_id injected later via session.hospital_id = ...
+            # SessionData.hospital_id default is fine; StreamSession.hospital_id is the live field
         )
         self._active_sessions[session_id] = session
         self._update_session_activity(session_id)
@@ -376,6 +385,8 @@ class S2SBidirectionalStreamClient:
             )
             session.stream = stream
             session.is_active = True
+            # [MED-06] Signal stream is ready — server.py waits on this Event
+            session._stream_ready.set()
 
             # Send sessionStart event
             await self._send_event(session_id, {
@@ -413,6 +424,10 @@ class S2SBidirectionalStreamClient:
         
         # Ensure session is active before notify/start
         session.is_active = True
+        
+        # [D-07] Signal stream ready so server.py doesn't wait 30s and time out.
+        # Mock mode IS ready immediately after MockS2SStream.start_processing().
+        session._stream_ready.set()
         
         # Notify of fallback
         self._dispatch_event(session_id, "textOutput", {

@@ -4,6 +4,7 @@ Single actor ID per phone: caller-<last 10 digits>.
 One retrieve call per connect, one save call per turn. No legacy lookups.
 """
 
+import asyncio
 import logging
 import os
 import re
@@ -114,7 +115,10 @@ class AgentCoreMemoryManager:
         if not aid:
             return False
         try:
-            self.data_client.create_event(
+            # [D-10] create_event is a synchronous boto3 call — must use asyncio.to_thread
+            # to avoid blocking the event loop and causing audio stuttering.
+            await asyncio.to_thread(
+                self.data_client.create_event,
                 memoryId=self.memory_id,
                 actorId=aid,
                 sessionId=session_id,

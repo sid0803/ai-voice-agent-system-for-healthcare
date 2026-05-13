@@ -59,8 +59,14 @@ class KnowledgeDistiller:
                 "messages": [{"role": "user", "content": prompt}]
             })
             
+            # [FIX LOW-05] Use env variable instead of hard-coded model ID
+            # Prevents breakage when AWS retires a specific Claude model version.
+            model_id = os.getenv(
+                "ANALYTICS_MODEL_ID",
+                "anthropic.claude-3-5-sonnet-20241022-v2:0"  # Updated default
+            )
             response = self.bedrock.invoke_model(
-                modelId="anthropic.claude-3-5-sonnet-20240620-v1:0",
+                modelId=model_id,
                 contentType="application/json",
                 accept="application/json",
                 body=body

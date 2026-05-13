@@ -116,14 +116,21 @@ class MockS2SStream:
             "role": "ASSISTANT",
             "content": text
         })
+        # [LOW FIX] Simulate audio output so Exotel stream gets media (even if empty PCM)
+        import base64
+        self.client._dispatch_event(self.session_id, "audioOutput", {
+            "content": base64.b64encode(b'\x00' * 8000).decode("utf-8")
+        })
 
     async def _simulate_tool_call(self, tool_name: str, args: dict):
         """Dispatch a tool invocation back to the client."""
         call_id = f"mock-call-{random.randint(1000, 9999)}"
+        # [FIX HIGH-06] Use 'content' key (not 'input') to match nova_client.py
+        # tool_processor reads session.tool_use_content.get("content", "{}")
         self.client._dispatch_event(self.session_id, "toolUse", {
             "toolUseId": call_id,
             "name": tool_name,
-            "input": args
+            "content": json.dumps(args)
         })
 
     def close(self):

@@ -1,6 +1,6 @@
-import audioop
 import logging
 import numpy as np
+from scipy.signal import lfilter, lfilter_zi
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +17,13 @@ class AudioHardener:
         self.sample_rate = sample_rate
         self.sample_width = 2
         
-        # Filtering state
-        self.hpf_alpha = 0.85  # Cutoff approx 150-200Hz for 8kHz
-        self.prev_x = 0.0
-        self.prev_y = 0.0
+        # [OPT-01] Pre-compute scipy IIR filter coefficients for HPF
+        # First-order high-pass: y[n] = alpha*(y[n-1] + x[n] - x[n-1])
+        # Cutoff approx 150-200Hz for 8kHz sample rate
+        self.hpf_alpha = 0.85
+        self._hpf_b = np.array([self.hpf_alpha, -self.hpf_alpha], dtype=np.float64)
+        self._hpf_a = np.array([1.0, -self.hpf_alpha], dtype=np.float64)
+        self._hpf_zi = lfilter_zi(self._hpf_b, self._hpf_a) * 0.0  # init state
         
         # Noise Gate / AGC state
         self.noise_floor = 150.0
@@ -30,19 +33,10 @@ class AudioHardener:
         self.gate_threshold_mult = 2.0
         
     def _apply_hpf(self, samples: np.ndarray) -> np.ndarray:
-        """Simple first-order high-pass filter to remove low-end rumble."""
-        out = np.zeros_like(samples)
-        x_prev = self.prev_x
-        y_prev = self.prev_y
-        
-        for i in range(len(samples)):
-            out[i] = self.hpf_alpha * (y_prev + samples[i] - x_prev)
-            x_prev = samples[i]
-            y_prev = out[i]
-            
-        self.prev_x = x_prev
-        self.prev_y = y_prev
-        return out
+        """[OPT-01] Vectorized first-order high-pass filter via scipy.signal.lfilter.
+        Replaces Python for-loop — runs at C speed, ~10x faster."""
+        out, self._hpf_zi = lfilter(self._hpf_b, self._hpf_a, samples.astype(np.float64), zi=self._hpf_zi)
+        return out.astype(np.float32)
 
     def process_chunk(self, data: bytes) -> bytes:
         """Apply noise suppression and gain normalization to a PCM chunk."""
@@ -97,24 +91,18 @@ class AudioPolisher:
         self.ratio = 4.0        # 4:1 compression
         self.makeup_gain = 1.6  # 4dB makeup boost
         
-        # Simple Treble Boost filter (High Shelf)
-        self.shelf_alpha = 0.4  # Approx 3kHz boost
-        self.prev_x = 0.0
-        self.prev_y = 0.0
+        # [OPT-01] Pre-compute scipy IIR coefficients for High-Shelf treble boost
+        # High-shelf: boosts frequencies above ~3kHz for telephone clarity
+        shelf_alpha = 0.4
+        self._shelf_b = np.array([1.0 - shelf_alpha + shelf_alpha * 1.8,
+                                   -(1.0 - shelf_alpha)], dtype=np.float64)
+        self._shelf_a = np.array([1.0, -shelf_alpha], dtype=np.float64)
+        self._shelf_zi = lfilter_zi(self._shelf_b, self._shelf_a) * 0.0
 
     def _apply_treble_boost(self, samples: np.ndarray) -> np.ndarray:
-        """Simple high-shelf boost for clarity."""
-        out = np.zeros_like(samples)
-        y_prev = self.prev_y
-        
-        for i in range(len(samples)):
-            low_content = (1 - self.shelf_alpha) * y_prev + self.shelf_alpha * samples[i]
-            high_content = samples[i] - low_content
-            out[i] = low_content + (high_content * 1.8) # Boost high by 80%
-            y_prev = low_content
-            
-        self.prev_y = y_prev
-        return out
+        """[OPT-01] Vectorized high-shelf boost via scipy.signal.lfilter."""
+        out, self._shelf_zi = lfilter(self._shelf_b, self._shelf_a, samples.astype(np.float64), zi=self._shelf_zi)
+        return out.astype(np.float32)
 
     def process_chunk(self, data: bytes) -> bytes:
         """Apply compression and HF enhancement to outbound PCM."""

@@ -1,36 +1,42 @@
+# ============================================================
+# InDiiServe Asha Voice Agent — Pinned Dependencies (MED-02)
+# Generated: 2026-05-12
+# Pin strategy: >=X.Y,<X+1 (accept patches, block breaking changes)
+# To regenerate lock file: pip freeze > requirements-lock.txt
+# ============================================================
+
 # --- CORE WEB & VOICE ---
-fastapi
-uvicorn[standard]
-websockets
-httpx
-python-dotenv
-bcrypt
-cryptography
+fastapi>=0.115.0,<0.116
+uvicorn[standard]>=0.32.0,<0.33
+websockets>=13.0,<14
+httpx>=0.27.0,<0.28
+python-dotenv>=1.0.0,<2
+bcrypt>=4.2.0,<5
+cryptography>=43.0.0,<44
+slowapi>=0.1.9,<0.2          # [CRIT-05] Rate limiting
 
 # --- AI & AWS ---
-boto3
-aws-sdk-bedrock-runtime
-audioop-lts
-
-# --- KNOWLEDGE BASE & TOOLS ---
-faiss-cpu
-numpy
-requests
+boto3>=1.35.0,<2
+aws-sdk-bedrock-runtime>=1.0.0
+faiss-cpu>=1.9.0,<2
+numpy>=1.26.0,<2
+scipy>=1.14.0,<2              # [OPT-01] Vectorized audio filters (replaces Python for-loops)
 
 # --- INTEGRATIONS & SINKS ---
-google-api-python-client
-google-auth
-google-auth-httplib2
-google-auth-oauthlib
-pandas
-openpyxl
+google-api-python-client>=2.150.0,<3
+google-auth>=2.35.0,<3
+google-auth-httplib2>=0.2.0,<0.3
+google-auth-oauthlib>=1.2.0,<2
+requests>=2.32.0,<3
 
 # --- ANALYTICS & DASHBOARD ---
-psycopg2-binary
-streamlit
-plotly
+psycopg2-binary>=2.9.10,<3
+streamlit>=1.40.0,<2
+plotly>=5.24.0,<6
+pandas>=2.2.0,<3
+openpyxl>=3.1.0,<4
 
 # --- TESTING ---
-pytest
-pytest-asyncio
-hypothesis
+pytest>=8.3.0,<9
+pytest-asyncio>=0.24.0,<0.25
+hypothesis>=6.112.0,<7
