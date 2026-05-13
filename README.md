@@ -51,26 +51,26 @@ Our architecture is heavily optimized for ultra-low latency real-time telephony 
 ```mermaid
 graph TD
     subgraph "Telephony Edge (Exotel PSTN)"
-        P[Patient Phone] -->|PSTN| EX[Exotel Gateway]
-        EX -->|WebSocket (WSS)| WS[FastAPI Ingress (server.py)]
+        P["Patient Phone"] -->|PSTN| EX["Exotel Gateway"]
+        EX -->|WebSocket (WSS)| WS["FastAPI Ingress (server.py)"]
     end
 
     subgraph "Core Agent Intelligence (AWS Bedrock)"
-        WS <-->|Bidirectional Stream| NS[Bedrock Nova Sonic]
-        NS -->|Semantic Cache| FAISS[(FAISS In-Memory Cache)]
-        NS -->|Query| TM[Tenant Manager]
+        WS <-->|Bidirectional Stream| NS["Bedrock Nova Sonic"]
+        NS -->|Semantic Cache| FAISS[("FAISS In-Memory Cache")]
+        NS -->|Query| TM["Tenant Manager"]
     end
 
     subgraph "Hospital OS (Tools & Integrations)"
-        NS -->|Invoke| TH[Tool Handler (tools.py)]
-        TH -->|Universal Adapter| UA[Production HIS/CRM]
-        TH -->|Failover| LS[(Local CSV Sink)]
+        NS -->|Invoke| TH["Tool Handler (tools.py)"]
+        TH -->|Universal Adapter| UA["Production HIS/CRM"]
+        TH -->|Failover| LS[("Local CSV Sink")]
     end
     
     subgraph "Post-Call Data Science"
-        WS -->|Post-Call Async| AP[Analytics Processor]
-        AP -->|Clinical Insights| RDS[(AWS RDS Postgres)]
-        AP -->|Encrypted Audit| DDB[(AWS DynamoDB)]
+        WS -->|Post-Call Async| AP["Analytics Processor"]
+        AP -->|Clinical Insights| RDS[("AWS RDS Postgres")]
+        AP -->|Encrypted Audit| DDB[("AWS DynamoDB")]
     end
 ```
 
