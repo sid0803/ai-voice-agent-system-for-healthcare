@@ -103,6 +103,7 @@ class SessionData:
     audio_content_id: str = field(default_factory=lambda: str(uuid4()))
     audio_paused: bool = False
     hospital_id: str = "default_tier2"
+    is_audio_data_sent: bool = False
     # [MED-06] asyncio.Event to signal when Bedrock stream is ready
     # Server waits on this instead of polling, eliminating the busy-wait loop.
     _stream_ready: asyncio.Event = field(default_factory=asyncio.Event)
@@ -214,7 +215,7 @@ class S2SBidirectionalStreamClient:
         region: str = "us-east-1",
         credentials: Optional[dict] = None,
         inference_config: Optional[InferenceConfig] = None,
-        model_id: str = "amazon.nova-2-sonic-v1:0",
+        model_id: str = "amazon.nova-sonic-v1:0",
     ) -> None:
         # Use implicit environment resolution via smithy resolver, which works fine
         # if the variables are set via python-dotenv upstream. We won't mutate os.environ explicitly.
@@ -385,10 +386,8 @@ class S2SBidirectionalStreamClient:
             )
             session.stream = stream
             session.is_active = True
-            # [MED-06] Signal stream is ready — server.py waits on this Event
-            session._stream_ready.set()
 
-            # Send sessionStart event
+            # Send sessionStart event FIRST
             await self._send_event(session_id, {
                 "event": {
                     "sessionStart": {
@@ -403,6 +402,9 @@ class S2SBidirectionalStreamClient:
                     }
                 }
             })
+
+            # [MED-06] Signal stream is ready AFTER sessionStart is sent
+            session._stream_ready.set()
 
             # Start processing response stream (blocks until error or completion)
             await self._process_response_stream(session_id)
@@ -708,6 +710,7 @@ class S2SBidirectionalStreamClient:
             return
 
         base64_data = base64.b64encode(audio_data).decode("ascii")
+        session.is_audio_data_sent = True
         await self._send_event(session_id, {
             "event": {
                 "audioInput": {
@@ -727,6 +730,13 @@ class S2SBidirectionalStreamClient:
         session = self._active_sessions.get(session_id)
         if session is None or not session.is_audio_content_start_sent:
             return
+            
+        # [PROT-01] Only end if data was actually sent
+        if not session.is_audio_data_sent:
+            logger.info("send_content_end: skipping as no data was sent")
+            session.is_audio_content_start_sent = False
+            return
+            
         await self._send_event(session_id, {
             "event": {
                 "contentEnd": {
@@ -761,18 +771,24 @@ class S2SBidirectionalStreamClient:
         # 2. Close current audio content block
         old_audio_id = session.audio_content_id
         if session.is_audio_content_start_sent:
-            await self._send_event(session_id, {
-                "event": {
-                    "contentEnd": {
-                        "promptName": session.prompt_name,
-                        "contentName": old_audio_id,
+            # [PROT-01] Only close if we actually sent audio data
+            if session.is_audio_data_sent:
+                await self._send_event(session_id, {
+                    "event": {
+                        "contentEnd": {
+                            "promptName": session.prompt_name,
+                            "contentName": old_audio_id,
+                        }
                     }
-                }
-            })
+                })
+                logger.info("send_text_message: closed audio content %s", old_audio_id[:8])
+                # Give Nova time to process the audio content closure
+                await asyncio.sleep(0.5)
+            else:
+                logger.info("send_text_message: skipping closure of empty audio content %s", old_audio_id[:8])
+            
             session.is_audio_content_start_sent = False
-            logger.info("send_text_message: closed audio content %s", old_audio_id[:8])
-            # Give Nova time to process the audio content closure
-            await asyncio.sleep(0.5)
+            session.is_audio_data_sent = False # Reset for next block
 
         # 3. Send the text message as cross-modal USER text input (per AWS docs)
         content_id = str(uuid4())

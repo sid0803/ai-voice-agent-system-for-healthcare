@@ -131,10 +131,72 @@ class AudioPolisher:
             logger.exception("Outbound audio polishing failed")
             return data
 
+try:
+    import audioop
+    _HAS_AUDIOOP = True
+except ImportError:
+    _HAS_AUDIOOP = False
+    
+    def _init_mulaw_tables():
+        ulaw_to_lin = np.zeros(256, dtype=np.int16)
+        lin_to_ulaw = np.zeros(65536, dtype=np.uint8)
+        
+        for i in range(256):
+            val = ~i & 0xFF
+            sign = (val & 0x80) >> 7
+            exponent = (val & 0x70) >> 4
+            mantissa = val & 0x0F
+            sample = ((mantissa << 3) + 132) << exponent
+            sample -= 132
+            if sign != 0:
+                sample = -sample
+            ulaw_to_lin[i] = np.clip(sample, -32768, 32767)
+            
+        for i in range(65536):
+            sample = np.int16(i)
+            sign = 0x80 if sample < 0 else 0x00
+            mag = abs(int(sample))
+            mag = min(mag, 32635)
+            mag += 132
+            
+            exponent = 7
+            for exp in range(7, 0, -1):
+                if (mag & (0x100 << exp)) != 0:
+                    exponent = exp
+                    break
+            else:
+                exponent = 0
+                
+            mantissa = (mag >> (exponent + 3)) & 0x0F
+            val = sign | (exponent << 4) | mantissa
+            lin_to_ulaw[i] = ~val & 0xFF
+            
+        return ulaw_to_lin, lin_to_ulaw
+
+    _ULAW_TO_LIN, _LIN_TO_ULAW = _init_mulaw_tables()
+
 def exotel_to_pcm(data: bytes) -> bytes:
-    """Exotel raw bytes are already 8k 16-bit PCM."""
-    return data
+    """Convert Exotel 8kHz u-law (PCMU) to 16-bit linear PCM."""
+    if not data:
+        return data
+    if _HAS_AUDIOOP:
+        try:
+            return audioop.ulaw2lin(data, 2)
+        except Exception:
+            pass
+    # Numpy fallback
+    ulaw_indices = np.frombuffer(data, dtype=np.uint8)
+    return _ULAW_TO_LIN[ulaw_indices].tobytes()
 
 def pcm_to_exotel(data: bytes) -> bytes:
-    """Ensure outgoing data is in correct PCM format."""
-    return data
+    """Convert 16-bit linear PCM to Exotel 8kHz u-law (PCMU)."""
+    if not data:
+        return data
+    if _HAS_AUDIOOP:
+        try:
+            return audioop.lin2ulaw(data, 2)
+        except Exception:
+            pass
+    # Numpy fallback
+    pcm_samples = np.frombuffer(data, dtype=np.int16).view(np.uint16)
+    return _LIN_TO_ULAW[pcm_samples].tobytes()

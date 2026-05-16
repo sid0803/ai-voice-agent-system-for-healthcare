@@ -9,8 +9,7 @@ import websockets
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("simulator")
 
-async def simulate_call(hospital_id="apollo_metro"):
-    uri = f"ws://localhost:8000/exotel-stream?hospital_id={hospital_id}&CallSid={uuid4()}&CallFrom=%2B919876543210"
+async def simulate_with_uri(uri, hospital_id="apollo_metro"):
     
     print("\n" + "="*60)
     print(f"📞 PROJECT ASHA: CALL SIMULATOR (Hospital: {hospital_id})")
@@ -79,8 +78,20 @@ async def simulate_call(hospital_id="apollo_metro"):
         print("\n💡 Tip: Make sure the server is running (python -m src.server)")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Asha Voice Agent Simulator")
+    parser.add_argument("--hospital", default="apollo_metro", help="Hospital ID")
+    parser.add_argument("--port", type=int, default=8000, help="Port of the server")
+    
+    args = parser.parse_args()
+    
     try:
-        hospital = sys.argv[1] if len(sys.argv) > 1 else "apollo_metro"
-        asyncio.run(simulate_call(hospital))
+        # Pass the port into the simulation
+        async def run_sim():
+            uri = f"ws://localhost:{args.port}/exotel-stream?hospital_id={args.hospital}&CallSid={uuid4()}&CallFrom=%2B919876543210"
+            await simulate_with_uri(uri, args.hospital)
+            
+        # Refactor simulate_call to take URI
+        asyncio.run(run_sim())
     except KeyboardInterrupt:
         pass

@@ -10,7 +10,7 @@ class KnowledgeDistiller:
     """The 'Brain' extension: Learns from user conversations and system events."""
     
     def __init__(self):
-        self.bedrock = boto3.client("bedrock-runtime", region_name=os.getenv("AWS_REGION", "ap-south-1"))
+        self.bedrock = boto3.client("bedrock-runtime", region_name=os.getenv("BEDROCK_REGION", "us-east-1"))
         self.dynamo = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION", "ap-south-1"))
         self.table_name = os.getenv("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
         
@@ -48,22 +48,24 @@ class KnowledgeDistiller:
         {transcript_text}
         
         Output only a JSON array of objects with "question" and "answer" keys.
-        If no new knowledge is found, return an empty array [].
-        Do NOT include PII like names or phone numbers.
+        
+        ## CRITICAL SCOPE RULE:
+        - ONLY extract facts related to InDiiServe Healthcare, Doctors, Appointments, Hospital floors, or medical operations.
+        - COMPLETELY IGNORE and DISCARD any information about travel, trips, hotels, or tourism.
+        - If no healthcare-specific knowledge is found, return an empty array [].
+        - Do NOT include PII like names or phone numbers.
         """
 
         try:
             body = json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": 500,
-                "messages": [{"role": "user", "content": prompt}]
+                "messages": [{"role": "user", "content": [{"text": prompt}]}],
+                "inferenceConfig": {"maxTokens": 500}
             })
             
-            # [FIX LOW-05] Use env variable instead of hard-coded model ID
-            # Prevents breakage when AWS retires a specific Claude model version.
+            # Use Nova Lite instead of deprecated Claude models
             model_id = os.getenv(
-                "ANALYTICS_MODEL_ID",
-                "anthropic.claude-3-5-sonnet-20241022-v2:0"  # Updated default
+                "DISTILLER_MODEL_ID",
+                "us.amazon.nova-lite-v1:0"
             )
             response = self.bedrock.invoke_model(
                 modelId=model_id,
@@ -73,7 +75,20 @@ class KnowledgeDistiller:
             )
             
             result = json.loads(response["body"].read())
-            extracted = json.loads(result["content"][0]["text"])
+            output_text = (
+                result.get("output", {})
+                      .get("message", {})
+                      .get("content", [{}])[0]
+                      .get("text", "[]")
+            )
+            
+            import re
+            match = re.search(r'\[.*\]', output_text, re.DOTALL)
+            if match:
+                extracted = json.loads(match.group(0))
+            else:
+                extracted = []
+                
             return extracted
         except Exception as e:
             logger.error(f"[LEARNING] Distillation failed: {e}")

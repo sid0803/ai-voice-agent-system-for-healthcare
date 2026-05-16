@@ -81,6 +81,10 @@ _BOTO_POOL_CONFIG = _BotoConfig(
     tcp_keepalive=True,
 )
 
+_kb_id = os.getenv("KB_ID")
+_kb_region = os.getenv("KB_REGION", "us-east-1")
+_embed_region = os.getenv("BEDROCK_REGION", "us-east-1")
+
 _kb_client = boto3.client(
     "bedrock-agent-runtime",
     region_name=_kb_region,

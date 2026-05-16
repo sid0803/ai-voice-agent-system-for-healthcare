@@ -74,7 +74,7 @@ class HealthChecker:
             # 2. Bedrock Access Check (Nova Mini check)
             # [MED FIX] Actually invoke Bedrock to verify IAM allows Bedrock actions
             bedrock = boto3.client('bedrock', region_name=os.environ.get("BEDROCK_REGION", "us-east-1"))
-            bedrock.list_foundation_models(byProvider="Amazon", maxResults=1)
+            bedrock.list_foundation_models(byProvider="Amazon")
             
             return True, "Connected (IAM & Bedrock Validated)"
         except Exception as e:

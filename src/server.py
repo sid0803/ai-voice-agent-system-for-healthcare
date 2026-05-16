@@ -721,8 +721,8 @@ async def exotel_stream(websocket: WebSocket):
         logger.warning("[SECURITY] DEMO_MODE=true with real Exotel credentials detected! "
                        "The chat backdoor is active. Set DEMO_MODE=false for production.")
 
-    SOFT_FOLLOW_UP_SEC = 4 if not DEMO_MODE else 6
-    ESCALATION_SEC = 9 if not DEMO_MODE else 12 
+    SOFT_FOLLOW_UP_SEC = 30 if not DEMO_MODE else 45
+    ESCALATION_SEC = 50 if not DEMO_MODE else 60 
     
     detected_language = "en"
     tool_in_progress = False

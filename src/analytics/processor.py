@@ -27,8 +27,8 @@ class AnalyticsProcessor:
             config=_BOTO_POOL_CONFIG
         )
         # Use a cost-effective model for post-call analysis
-        # amazon.nova-lite-v1:0 replaces the deprecated Titan Text Express v1
-        self.model_id = os.environ.get("ANALYTICS_MODEL_ID", "amazon.nova-lite-v1:0")
+        # us.amazon.nova-lite-v1:0 replaces the deprecated Titan Text Express v1
+        self.model_id = os.environ.get("ANALYTICS_MODEL_ID", "us.amazon.nova-lite-v1:0")
 
     async def process_call(self, session_id: str, phone: str, hospital_id: str, transcript: list, duration: int):
         """Analyze the transcript using AI and save results to RDS."""
