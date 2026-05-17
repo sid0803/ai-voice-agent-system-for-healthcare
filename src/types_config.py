@@ -51,7 +51,7 @@ DEFAULT_INFERENCE_CONFIG = InferenceConfig()
 
 DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="HIGH")
 
-DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(voice_id="kiara")
+DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(voice_id="matthew")
 
 DEFAULT_TEXT_CONFIG = TextConfiguration()
 
