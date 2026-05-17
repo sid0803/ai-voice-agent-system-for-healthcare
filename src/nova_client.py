@@ -215,7 +215,7 @@ class S2SBidirectionalStreamClient:
         region: str = "us-east-1",
         credentials: Optional[dict] = None,
         inference_config: Optional[InferenceConfig] = None,
-        model_id: str = "amazon.nova-sonic-v1:0",
+        model_id: str = "amazon.nova-2-sonic-v1:0",
     ) -> None:
         # Use implicit environment resolution via smithy resolver, which works fine
         # if the variables are set via python-dotenv upstream. We won't mutate os.environ explicitly.
