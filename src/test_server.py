@@ -156,7 +156,8 @@ async def exotel_stream(websocket: WebSocket):
                     print("\n>>> [SYSTEM] Bedrock ready! Speak into your phone now: 'Hello Asha'")
                 
                 elif event_type == "stop":
-                    print("🛑 Exotel sent STOP event.")
+                    print("🛑 Exotel sent STOP event. Draining in-flight Bedrock audio...")
+                    await asyncio.sleep(1.5) # Give Bedrock time to finish streaming its response
                     break
                     
     except Exception as e:

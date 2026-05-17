@@ -729,12 +729,7 @@ class S2SBidirectionalStreamClient:
     async def send_content_end(self, session_id: str) -> None:
         session = self._active_sessions.get(session_id)
         if session is None or not session.is_audio_content_start_sent:
-            return
-            
-        # [PROT-01] Only end if data was actually sent
-        if not session.is_audio_data_sent:
-            logger.info("send_content_end: skipping as no data was sent")
-            session.is_audio_content_start_sent = False
+            logger.info("send_content_end: skipping as audio content was never started")
             return
             
         await self._send_event(session_id, {
@@ -745,6 +740,8 @@ class S2SBidirectionalStreamClient:
                 }
             }
         })
+        session.is_audio_content_start_sent = False
+        session.is_audio_data_sent = False
         await asyncio.sleep(0.5)
 
     async def send_text_message(self, session_id: str, text: str) -> None:
