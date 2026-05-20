@@ -182,11 +182,15 @@ def exotel_to_pcm(data: bytes) -> bytes:
     if _HAS_AUDIOOP:
         try:
             return audioop.ulaw2lin(data, 2)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("[AUDIO] audioop ulaw2lin failed, using numpy fallback: %s", e)
     # Numpy fallback
-    ulaw_indices = np.frombuffer(data, dtype=np.uint8)
-    return _ULAW_TO_LIN[ulaw_indices].tobytes()
+    try:
+        ulaw_indices = np.frombuffer(data, dtype=np.uint8)
+        return _ULAW_TO_LIN[ulaw_indices].tobytes()
+    except Exception as e:
+        logger.error("[AUDIO] Fallback conversion failed: %s", e)
+        return data  # Return unmodified data on critical failure
 
 def pcm_to_exotel(data: bytes) -> bytes:
     """Convert 16-bit linear PCM to Exotel 8kHz u-law (PCMU)."""
@@ -195,8 +199,12 @@ def pcm_to_exotel(data: bytes) -> bytes:
     if _HAS_AUDIOOP:
         try:
             return audioop.lin2ulaw(data, 2)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("[AUDIO] audioop lin2ulaw failed, using numpy fallback: %s", e)
     # Numpy fallback
-    pcm_samples = np.frombuffer(data, dtype=np.int16).view(np.uint16)
-    return _LIN_TO_ULAW[pcm_samples].tobytes()
+    try:
+        pcm_samples = np.frombuffer(data, dtype=np.int16).view(np.uint16)
+        return _LIN_TO_ULAW[pcm_samples].tobytes()
+    except Exception as e:
+        logger.error("[AUDIO] Fallback conversion failed: %s", e)
+        return data  # Return unmodified data on critical failure

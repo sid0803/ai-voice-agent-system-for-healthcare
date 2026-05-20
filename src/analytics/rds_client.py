@@ -145,6 +145,7 @@ class RDSAnalyticsClient:
             try:
                 # 1. Hospital Analytics Table
                 # Translation: Postgres SERIAL -> SQLite AUTOINCREMENT, JSONB -> TEXT
+                # Note: Using f-string here is safe — only constants (db types) are interpolated
                 serial_type = "INTEGER PRIMARY KEY AUTOINCREMENT" if is_sqlite else "SERIAL PRIMARY KEY"
                 json_type = "TEXT" if is_sqlite else "JSONB"
                 

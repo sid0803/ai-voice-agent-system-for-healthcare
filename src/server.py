@@ -133,10 +133,16 @@ async def _verify_health_token(
 # Greeting audio (read once at module level) - P0 Guard
 # ---------------------------------------------------------------------------
 try:
-    hello_audio_bytes = (_PROJECT_ROOT / "assets" / "hello.pcm").read_bytes()
-except Exception:
-    logger.warning("[STARTUP] Missing hello.pcm asset. Using 1s of digital silence.")
+    hello_pcm_path = _PROJECT_ROOT / "assets" / "hello.pcm"
+    if not hello_pcm_path.exists():
+        logger.error("[STARTUP] CRITICAL: hello.pcm asset not found at %s. Using digital silence fallback. Audio will be silent.", hello_pcm_path)
+    hello_audio_bytes = hello_pcm_path.read_bytes()
+except FileNotFoundError:
+    logger.error("[STARTUP] CRITICAL: Failed to read hello.pcm asset. Using 1s of digital silence. Audio greeting will be silent.")
     # 1 second of 8kHz 16-bit PCM silence = 16000 bytes
+    hello_audio_bytes = b'\x00' * 16000
+except Exception as e:
+    logger.error("[STARTUP] Unexpected error reading hello.pcm: %s. Using digital silence fallback.", e)
     hello_audio_bytes = b'\x00' * 16000
 
 # ---------------------------------------------------------------------------
