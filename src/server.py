@@ -1,16 +1,24 @@
 """FastAPI server with Exotel integration for Nova Sonic speech-to-speech AI."""
 
+import os
+import platform
+from collections import namedtuple
+# [FIX] Bypass WMI hang in Python 3.13+ / botocore on Windows subprocesses
+if os.name == 'nt':
+    _uname_tuple = namedtuple('uname_result', ['system', 'node', 'release', 'version', 'machine', 'processor'])
+    platform.uname = lambda: _uname_tuple('Windows', '', '10', '10.0.0', 'AMD64', '')
+
 import asyncio
 import base64
 import hashlib
 import hmac
 import json
-import os
 import logging
 import time
 from contextlib import asynccontextmanager
 from uuid import uuid4
 from datetime import datetime, timezone, timedelta
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import httpx
 from dotenv import load_dotenv
@@ -88,6 +96,13 @@ def _verify_exotel_ws_token(token: str) -> bool:
     if not _EXOTEL_WS_SECRET:
         return True  # Secret not configured — skip (IP check is fallback)
     return hmac.compare_digest(token, _EXOTEL_WS_SECRET)
+
+def _append_query_params(url: str, params: list[tuple[str, str]]) -> str:
+    """Append URL-encoded query params while preserving any existing query string."""
+    parts = urlsplit(url)
+    query = parse_qsl(parts.query, keep_blank_values=True)
+    query.extend((key, value) for key, value in params if value)
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
 
 def mask_phone(phone: str) -> str:
     """Mask phone number for privacy (PII protection)."""
@@ -329,16 +344,12 @@ session_map: dict = {}
 # ---------------------------------------------------------------------------
 # FastAPI lifespan: startup tasks + SIGTERM graceful shutdown
 # ---------------------------------------------------------------------------
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Handle server startup and graceful shutdown (SIGTERM from Docker/ECS)."""
-    # --- STARTUP ---
-    logger.info("[STARTUP] InDiiServe Asha Voice Agent starting...")
-    
+async def run_async_startup_checks():
+    """Run all startup initialization checks asynchronously to prevent blocking server startup."""
     # Run System Health Check (P0 Hardening)
     try:
         from src.diagnostics.health import HealthChecker
-        diag = HealthChecker.run_full_diagnostic()
+        diag = await asyncio.to_thread(HealthChecker.run_full_diagnostic)
         
         status_emoji = "🟢" if diag["overall_status"] == "HEALTHY" else "⚠️"
         logger.info(f"\n{'='*40}\n🏥 SYSTEM HEALTH: {diag['overall_status']} {status_emoji}\n{'='*40}")
@@ -363,7 +374,7 @@ async def lifespan(app: FastAPI):
 
     try:
         if rds_analytics.host and "your_aws_rds_endpoint" not in rds_analytics.host.lower() and "mock" not in rds_analytics.host.lower():
-            rds_analytics.init_schema()
+            await asyncio.to_thread(rds_analytics.init_schema)
             logger.info("[STARTUP] RDS analytics schema verified/created.")
         else:
             # [MED-04] SQLite production warning
@@ -378,19 +389,26 @@ async def lifespan(app: FastAPI):
         # [LOW-02] DynamoDB table auto-creation (idempotent)
         try:
             import boto3
-            dynamo = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"))
-            table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
-            existing = dynamo.list_tables().get("TableNames", [])
-            if table_name not in existing:
-                dynamo.create_table(
-                    TableName=table_name,
-                    KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
-                    AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
-                    BillingMode="PAY_PER_REQUEST",
-                )
-                logger.info("[STARTUP] DynamoDB table '%s' created.", table_name)
-            else:
-                logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", table_name)
+            # Set short timeouts for table check
+            from botocore.config import Config
+            config = Config(connect_timeout=2.0, read_timeout=2.0, retries={'max_attempts': 0})
+            
+            def setup_dynamo():
+                dynamo = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"), config=config)
+                table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
+                existing = dynamo.list_tables().get("TableNames", [])
+                if table_name not in existing:
+                    dynamo.create_table(
+                        TableName=table_name,
+                        KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
+                        AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
+                        BillingMode="PAY_PER_REQUEST",
+                    )
+                    logger.info("[STARTUP] DynamoDB table '%s' created.", table_name)
+                else:
+                    logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", table_name)
+            
+            await asyncio.to_thread(setup_dynamo)
         except Exception as e:
             logger.warning("[STARTUP] DynamoDB table check failed (may not have permissions yet): %s", e)
 
@@ -401,6 +419,18 @@ async def lifespan(app: FastAPI):
         sync_task.add_done_callback(_background_tasks.discard)
     except Exception:
         logger.warning("[STARTUP] Initial background tasks failed - system may be partially functional.")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle server startup and graceful shutdown (SIGTERM from Docker/ECS)."""
+    # --- STARTUP ---
+    logger.info("[STARTUP] InDiiServe Asha Voice Agent starting...")
+    
+    # Run startup checks and initialization in a background task
+    startup_task = asyncio.create_task(run_async_startup_checks())
+    _background_tasks.add(startup_task)
+    startup_task.add_done_callback(_background_tasks.discard)
 
     yield  # Server is running and handling requests
 
@@ -500,17 +530,19 @@ async def incoming_call(request: Request):
         scheme = "wss" if forwarded_proto == "https" else "ws"
         ws_url = f"{scheme}://{host}/exotel-stream"
 
-    # Append call metadata as query params so the WebSocket handler gets them
-    if call_sid or call_from:
-        params = []
-        if call_sid:
-            params.append(f"CallSid={call_sid}")
-        if call_from:
-            # PII Hardening (P1): Encrypt the phone number in the URL so it's not visible
-            # to anyone intercepting the public JSON response.
-            encrypted_from = rds_analytics.encrypt_data(call_from)
-            params.append(f"CallFrom={encrypted_from}")
-        ws_url = f"{ws_url}?{'&'.join(params)}"
+    # Append auth and call metadata so the WebSocket handler can authenticate
+    # Exotel and recover call context. Values are URL-encoded because encrypted
+    # PII can contain reserved URL characters.
+    params = []
+    if _EXOTEL_WS_SECRET:
+        params.append(("token", _EXOTEL_WS_SECRET))
+    if call_sid:
+        params.append(("CallSid", call_sid))
+    if call_from:
+        encrypted_from = rds_analytics.encrypt_data(call_from)
+        params.append(("CallFrom", encrypted_from))
+    if params:
+        ws_url = _append_query_params(ws_url, params)
 
     # PII Scrubbing: Sanitize the printed URL for logs
     log_ws_url = ws_url
@@ -1007,15 +1039,16 @@ async def exotel_stream(websocket: WebSocket):
 
                         # Send greeting audio IMMEDIATELY so Exotel hears something
                         # before the Nova session setup (which takes time)
-                        # Polish greeting for clarity
+                        # Polish greeting for clarity and convert to Exotel format
                         polished_greeting = polisher.process_chunk(hello_audio_bytes)
-                        greeting_b64 = base64.b64encode(polished_greeting).decode("utf-8")
+                        exotel_greeting = pcm_to_exotel(polished_greeting)
+                        greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
                         await websocket.send_text(json.dumps({
                             "event": "media",
                             "stream_sid": session.stream_sid,
                             "media": {"payload": greeting_b64}
                         }))
-                        logger.info("Greeting audio sent to Exotel (%d bytes PCM, polished)", len(hello_audio_bytes))
+                        logger.info("Greeting audio sent to Exotel (%d bytes Exotel, polished)", len(exotel_greeting))
 
                         # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
@@ -1071,10 +1104,14 @@ async def exotel_stream(websocket: WebSocket):
                         # Nova Sonic protocol requirement — skipping this causes immediate stream closure.
                         await session.setup_prompt_start()
                         await session.setup_system_prompt(system_prompt=system_prompt)
-                        await session.setup_start_audio()
                         # [FIX HIGH-01] Do NOT re-send hello_audio_bytes here.
                         # The greeting was already sent to Exotel at line ~1000 (before Nova was ready).
                         # Sending it again via stream_audio() causes a double greeting for the caller.
+
+                        # Trigger Bedrock to generate the greeting dynamically in Asha's persona.
+                        # send_text_message() opens audio input after the greeting trigger is sent.
+                        greeting_trigger = "[The caller has just connected. Welcome them back warmly if context shows their name, otherwise welcome them as a new caller to InDiiServe Healthcare, introduce yourself as Asha, and ask how you can assist them today.]"
+                        asyncio.create_task(bedrock_client.send_text_message(session_id, greeting_trigger))
 
                         idle_monitor_task = asyncio.ensure_future(idle_monitor())
                         _background_tasks.add(idle_monitor_task)

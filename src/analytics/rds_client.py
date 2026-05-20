@@ -19,7 +19,11 @@ class RDSAnalyticsClient:
         self.user = os.environ.get("RDS_USERNAME")
         self.dbname = os.environ.get("RDS_DB_NAME", "indiiserve_analytics")
         self.region = os.environ.get("AWS_REGION", "us-east-1")
-        self.rds_client = boto3.client("rds", region_name=self.region)
+        
+        from botocore.config import Config
+        boto_config = Config(connect_timeout=2, read_timeout=2, retries={"max_attempts": 0})
+        self.rds_client = boto3.client("rds", region_name=self.region, config=boto_config)
+        
         self._cached_token = None
         self._token_expiry = 0
         

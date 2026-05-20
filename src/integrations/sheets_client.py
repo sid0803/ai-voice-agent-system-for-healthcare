@@ -1,8 +1,6 @@
 import os
 import logging
 from datetime import datetime
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +24,11 @@ class GoogleSheetsClient:
             return
 
         try:
+            # Lazy import — googleapiclient.discovery.build makes a network call;
+            # importing it here (not at module level) prevents blocking on startup
+            # when Google Sheets is unconfigured.
+            from google.oauth2 import service_account
+            from googleapiclient.discovery import build
             creds = service_account.Credentials.from_service_account_file(
                 self.creds_path, 
                 scopes=['https://www.googleapis.com/auth/spreadsheets']

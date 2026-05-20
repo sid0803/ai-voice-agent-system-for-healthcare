@@ -153,7 +153,7 @@ except ImportError:
             ulaw_to_lin[i] = np.clip(sample, -32768, 32767)
             
         for i in range(65536):
-            sample = np.int16(i)
+            sample = i if i < 32768 else i - 65536
             sign = 0x80 if sample < 0 else 0x00
             mag = abs(int(sample))
             mag = min(mag, 32635)

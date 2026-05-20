@@ -15,9 +15,14 @@ import time
 from io import StringIO  # noqa: F401 — kept for future CSV buffering use
 from typing import Any
 
+import platform
+from collections import namedtuple
+# [FIX] Bypass WMI hang in Python 3.13+ / botocore on Windows subprocesses
+if os.name == 'nt':
+    _uname_tuple = namedtuple('uname_result', ['system', 'node', 'release', 'version', 'machine', 'processor'])
+    platform.uname = lambda: _uname_tuple('Windows', '', '10', '10.0.0', 'AMD64', '')
 import boto3
 import numpy as np
-import faiss
 
 from src.integrations.tenant_manager import tenant_manager
 from src.integrations.sheets_client import sheets_client
@@ -75,9 +80,9 @@ _FAISS_KEEP_ENTRIES = int(os.getenv("FAISS_KEEP_ENTRIES", "8000"))
 from botocore.config import Config as _BotoConfig
 _BOTO_POOL_CONFIG = _BotoConfig(
     max_pool_connections=10,
-    connect_timeout=5,
-    read_timeout=30,
-    retries={"max_attempts": 2, "mode": "standard"},
+    connect_timeout=2,
+    read_timeout=10,
+    retries={"max_attempts": 1, "mode": "standard"},
     tcp_keepalive=True,
 )
 
@@ -103,13 +108,14 @@ _faiss_lock = threading.Lock()
 
 # Module-level FAISS index and metadata store
 # _faiss_meta: list of {"query": str, "answer": str, "timestamp": float}
-_faiss_index: faiss.IndexFlatIP = None  # inner product on normalized vectors = cosine
+_faiss_index = None  # inner product on normalized vectors = cosine
 _faiss_meta: list[dict] = []
 
 
 def _load_faiss_cache():
     """Load FAISS index and metadata from disk, or create empty ones."""
     global _faiss_index, _faiss_meta
+    import faiss
     if _FAISS_INDEX_PATH.exists() and _FAISS_META_PATH.exists():
         try:
             _faiss_index = faiss.read_index(str(_FAISS_INDEX_PATH))
@@ -127,6 +133,7 @@ def _load_faiss_cache():
 def _save_faiss_cache():
     """Persist FAISS index and metadata to disk."""
     try:
+        import faiss
         with _faiss_lock:
             faiss.write_index(_faiss_index, str(_FAISS_INDEX_PATH))
             with open(_FAISS_META_PATH, "w", encoding="utf-8") as f:
@@ -228,6 +235,7 @@ def _faiss_store(query: str, answer: str):
                 keep_meta = sorted_meta[-_FAISS_KEEP_ENTRIES:]
 
                 # Rebuild embeddings for kept entries
+                import faiss
                 new_index = faiss.IndexFlatIP(_EMBED_DIMENSION)
                 for entry in keep_meta:
                     emb = _embed_query(entry["query"])
@@ -691,7 +699,7 @@ available_tools: list[dict] = [
     {
         "toolSpec": {
             "name": "hospitalInfoTool",
-            "description": "Get hospital information like address, contact details, pharmacy timings, and policies.",
+            "description": "MUST be called when the caller asks about hospital location, address, directions, where to go, hospital contact details, pharmacy hours, visiting hours, or any general hospital information. Do NOT answer from memory — always call this tool.",
             "inputSchema": {"json": _hospital_info_schema},
         }
     },
@@ -712,7 +720,7 @@ available_tools: list[dict] = [
     {
         "toolSpec": {
             "name": "clinicalTriageTool",
-            "description": "Gather detailed symptom information for clinical assessment. Use when patient mentions pain or discomfort.",
+            "description": "MUST be called when the patient describes any medical symptoms, pain, fever, headache, nausea, fatigue, breathing issues, or any physical discomfort that is NOT a life-threatening emergency. Log their symptoms for clinical assessment. Do NOT just respond with words — call this tool immediately to capture the symptom data.",
             "inputSchema": {"json": _clinical_triage_schema},
         }
     },
@@ -740,7 +748,7 @@ available_tools: list[dict] = [
     {
         "toolSpec": {
             "name": "predictOTScheduleTool",
-            "description": "Predict total OT block time (prep, surgery, recovery) and find the next available scheduling slot.",
+            "description": "MUST be called when anyone asks about surgery duration, operation theatre timing, how long a procedure takes, OT slot availability, or any surgical scheduling question. Call this tool immediately for any procedure/surgery time query.",
             "inputSchema": {"json": _ot_prediction_schema},
         }
     },

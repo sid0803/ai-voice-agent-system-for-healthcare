@@ -66,14 +66,16 @@ class HealthChecker:
     @classmethod
     def check_aws(cls) -> Tuple[bool, str]:
         """Verify AWS credentials and Bedrock access."""
+        from botocore.config import Config
+        config = Config(connect_timeout=2.0, read_timeout=2.0, retries={'max_attempts': 0})
         try:
             # 1. Identity Check
-            sts = boto3.client('sts')
+            sts = boto3.client('sts', config=config)
             sts.get_caller_identity()
             
             # 2. Bedrock Access Check (Nova Mini check)
             # [MED FIX] Actually invoke Bedrock to verify IAM allows Bedrock actions
-            bedrock = boto3.client('bedrock', region_name=os.environ.get("BEDROCK_REGION", "us-east-1"))
+            bedrock = boto3.client('bedrock', region_name=os.environ.get("BEDROCK_REGION", "us-east-1"), config=config)
             bedrock.list_foundation_models(byProvider="Amazon")
             
             return True, "Connected (IAM & Bedrock Validated)"

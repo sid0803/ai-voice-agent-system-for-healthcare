@@ -10,8 +10,10 @@ class KnowledgeDistiller:
     """The 'Brain' extension: Learns from user conversations and system events."""
     
     def __init__(self):
-        self.bedrock = boto3.client("bedrock-runtime", region_name=os.getenv("BEDROCK_REGION", "us-east-1"))
-        self.dynamo = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION", "ap-south-1"))
+        from botocore.config import Config
+        boto_config = Config(connect_timeout=2, read_timeout=2, retries={"max_attempts": 0})
+        self.bedrock = boto3.client("bedrock-runtime", region_name=os.getenv("BEDROCK_REGION", "us-east-1"), config=boto_config)
+        self.dynamo = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION", "ap-south-1"), config=boto_config)
         self.table_name = os.getenv("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
         
         self.knowledge_file = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "knowledge" / "distilled_facts.json"

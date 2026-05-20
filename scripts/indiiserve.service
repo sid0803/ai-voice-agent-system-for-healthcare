@@ -1,0 +1,20 @@
+[Unit]
+Description=InDiiServe Nova Sonic Voice Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/indiiserve/InDiiServe Nova Sonic Voice Agent/InDiiServe Nova Sonic Voice Agent
+Environment=PYTHONPATH=.
+EnvironmentFile=/home/ubuntu/indiiserve/InDiiServe Nova Sonic Voice Agent/InDiiServe Nova Sonic Voice Agent/.env
+ExecStart=/usr/bin/bash -lc 'cd "/home/ubuntu/indiiserve/InDiiServe Nova Sonic Voice Agent/InDiiServe Nova Sonic Voice Agent" && exec ./linux_venv/bin/python -m uvicorn src.server:app --host 127.0.0.1 --port 9000 --workers 1 --log-level info'
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

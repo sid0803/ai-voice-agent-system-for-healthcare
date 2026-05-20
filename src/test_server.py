@@ -5,11 +5,20 @@ import os
 import logging
 import pathlib
 from uuid import uuid4
+
+import numpy as np
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import JSONResponse
 from src.nova_client import S2SBidirectionalStreamClient
 from src.audio_utils import exotel_to_pcm, pcm_to_exotel, AudioHardener, AudioPolisher
 from dotenv import load_dotenv
+
+try:
+    from silero_vad import load_silero_vad
+    import torch
+except ImportError:
+    load_silero_vad = None
+    torch = None
 
 load_dotenv()
 
@@ -61,6 +70,23 @@ async def exotel_stream(websocket: WebSocket):
     session_id = str(uuid4())
     session = bedrock_client.create_stream_session(session_id)
     
+    if load_silero_vad is None or torch is None:
+        raise RuntimeError(
+            "silero-vad and torch must be installed to use Silero turn detection. "
+            "Install with: pip install silero-vad"
+        )
+
+    vad_model = load_silero_vad()
+    vad_buffer = b""
+    VAD_CHUNK_SAMPLES = 512
+    VAD_CHUNK_BYTES = VAD_CHUNK_SAMPLES * 2
+    SILENCE_CHUNKS_NEEDED = 12
+    SPEECH_CHUNKS_NEEDED = 4
+    speech_chunk_count = 0
+    silence_chunk_count = 0
+    is_speaking = False
+    turn_active = False
+
     stream_sid = ""
     bedrock_ready = False
 
@@ -110,12 +136,42 @@ async def exotel_stream(websocket: WebSocket):
                             try:
                                 raw_bytes = base64.b64decode(payload)
                                 pcm_samples = exotel_to_pcm(raw_bytes)
-                                print(f"📤 Forwarding audio chunk to Nova Sonic ({len(pcm_samples)} bytes PCM)")
-                                # Apply Noise Gate to mute cellular background hum so turn detection triggers instantly
                                 hardened_pcm = hardener.process_chunk(pcm_samples)
-                                await session.stream_audio(hardened_pcm)
+                                vad_buffer += hardened_pcm
+                                while len(vad_buffer) >= VAD_CHUNK_BYTES:
+                                    chunk = vad_buffer[:VAD_CHUNK_BYTES]
+                                    vad_buffer = vad_buffer[VAD_CHUNK_BYTES:]
+                                    audio_f32 = np.frombuffer(chunk, dtype=np.int16).astype(np.float32) / 32768.0
+                                    tensor = torch.from_numpy(audio_f32)
+                                    speech_prob = vad_model(tensor, 8000).item()
+                                    is_speech_frame = speech_prob > 0.5
+
+                                    if is_speech_frame:
+                                        speech_chunk_count += 1
+                                        silence_chunk_count = 0
+                                        if not is_speaking and speech_chunk_count >= SPEECH_CHUNKS_NEEDED:
+                                            is_speaking = True
+                                            turn_active = True
+                                            print(f"🗣️ Speech detected (prob={speech_prob:.2f})")
+                                    else:
+                                        silence_chunk_count += 1
+                                        speech_chunk_count = 0
+                                        if is_speaking and silence_chunk_count >= SILENCE_CHUNKS_NEEDED:
+                                            is_speaking = False
+                                            if turn_active:
+                                                turn_active = False
+                                                print("🔇 End of turn — signalling Nova")
+                                                await session.end_audio_content()
+                                                await asyncio.sleep(0.1)
+                                                session.audio_content_id = str(uuid4())
+                                                await bedrock_client.setup_start_audio_event(session_id)
+                                                print("🎤 Audio reopened for next turn")
+
+                                if is_speaking or turn_active:
+                                    print(f"📤 Forwarding audio chunk to Nova Sonic ({len(hardened_pcm)} bytes PCM)")
+                                    await session.stream_audio(hardened_pcm)
                             except Exception as e:
-                                print(f"⚠️ Audio conversion error: {e}")
+                                print(f"⚠️ Audio conversion / VAD error: {e}")
 
                 elif event_type == "start":
                     stream_sid = data.get("start", {}).get("stream_sid", "") or data.get("stream_sid", "")
@@ -150,6 +206,10 @@ async def exotel_stream(websocket: WebSocket):
                     await session.setup_prompt_start()
                     await session.setup_system_prompt()
                     await session.setup_start_audio()
+
+                    # Trigger Bedrock to generate the greeting dynamically in Asha's persona
+                    greeting_trigger = "[The caller has just connected. Welcome them back warmly if context shows their name, otherwise welcome them as a new caller to InDiiServe Healthcare, introduce yourself as Asha, and ask how you can assist them today.]"
+                    asyncio.create_task(bedrock_client.send_text_message(session_id, greeting_trigger))
                     
                     bedrock_ready = True
                     print("🧠 Bedrock is ready — audio will now be forwarded")

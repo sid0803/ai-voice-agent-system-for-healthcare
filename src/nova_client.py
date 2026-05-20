@@ -104,9 +104,12 @@ class SessionData:
     audio_paused: bool = False
     hospital_id: str = "default_tier2"
     is_audio_data_sent: bool = False
+    audio_ever_sent: bool = False
+    open_content_ids: set[str] = field(default_factory=set)
     # [MED-06] asyncio.Event to signal when Bedrock stream is ready
     # Server waits on this instead of polling, eliminating the busy-wait loop.
     _stream_ready: asyncio.Event = field(default_factory=asyncio.Event)
+    write_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
 
 
 class StreamSession:
@@ -452,18 +455,28 @@ class S2SBidirectionalStreamClient:
             while session.is_active:
                 try:
                     output = await session.stream.await_output()
+                    if not output or len(output) < 2 or output[1] is None:
+                        continue
                     result = await output[1].receive()
-                    if not result.value or not result.value.bytes_:
+                    value = getattr(result, "value", None)
+                    if not value or not getattr(value, "bytes_", None):
                         continue
 
                     self._update_session_activity(session_id)
-                    text_response = result.value.bytes_.decode("utf-8")
+                    text_response = value.bytes_.decode("utf-8")
                     try:
                         json_response = json.loads(text_response)
                         evt = json_response.get("event", {})
 
                         if evt.get("contentStart"):
                             self._dispatch_event(session_id, "contentStart", evt["contentStart"])
+                        elif evt.get("completionStart"):
+                            self._dispatch_event(session_id, "completionStart", evt["completionStart"])
+                            # Reset user audio block state for the next turn
+                            session.is_audio_content_start_sent = False
+                            session.is_audio_data_sent = False
+                            session.audio_content_id = str(uuid4())
+                            logger.info("Reset user audio block state on completionStart for session %s", session_id[:8])
                         elif evt.get("textOutput"):
                             self._dispatch_event(session_id, "textOutput", evt["textOutput"])
                         elif evt.get("audioOutput"):
@@ -552,44 +565,45 @@ class S2SBidirectionalStreamClient:
         if session is None or not session.is_active:
             return
 
-        content_id = str(uuid4())
+        async with session.write_lock:
+            content_id = str(uuid4())
 
-        await self._send_event(session_id, {
-            "event": {
-                "contentStart": {
-                    "promptName": session.prompt_name,
-                    "contentName": content_id,
-                    "interactive": False,
-                    "type": "TOOL",
-                    "toolResultInputConfiguration": {
-                        "toolUseId": tool_use_id,
-                        "type": "TEXT",
-                        "textInputConfiguration": {"mediaType": "text/plain"},
-                    },
+            await self._send_event(session_id, {
+                "event": {
+                    "contentStart": {
+                        "promptName": session.prompt_name,
+                        "contentName": content_id,
+                        "interactive": False,
+                        "type": "TOOL",
+                        "toolResultInputConfiguration": {
+                            "toolUseId": tool_use_id,
+                            "type": "TEXT",
+                            "textInputConfiguration": {"mediaType": "text/plain"},
+                        },
+                    }
                 }
-            }
-        })
+            })
 
-        result_content = result if isinstance(result, str) else json.dumps(result)
-        await self._send_event(session_id, {
-            "event": {
-                "toolResult": {
-                    "promptName": session.prompt_name,
-                    "contentName": content_id,
-                    "content": result_content,
-                    "role": "TOOL",
+            result_content = result if isinstance(result, str) else json.dumps(result)
+            await self._send_event(session_id, {
+                "event": {
+                    "toolResult": {
+                        "promptName": session.prompt_name,
+                        "contentName": content_id,
+                        "content": result_content,
+                        "role": "TOOL",
+                    }
                 }
-            }
-        })
+            })
 
-        await self._send_event(session_id, {
-            "event": {
-                "contentEnd": {
-                    "promptName": session.prompt_name,
-                    "contentName": content_id,
+            await self._send_event(session_id, {
+                "event": {
+                    "contentEnd": {
+                        "promptName": session.prompt_name,
+                        "contentName": content_id,
+                    }
                 }
-            }
-        })
+            })
 
     # ------------------------------------------------------------------
     # Session setup events (now async — send directly to stream)
@@ -600,27 +614,28 @@ class S2SBidirectionalStreamClient:
         if session is None:
             return
 
-        audio_out = DEFAULT_AUDIO_OUTPUT_CONFIG
-        await self._send_event(session_id, {
-            "event": {
-                "promptStart": {
-                    "promptName": session.prompt_name,
-                    "textOutputConfiguration": {"mediaType": "text/plain"},
-                    "audioOutputConfiguration": {
-                        "audioType": audio_out.audio_type,
-                        "mediaType": audio_out.media_type,
-                        "sampleRateHertz": audio_out.sample_rate_hertz,
-                        "sampleSizeBits": audio_out.sample_size_bits,
-                        "channelCount": audio_out.channel_count,
-                        "encoding": audio_out.encoding,
-                        "voiceId": audio_out.voice_id,
-                    },
-                    "toolUseOutputConfiguration": {"mediaType": "application/json"},
-                    "toolConfiguration": {"tools": available_tools},
+        async with session.write_lock:
+            audio_out = DEFAULT_AUDIO_OUTPUT_CONFIG
+            await self._send_event(session_id, {
+                "event": {
+                    "promptStart": {
+                        "promptName": session.prompt_name,
+                        "textOutputConfiguration": {"mediaType": "text/plain"},
+                        "audioOutputConfiguration": {
+                            "audioType": audio_out.audio_type,
+                            "mediaType": audio_out.media_type,
+                            "sampleRateHertz": audio_out.sample_rate_hertz,
+                            "sampleSizeBits": audio_out.sample_size_bits,
+                            "channelCount": audio_out.channel_count,
+                            "encoding": audio_out.encoding,
+                            "voiceId": audio_out.voice_id,
+                        },
+                        "toolUseOutputConfiguration": {"mediaType": "application/json"},
+                        "toolConfiguration": {"tools": available_tools},
+                    }
                 }
-            }
-        })
-        session.is_prompt_start_sent = True
+            })
+            session.is_prompt_start_sent = True
 
     async def setup_system_prompt_event(
         self,
@@ -631,48 +646,52 @@ class S2SBidirectionalStreamClient:
         session = self._active_sessions.get(session_id)
         if session is None:
             return
-        if text_config is None:
-            text_config = DEFAULT_TEXT_CONFIG
-        if system_prompt is None:
-            system_prompt = DEFAULT_SYSTEM_PROMPT
 
-        text_prompt_id = str(uuid4())
+        async with session.write_lock:
+            if text_config is None:
+                text_config = DEFAULT_TEXT_CONFIG
+            if system_prompt is None:
+                system_prompt = DEFAULT_SYSTEM_PROMPT
 
-        await self._send_event(session_id, {
-            "event": {
-                "contentStart": {
-                    "promptName": session.prompt_name,
-                    "contentName": text_prompt_id,
-                    "type": "TEXT",
-                    "interactive": True,
-                    "role": "SYSTEM",
-                    "textInputConfiguration": {
-                        "mediaType": text_config.media_type,
-                    },
+            text_prompt_id = str(uuid4())
+            session.open_content_ids.add(text_prompt_id)
+
+            await self._send_event(session_id, {
+                "event": {
+                    "contentStart": {
+                        "promptName": session.prompt_name,
+                        "contentName": text_prompt_id,
+                        "type": "TEXT",
+                        "interactive": True,
+                        "role": "SYSTEM",
+                        "textInputConfiguration": {
+                            "mediaType": text_config.media_type,
+                        },
+                    }
                 }
-            }
-        })
-        await self._send_event(session_id, {
-            "event": {
-                "textInput": {
-                    "promptName": session.prompt_name,
-                    "contentName": text_prompt_id,
-                    "content": system_prompt,
-                    "role": "SYSTEM",
+            })
+            await self._send_event(session_id, {
+                "event": {
+                    "textInput": {
+                        "promptName": session.prompt_name,
+                        "contentName": text_prompt_id,
+                        "content": system_prompt,
+                        "role": "SYSTEM",
+                    }
                 }
-            }
-        })
-        await self._send_event(session_id, {
-            "event": {
-                "contentEnd": {
-                    "promptName": session.prompt_name,
-                    "contentName": text_prompt_id,
+            })
+            await self._send_event(session_id, {
+                "event": {
+                    "contentEnd": {
+                        "promptName": session.prompt_name,
+                        "contentName": text_prompt_id,
+                    }
                 }
-            }
-        })
+            })
+            session.open_content_ids.discard(text_prompt_id)
 
     async def setup_start_audio_event(
-        self, session_id: str, audio_config: AudioConfiguration = None
+        self, session_id: str, audio_config: AudioConfiguration = None, acquire_lock: bool = True
     ) -> None:
         session = self._active_sessions.get(session_id)
         if session is None:
@@ -680,25 +699,33 @@ class S2SBidirectionalStreamClient:
         if audio_config is None:
             audio_config = DEFAULT_AUDIO_INPUT_CONFIG
 
-        await self._send_event(session_id, {
-            "event": {
-                "contentStart": {
-                    "promptName": session.prompt_name,
-                    "contentName": session.audio_content_id,
-                    "type": "AUDIO",
-                    "interactive": True,
-                    "audioInputConfiguration": {
-                        "audioType": audio_config.audio_type,
-                        "mediaType": audio_config.media_type,
-                        "sampleRateHertz": audio_config.sample_rate_hertz,
-                        "sampleSizeBits": audio_config.sample_size_bits,
-                        "channelCount": audio_config.channel_count,
-                        "encoding": audio_config.encoding,
-                    },
+        async def _send():
+            await self._send_event(session_id, {
+                "event": {
+                    "contentStart": {
+                        "promptName": session.prompt_name,
+                        "contentName": session.audio_content_id,
+                        "type": "AUDIO",
+                        "interactive": True,
+                        "audioInputConfiguration": {
+                            "audioType": audio_config.audio_type,
+                            "mediaType": audio_config.media_type,
+                            "sampleRateHertz": audio_config.sample_rate_hertz,
+                            "sampleSizeBits": audio_config.sample_size_bits,
+                            "channelCount": audio_config.channel_count,
+                            "encoding": audio_config.encoding,
+                        },
+                    }
                 }
-            }
-        })
-        session.is_audio_content_start_sent = True
+            })
+            session.is_audio_content_start_sent = True
+            session.open_content_ids.add(session.audio_content_id)
+
+        if acquire_lock:
+            async with session.write_lock:
+                await _send()
+        else:
+            await _send()
 
     async def stream_audio_chunk(self, session_id: str, audio_data: bytes) -> None:
         """Base64-encode audio data and send an audioInput event."""
@@ -709,40 +736,62 @@ class S2SBidirectionalStreamClient:
         if session.audio_paused:
             return
 
-        base64_data = base64.b64encode(audio_data).decode("ascii")
-        session.is_audio_data_sent = True
-        await self._send_event(session_id, {
-            "event": {
-                "audioInput": {
-                    "promptName": session.prompt_name,
-                    "contentName": session.audio_content_id,
-                    "content": base64_data,
-                    "role": "USER",
+        async with session.write_lock:
+            if session.audio_paused or not session.is_active:
+                return
+
+            if not session.is_audio_content_start_sent:
+                await self.setup_start_audio_event(session_id, acquire_lock=False)
+
+            base64_data = base64.b64encode(audio_data).decode("ascii")
+            session.is_audio_data_sent = True
+            session.audio_ever_sent = True
+            await self._send_event(session_id, {
+                "event": {
+                    "audioInput": {
+                        "promptName": session.prompt_name,
+                        "contentName": session.audio_content_id,
+                        "content": base64_data,
+                        "role": "USER",
+                    }
                 }
-            }
-        })
+            })
 
     # ------------------------------------------------------------------
     # Session lifecycle
     # ------------------------------------------------------------------
 
-    async def send_content_end(self, session_id: str) -> None:
+    async def send_content_end(self, session_id: str, acquire_lock: bool = True) -> None:
         session = self._active_sessions.get(session_id)
         if session is None or not session.is_audio_content_start_sent:
             logger.info("send_content_end: skipping as audio content was never started")
             return
-            
-        await self._send_event(session_id, {
-            "event": {
-                "contentEnd": {
-                    "promptName": session.prompt_name,
-                    "contentName": session.audio_content_id,
+
+        async def _send():
+            if not session.is_audio_data_sent:
+                logger.info("send_content_end: skipping empty audio content %s", session.audio_content_id[:8])
+                session.is_audio_content_start_sent = False
+                session.open_content_ids.discard(session.audio_content_id)
+                return
+                
+            await self._send_event(session_id, {
+                "event": {
+                    "contentEnd": {
+                        "promptName": session.prompt_name,
+                        "contentName": session.audio_content_id,
+                    }
                 }
-            }
-        })
-        session.is_audio_content_start_sent = False
-        session.is_audio_data_sent = False
-        await asyncio.sleep(0.5)
+            })
+            session.is_audio_content_start_sent = False
+            session.is_audio_data_sent = False
+            session.open_content_ids.discard(session.audio_content_id)
+            await asyncio.sleep(0.5)
+
+        if acquire_lock:
+            async with session.write_lock:
+                await _send()
+        else:
+            await _send()
 
     async def send_text_message(self, session_id: str, text: str) -> None:
         """Inject a cross-modal text message into the active session stream.
@@ -758,18 +807,19 @@ class S2SBidirectionalStreamClient:
         if session is None or not session.is_active:
             return
 
-        logger.info("send_text_message: pausing audio and closing audio content")
+        async with session.write_lock:
+            logger.info("send_text_message: pausing audio and closing audio content")
 
-        # 1. Pause audio ingestion so no more audioInput events are sent
-        session.audio_paused = True
-        # Wait long enough for any in-flight _process_audio_queue batch to finish
-        await asyncio.sleep(0.5)
+            # 1. Pause audio ingestion so no more audioInput events are sent
+            session.audio_paused = True
+            # Wait long enough for any in-flight _process_audio_queue batch to finish
+            await asyncio.sleep(0.5)
 
-        # 2. Close current audio content block
-        old_audio_id = session.audio_content_id
-        if session.is_audio_content_start_sent:
-            # [PROT-01] Only close if we actually sent audio data
-            if session.is_audio_data_sent:
+            # 2. Close current audio content block if it was opened.
+            # AWS Nova Sonic requires every content block to be closed before a new
+            # prompt/content block is started, even when no audio bytes were sent.
+            old_audio_id = session.audio_content_id
+            if session.is_audio_content_start_sent and session.is_audio_data_sent:
                 await self._send_event(session_id, {
                     "event": {
                         "contentEnd": {
@@ -781,88 +831,208 @@ class S2SBidirectionalStreamClient:
                 logger.info("send_text_message: closed audio content %s", old_audio_id[:8])
                 # Give Nova time to process the audio content closure
                 await asyncio.sleep(0.5)
-            else:
+                session.is_audio_content_start_sent = False
+                session.is_audio_data_sent = False # Reset for next block
+                session.open_content_ids.discard(old_audio_id)
+            elif session.is_audio_content_start_sent:
                 logger.info("send_text_message: skipping closure of empty audio content %s", old_audio_id[:8])
-            
-            session.is_audio_content_start_sent = False
-            session.is_audio_data_sent = False # Reset for next block
+                session.is_audio_content_start_sent = False
+                session.is_audio_data_sent = False
+                session.open_content_ids.discard(old_audio_id)
 
-        # 3. Send the text message as cross-modal USER text input (per AWS docs)
-        content_id = str(uuid4())
-        logger.info("send_text_message: sending cross-modal text content %s", content_id[:8])
-        await self._send_event(session_id, {
-            "event": {
-                "contentStart": {
-                    "promptName": session.prompt_name,
-                    "contentName": content_id,
-                    "type": "TEXT",
-                    "interactive": True,
-                    "role": "USER",
-                    "textInputConfiguration": {
-                        "mediaType": "text/plain",
-                    },
-                }
-            }
-        })
-        await self._send_event(session_id, {
-            "event": {
-                "textInput": {
-                    "promptName": session.prompt_name,
-                    "contentName": content_id,
-                    "content": text,
-                }
-            }
-        })
-        await self._send_event(session_id, {
-            "event": {
-                "contentEnd": {
-                    "promptName": session.prompt_name,
-                    "contentName": content_id,
-                }
-            }
-        })
-        logger.info("send_text_message: text content sent, waiting for Nova to process")
-        # Give Nova time to process the text and start generating audio
-        await asyncio.sleep(0.5)
+            # 3. Send the text message as cross-modal USER text input (per AWS docs)
+            content_id = str(uuid4())
+            logger.info("send_text_message: sending cross-modal text content %s", content_id[:8])
+            text_started = False
+            try:
+                # 3a. Send the text content block
+                await self._send_event(session_id, {
+                    "event": {
+                        "contentStart": {
+                            "promptName": session.prompt_name,
+                            "contentName": content_id,
+                            "type": "TEXT",
+                            "interactive": True,
+                            "role": "USER",
+                            "textInputConfiguration": {
+                                "mediaType": "text/plain",
+                            },
+                        }
+                    }
+                })
+                session.open_content_ids.add(content_id)
+                text_started = True
 
-        # 4. Re-open audio input with a NEW content ID so user can respond
-        session.audio_content_id = str(uuid4())
-        await self.setup_start_audio_event(session_id)
-        logger.info("send_text_message: reopened audio content %s", session.audio_content_id[:8])
+                await self._send_event(session_id, {
+                    "event": {
+                        "textInput": {
+                            "promptName": session.prompt_name,
+                            "contentName": content_id,
+                            "content": text,
+                        }
+                    }
+                })
+                await self._send_event(session_id, {
+                    "event": {
+                        "contentEnd": {
+                            "promptName": session.prompt_name,
+                            "contentName": content_id,
+                        }
+                    }
+                })
+                session.open_content_ids.discard(content_id)
+                logger.info("send_text_message: text content sent")
 
-        # 5. Resume audio ingestion
-        session.audio_paused = False
+                # 3b. Pre-open the new audio content block and send one silent chunk immediately.
+                # This ensures the session has an active audio channel ready for the caller's live audio.
+                # It also satisfies Nova Sonic's requirement of having at least one audio content block
+                # in the session to process.
+                new_audio_id = str(uuid4())
+                session.audio_content_id = new_audio_id
+                await self._send_event(session_id, {
+                    "event": {
+                        "contentStart": {
+                            "promptName": session.prompt_name,
+                            "contentName": new_audio_id,
+                            "type": "AUDIO",
+                            "interactive": True,
+                            "role": "USER",
+                            "audioInputConfiguration": {
+                                "mediaType": "audio/lpcm",
+                                "sampleRateHertz": 8000,
+                                "sampleSizeBits": 16,
+                                "channelCount": 1,
+                                "encoding": "base64",
+                            }
+                        }
+                    }
+                })
+                session.is_audio_content_start_sent = True
+                session.open_content_ids.add(new_audio_id)
 
-    async def send_prompt_end(self, session_id: str) -> None:
-        session = self._active_sessions.get(session_id)
-        if session is None or not session.is_prompt_start_sent:
-            return
-        await self._send_event(session_id, {
-            "event": {
-                "promptEnd": {
-                    "promptName": session.prompt_name,
-                }
-            }
-        })
-        await asyncio.sleep(0.3)
+                # Send 100ms of silence to initialize the audio stream
+                silence_b64 = base64.b64encode(b'\x00' * 1600).decode("utf-8")
+                await self._send_event(session_id, {
+                    "event": {
+                        "audioInput": {
+                            "promptName": session.prompt_name,
+                            "contentName": new_audio_id,
+                            "content": silence_b64,
+                            "role": "USER",
+                        }
+                    }
+                })
+                session.is_audio_data_sent = True
+                logger.info("send_text_message: pre-opened audio content %s and sent initial silence", new_audio_id[:8])
 
-    async def send_session_end(self, session_id: str) -> None:
+            finally:
+                if text_started and content_id in session.open_content_ids:
+                    try:
+                        await self._send_event(session_id, {
+                            "event": {
+                                "contentEnd": {
+                                    "promptName": session.prompt_name,
+                                    "contentName": content_id,
+                                }
+                            }
+                        })
+                        logger.info("send_text_message: forcibly closed text content %s", content_id[:8])
+                    except Exception:
+                        logger.exception("Failed to close cross-modal text content %s", content_id[:8])
+                    session.open_content_ids.discard(content_id)
+
+                # Fallback: if audio content block wasn't opened (e.g. exception during text send), prepare one
+                if not session.is_audio_content_start_sent:
+                    session.audio_content_id = str(uuid4())
+                    session.is_audio_data_sent = False
+                    logger.info("send_text_message: fallback prepared new audio content %s", session.audio_content_id[:8])
+
+                # 5. Resume audio ingestion
+                session.audio_paused = False
+
+    async def _close_all_open_contents(self, session_id: str, acquire_lock: bool = True) -> None:
         session = self._active_sessions.get(session_id)
         if session is None:
             return
-        await self._send_event(session_id, {
-            "event": {"sessionEnd": {}}
-        })
-        await asyncio.sleep(0.3)
-        session.is_active = False
-        # Close the stream
-        try:
-            if session.stream:
-                await session.stream.input_stream.close()
-        except Exception:
-            logger.debug("Failed to close stream input in send_session_end", exc_info=True)
-        self._active_sessions.pop(session_id, None)
-        self._session_last_activity.pop(session_id, None)
+
+        async def _close():
+            for content_id in list(session.open_content_ids):
+                if content_id == session.audio_content_id and not session.is_audio_data_sent:
+                    logger.info("_close_all_open_contents: skipping empty audio content %s", content_id[:8])
+                    session.is_audio_content_start_sent = False
+                    session.open_content_ids.discard(content_id)
+                    continue
+                try:
+                    await self._send_event(session_id, {
+                        "event": {
+                            "contentEnd": {
+                                "promptName": session.prompt_name,
+                                "contentName": content_id,
+                            }
+                        }
+                    })
+                    logger.info("_close_all_open_contents: closed content %s", content_id[:8])
+                except Exception:
+                    logger.exception("_close_all_open_contents: failed to close content %s", content_id[:8])
+                finally:
+                    if content_id == session.audio_content_id:
+                        session.is_audio_content_start_sent = False
+                        session.is_audio_data_sent = False
+                    session.open_content_ids.discard(content_id)
+
+        if acquire_lock:
+            async with session.write_lock:
+                await _close()
+        else:
+            await _close()
+
+    async def send_prompt_end(self, session_id: str, acquire_lock: bool = True) -> None:
+        session = self._active_sessions.get(session_id)
+        if session is None or not session.is_prompt_start_sent:
+            return
+
+        async def _send():
+            await self._close_all_open_contents(session_id, acquire_lock=False)
+            await self._send_event(session_id, {
+                "event": {
+                    "promptEnd": {
+                        "promptName": session.prompt_name,
+                    }
+                }
+            })
+            await asyncio.sleep(0.3)
+
+        if acquire_lock:
+            async with session.write_lock:
+                await _send()
+        else:
+            await _send()
+
+    async def send_session_end(self, session_id: str, acquire_lock: bool = True) -> None:
+        session = self._active_sessions.get(session_id)
+        if session is None:
+            return
+
+        async def _send():
+            await self._send_event(session_id, {
+                "event": {"sessionEnd": {}}
+            })
+            await asyncio.sleep(0.3)
+            session.is_active = False
+            # Close the stream
+            try:
+                if session.stream:
+                    await session.stream.input_stream.close()
+            except Exception:
+                logger.debug("Failed to close stream input in send_session_end", exc_info=True)
+            self._active_sessions.pop(session_id, None)
+            self._session_last_activity.pop(session_id, None)
+
+        if acquire_lock:
+            async with session.write_lock:
+                await _send()
+        else:
+            await _send()
 
     async def close_session(self, session_id: str) -> None:
         """Gracefully close a session with the full shutdown sequence."""
@@ -870,9 +1040,30 @@ class S2SBidirectionalStreamClient:
             return
         self._session_cleanup_in_progress.add(session_id)
         try:
-            await self.send_content_end(session_id)
-            await self.send_prompt_end(session_id)
-            await self.send_session_end(session_id)
+            session = self._active_sessions.get(session_id)
+            if session is None:
+                return
+
+            async with session.write_lock:
+                if not session.audio_ever_sent:
+                    logger.info("close_session: closing no-audio session without Bedrock end events")
+                    session.is_active = False
+                    try:
+                        if session.stream:
+                            await session.stream.input_stream.close()
+                    except Exception:
+                        logger.debug("Failed to close no-audio stream input", exc_info=True)
+                    self._active_sessions.pop(session_id, None)
+                    self._session_last_activity.pop(session_id, None)
+                    return
+
+                await self.send_content_end(session_id, acquire_lock=False)
+                session = self._active_sessions.get(session_id)
+                if session is not None and session.audio_ever_sent:
+                    await self.send_prompt_end(session_id, acquire_lock=False)
+                else:
+                    logger.info("close_session: skipping promptEnd because no caller audio was sent")
+                await self.send_session_end(session_id, acquire_lock=False)
         except Exception:
             logger.exception("Error during graceful close for session %s", session_id)
             session = self._active_sessions.get(session_id)

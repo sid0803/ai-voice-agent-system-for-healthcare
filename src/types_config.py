@@ -3,6 +3,7 @@
 Merged Python equivalent of TypeScript's types.ts and consts.ts.
 """
 
+import os
 from dataclasses import dataclass
 from typing import Literal, Optional
 
@@ -51,7 +52,9 @@ DEFAULT_INFERENCE_CONFIG = InferenceConfig()
 
 DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="HIGH")
 
-DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(voice_id="matthew")
+DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(
+    voice_id=os.getenv("NOVA_VOICE_ID", "tiffany")
+)
 
 DEFAULT_TEXT_CONFIG = TextConfiguration()
 
