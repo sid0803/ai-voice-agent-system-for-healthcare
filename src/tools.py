@@ -307,101 +307,18 @@ def sync_community_knowledge():
 # ---------------------------------------------------------------------------
 
 
-def _normalize_hindi_query(query: str) -> str:
-    """Normalizes Hindi / Devanagari terms to English keywords for robust search matching."""
+def _normalize_query(query: str) -> str:
+    """Cleans up the query string for matching."""
     if not query:
         return ""
-    
-    normalized = query.lower()
-    
-    # Mapping dict for departments, services, FAQs, and doctors
-    mappings = {
-        # Departments
-        "कार्डियोलॉजी": "cardiology",
-        "कार्डियोलोजी": "cardiology",
-        "कार्डियो": "cardiology",
-        "हृदय": "cardiology",
-        "दिल": "cardiology",
-        "पीडियाट्रिक्स": "pediatrics",
-        "पिडियाट्रिक्स": "pediatrics",
-        "पीडिया": "pediatrics",
-        "बाल": "pediatrics",
-        "ऑर्थोपेडिक्स": "orthopedics",
-        "अर्थोपेडिक्स": "orthopedics",
-        "आर्थोपेडिक्स": "orthopedics",
-        "हड्डी": "orthopedics",
-        "डर्मेटोलॉजी": "dermatology",
-        "डर्मेटोलोजी": "dermatology",
-        "त्वचा": "dermatology",
-        "चमड़ी": "dermatology",
-        "जनरल मेडिसिन": "general medicine",
-        "सामान्य चिकित्सा": "general medicine",
-        "सामान्य": "general medicine",
-        "न्यूरोलॉजी": "neurology",
-        "न्यूरोलोजी": "neurology",
-        "न्यूरो": "neurology",
-        "तंत्रिका": "neurology",
-        "रेडियोलॉजी": "radiology",
-        "रेडियोलोजी": "radiology",
-        "एक्स-रे": "radiology",
-        "एक्सरे": "radiology",
-        
-        # FAQ Keywords
-        "पता": "address location",
-        "कहाँ": "where location",
-        "एड्रेस": "address",
-        "लोकेशन": "location",
-        "दवाई": "pharmacy medicine",
-        "फार्मेसी": "pharmacy",
-        "मेडिसिन": "medicine",
-        "समय": "hours timing schedule",
-        "टाइम": "hours timing schedule",
-        "घंटे": "hours",
-        "रिपोर्ट": "reports status",
-        "पर्चा": "reports",
-        
-        # Service Names
-        "एमआरआई": "mri scan",
-        "सीटी": "ct scan",
-        "ब्लड": "blood routine test",
-        "खून": "blood routine test",
-        "परामर्श": "consultation opd",
-        "कंसल्टेशन": "consultation opd",
-        "फीस": "fee price",
-        "पैसा": "price billing",
-        "बिल": "billing bill",
-        "खर्चा": "price cost billing",
-        
-        # Doctors & ASR corrections
-        "सेन": "sen",
-        "सेम": "sen",       # ASR error for Dr. Sen
-        "ट्रेन": "sen",     # ASR error for Dr. Sen
-        "सिंह": "singh",
-        "कविता": "kavita",
-        "गुप्ता": "gupta",
-        "अनन्या": "ananya",
-        "रे": "ray",
-        "राय": "ray",
-        "कुलकर्णी": "kulkarni",
-        "समीर": "sameer",
-        "मेघा": "megha",
-        "राव": "rao",
-        "जैन": "jain",
-        "प्रतीक": "prateek"
-    }
-    
-    for hindi_term, eng_term in mappings.items():
-        if hindi_term in normalized:
-            normalized += f" {eng_term}"
-            
-    return normalized
+    return query.lower().strip()
 
 
 def hospital_info(args: dict, hospital_id: str = None) -> dict:
     """Fetches hospital info. Priority: local tenant JSON → FAISS cache → Bedrock KB → fallback."""
     data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
-    normalized_query = _normalize_hindi_query(query)
+    normalized_query = _normalize_query(query)
 
     # 1. Check specific local tenant data (fastest, most reliable)
     
@@ -464,7 +381,7 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
     """Fetches doctor schedule. Priority: local roster -> FAISS cache -> Bedrock KB -> fallback."""
     data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
-    normalized_query = _normalize_hindi_query(query)
+    normalized_query = _normalize_query(query)
     doctors = data.get("doctors", [])
 
     # 1. Search in local tenant roster (most accurate for configured clinics)
@@ -662,7 +579,7 @@ def get_billing_info(args: dict, hospital_id: str = None) -> dict:
     
     # If query mentions a specific service, use that
     query = str(args.get("query", "")).lower()
-    normalized_query = _normalize_hindi_query(query)
+    normalized_query = _normalize_query(query)
     found_any = False
     for s in services:
         if s["name"].lower() in normalized_query:
@@ -705,21 +622,6 @@ def predict_ot_schedule(args: dict, hospital_id: str = None) -> dict:
     procedure = args.get("procedure_name", "General Surgery").title()
     doctor = args.get("doctor_name", "the attending specialist")
     
-    # Map Devanagari procedure names to English
-    procedure_clean = procedure.lower()
-    procedure_mappings = {
-        "एंजियोप्लास्टी": "Angioplasty",
-        "अपेंडिक्स": "Appendectomy",
-        "घुटना": "Knee Replacement",
-        "कैटरेक्ट": "Cataract",
-        "मोतियाबिंद": "Cataract",
-        "सर्जरी": "General Surgery"
-    }
-    for hindi_p, eng_p in procedure_mappings.items():
-        if hindi_p in procedure_clean:
-            procedure = eng_p
-            break
-
     # Mock Clinical OT Data
     durations = {
         "Angioplasty": {"prep": 30, "proc": 90, "rec": 60},
