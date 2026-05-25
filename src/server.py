@@ -61,6 +61,7 @@ from src.memory_manager import AgentCoreMemoryManager, build_system_prompt_with_
 from src.routing.intent_router import intent_router
 from src.cache.response_cache import response_cache
 from src.security.audit_logger import audit_logger
+from src.analytics.dynamodb_client import dynamodb_analytics
 
 logger = logging.getLogger(__name__)
 
@@ -194,7 +195,6 @@ exotel_http = httpx.AsyncClient(
 
 from src.transcript_store import save_transcript
 from src.analytics.processor import analytics_processor
-from src.analytics.rds_client import rds_analytics
 
 
 # ---------------------------------------------------------------------------
@@ -244,7 +244,8 @@ In real hospital environments, patients are often hesitant or unclear (e.g., "Do
 ---
 
 ## RESPONSE STYLE
-- Maximum 2 short, crisp sentences per response. 
+- Maximum 1 short, crisp sentence or phrase per response. Keep all spoken responses under 10-15 words.
+- This is a real-time phone call. Long sentences increase latency and make the agent sound robotic. Speak very briefly and get straight to the point.
 - Use natural, warm, and professional language.
 - ADDRESS the caller by their first name if known to build trust.
 - NO MEDICAL ADVICE: You are a receptionist, not a doctor. Never suggest medications or treatments.
@@ -258,8 +259,10 @@ You recognize returning patients via secure, encrypted identifiers to provide a 
 
 ---
 
-## SCOPE & TOOLS
-InDiiServe Healthcare services only. If the caller asks for legal, financial, or non-hospital info, politely decline.
+## SCOPE & TOOLS (ANTI-HALLUCINATION)
+- InDiiServe Healthcare services only. If the caller asks for legal, financial, or non-hospital info, politely decline.
+- NEVER invent, guess, or hallucinate doctor names, schedules, or departments.
+- If the tool says a doctor or department is not available or not found, accept it as truth. Do not make up any availability. State clearly that they are not in our system, and list only the departments we have: Cardiology, Pediatrics, Orthopedics, Dermatology, General Medicine, Neurology, Radiology.
 
 ---
 
@@ -378,20 +381,6 @@ async def run_async_startup_checks():
     except Exception:
         logger.exception("[STARTUP] Health diagnostic failed to run")
 
-    try:
-        if rds_analytics.host and "your_aws_rds_endpoint" not in rds_analytics.host.lower() and "mock" not in rds_analytics.host.lower():
-            await asyncio.to_thread(rds_analytics.init_schema)
-            logger.info("[STARTUP] RDS analytics schema verified/created.")
-        else:
-            # [MED-04] SQLite production warning
-            demo_mode = os.environ.get("DEMO_MODE", "false").lower() == "true"
-            if not demo_mode:
-                logger.warning(
-                    "[STARTUP] ⚠️ RDS_HOSTNAME not configured — using SQLite (DEMO ONLY). "
-                    "SQLite is NOT suitable for production concurrency. Set RDS_HOSTNAME in .env."
-                )
-            logger.info("[STARTUP] RDS initialization skipped (Mock/Offline mode).")
-
         # [LOW-02] DynamoDB table auto-creation (idempotent)
         try:
             import boto3
@@ -401,6 +390,8 @@ async def run_async_startup_checks():
             
             def setup_dynamo():
                 dynamo = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"), config=config)
+                
+                # Check Transcripts Table
                 table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
                 existing = dynamo.list_tables().get("TableNames", [])
                 if table_name not in existing:
@@ -413,8 +404,234 @@ async def run_async_startup_checks():
                     logger.info("[STARTUP] DynamoDB table '%s' created.", table_name)
                 else:
                     logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", table_name)
+
+                # Check Analytics Table
+                analytics_table_name = os.environ.get("DYNAMODB_ANALYTICS_TABLE", "InDiiServe_Asha_Analytics")
+                if analytics_table_name not in existing:
+                    dynamo.create_table(
+                        TableName=analytics_table_name,
+                        KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
+                        AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
+                        BillingMode="PAY_PER_REQUEST",
+                    )
+                    logger.info("[STARTUP] DynamoDB table '%s' created.", analytics_table_name)
+                else:
+                    logger.info("[STARTUP] DynamoDB Analytics table '%s' already exists. ✅", analytics_table_name)
+
+                # Check Tenants Table
+                tenants_table_name = os.environ.get("DYNAMODB_TENANTS_TABLE", "InDiiServe_Tenants")
+                if tenants_table_name not in existing:
+                    dynamo.create_table(
+                        TableName=tenants_table_name,
+                        KeySchema=[{"AttributeName": "hospital_id", "KeyType": "HASH"}],
+                        AttributeDefinitions=[{"AttributeName": "hospital_id", "AttributeType": "S"}],
+                        BillingMode="PAY_PER_REQUEST",
+                    )
+                    logger.info("[STARTUP] DynamoDB table '%s' created.", tenants_table_name)
+                    try:
+                        dynamo.get_waiter("table_exists").wait(TableName=tenants_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
+                        from src.analytics.dynamodb_client import dynamodb_analytics
+                        apollo_data = {
+                            "hospital_id": "apollo_metro",
+                            "hospital_name": "Apollo Metro Super-Specialty",
+                            "status": "live",
+                            "ingestion_strategy": "hybrid",
+                            "sync_interval_mins": 10,
+                            "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
+                            "created_at": "2026-04-18T21:25:34.512531",
+                            "hospital_data_normalized": {
+                                "id": "apollo_metro",
+                                "name": "Apollo Metro Super-Specialty",
+                                "status": "live",
+                                "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
+                                "contact": "+91 80 4000 9000",
+                                "departments": ["Cardiology", "Neurology", "Diabetes Clinic", "Physiotherapy", "Emergency"],
+                                "doctors": [
+                                    {
+                                        "id": "doc_001",
+                                        "name": "Dr. Sameer Kulkarni",
+                                        "dept": "Cardiology",
+                                        "experience": "12 years",
+                                        "languages": ["English", "Hindi"],
+                                        "consultation_type": ["OPD", "Follow-up"],
+                                        "fee": 1200,
+                                        "location": "Block A, 1st Floor",
+                                        "availability": {
+                                            "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                            "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+                                        }
+                                    },
+                                    {
+                                        "id": "doc_002",
+                                        "name": "Dr. Megha Rao",
+                                        "dept": "Neurology",
+                                        "experience": "10 years",
+                                        "languages": ["English"],
+                                        "consultation_type": ["OPD"],
+                                        "fee": 1500,
+                                        "location": "Neuro Wing, 4th Floor",
+                                        "availability": {
+                                            "days": ["Mon", "Wed", "Fri"],
+                                            "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
+                                        }
+                                    },
+                                    {
+                                        "id": "doc_003",
+                                        "name": "Dr. Prateek Jain",
+                                        "dept": "Diabetes Clinic",
+                                        "experience": "8 years",
+                                        "languages": ["English", "Hindi"],
+                                        "consultation_type": ["OPD", "Routine Check"],
+                                        "fee": 800,
+                                        "location": "OPD Block G",
+                                        "availability": {
+                                            "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                                            "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+                                        }
+                                    }
+                                ],
+                                "services": [
+                                    {"name": "Cardiac Checkup", "price": 2500, "duration": "2 hours"},
+                                    {"name": "Brain MRI", "price": 12000, "duration": "45 mins"},
+                                    {"name": "Blood Sugar (HbA1c)", "price": 650, "duration": "15 mins"},
+                                    {"name": "Physiotherapy Session", "price": 1000, "duration": "30 mins"}
+                                ],
+                                "emergency": {
+                                    "available": True,
+                                    "contact": "1066",
+                                    "instruction": "Immediate assistance available. Connecting to emergency desk."
+                                },
+                                "faq": [
+                                    {"intent": "pharmacy_location", "questions": ["Where is pharmacy?", "Pharmacy location?", "Is pharmacy open?"], "answer": "Our pharmacy is near the main exit and is open 24/7."},
+                                    {"parking": True, "questions": ["Is parking available?", "Where to park?"], "answer": "Multi-level parking is available for all visitors."},
+                                    {"faq_cafeteria": True, "questions": ["Is there food?", "Any cafeteria?"], "answer": "The food court is on the 5th floor with healthy meal options."}
+                                ],
+                                "integration": {"spreadsheet_id": "APOLLO_METRO_LIVE_SINK", "crm_enabled": True, "api_enabled": True},
+                                "ai_settings": {"default_language": "English", "fallback_language": "Hindi", "confidence_threshold": 0.7, "enable_memory": True}
+                            }
+                        }
+                        dynamodb_analytics.save_tenant(apollo_data)
+                        logger.info("[STARTUP] Seeded default tenant 'apollo_metro'.")
+                    except Exception as e:
+                        logger.error("[STARTUP] Failed to seed default tenant: %s", e)
+                else:
+                    logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", tenants_table_name)
+                    try:
+                        from src.analytics.dynamodb_client import dynamodb_analytics
+                        if not dynamodb_analytics.get_tenant("apollo_metro"):
+                            apollo_data = {
+                                "hospital_id": "apollo_metro",
+                                "hospital_name": "Apollo Metro Super-Specialty",
+                                "status": "live",
+                                "ingestion_strategy": "hybrid",
+                                "sync_interval_mins": 10,
+                                "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
+                                "created_at": "2026-04-18T21:25:34.512531",
+                                "hospital_data_normalized": {
+                                    "id": "apollo_metro",
+                                    "name": "Apollo Metro Super-Specialty",
+                                    "status": "live",
+                                    "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
+                                    "contact": "+91 80 4000 9000",
+                                    "departments": ["Cardiology", "Neurology", "Diabetes Clinic", "Physiotherapy", "Emergency"],
+                                    "doctors": [
+                                        {
+                                            "id": "doc_001",
+                                            "name": "Dr. Sameer Kulkarni",
+                                            "dept": "Cardiology",
+                                            "experience": "12 years",
+                                            "languages": ["English", "Hindi"],
+                                            "consultation_type": ["OPD", "Follow-up"],
+                                            "fee": 1200,
+                                            "location": "Block A, 1st Floor",
+                                            "availability": {
+                                                "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                                "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+                                            }
+                                        },
+                                        {
+                                            "id": "doc_002",
+                                            "name": "Dr. Megha Rao",
+                                            "dept": "Neurology",
+                                            "experience": "10 years",
+                                            "languages": ["English"],
+                                            "consultation_type": ["OPD"],
+                                            "fee": 1500,
+                                            "location": "Neuro Wing, 4th Floor",
+                                            "availability": {
+                                                "days": ["Mon", "Wed", "Fri"],
+                                                "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
+                                            }
+                                        },
+                                        {
+                                            "id": "doc_003",
+                                            "name": "Dr. Prateek Jain",
+                                            "dept": "Diabetes Clinic",
+                                            "experience": "8 years",
+                                            "languages": ["English", "Hindi"],
+                                            "consultation_type": ["OPD", "Routine Check"],
+                                            "fee": 800,
+                                            "location": "OPD Block G",
+                                            "availability": {
+                                                "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                                                "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+                                            }
+                                        }
+                                    ],
+                                    "services": [
+                                        {"name": "Cardiac Checkup", "price": 2500, "duration": "2 hours"},
+                                        {"name": "Brain MRI", "price": 12000, "duration": "45 mins"},
+                                        {"name": "Blood Sugar (HbA1c)", "price": 650, "duration": "15 mins"},
+                                        {"name": "Physiotherapy Session", "price": 1000, "duration": "30 mins"}
+                                    ],
+                                    "emergency": {
+                                        "available": True,
+                                        "contact": "1066",
+                                        "instruction": "Immediate assistance available. Connecting to emergency desk."
+                                    },
+                                    "faq": [
+                                        {"intent": "pharmacy_location", "questions": ["Where is pharmacy?", "Pharmacy location?", "Is pharmacy open?"], "answer": "Our pharmacy is near the main exit and is open 24/7."},
+                                        {"parking": True, "questions": ["Is parking available?", "Where to park?"], "answer": "Multi-level parking is available for all visitors."},
+                                        {"faq_cafeteria": True, "questions": ["Is there food?", "Any cafeteria?"], "answer": "The food court is on the 5th floor with healthy meal options."}
+                                    ],
+                                    "integration": {"spreadsheet_id": "APOLLO_METRO_LIVE_SINK", "crm_enabled": True, "api_enabled": True},
+                                    "ai_settings": {"default_language": "English", "fallback_language": "Hindi", "confidence_threshold": 0.7, "enable_memory": True}
+                                }
+                            }
+                            dynamodb_analytics.save_tenant(apollo_data)
+                            logger.info("[STARTUP] Seeded missing default tenant 'apollo_metro'.")
+                    except Exception as e:
+                        logger.error("[STARTUP] Failed to verify/seed default tenant: %s", e)
+
+                # Check Users Table
+                users_table_name = os.environ.get("DYNAMODB_USERS_TABLE", "InDiiServe_Users")
+                if users_table_name not in existing:
+                    dynamo.create_table(
+                        TableName=users_table_name,
+                        KeySchema=[{"AttributeName": "username", "KeyType": "HASH"}],
+                        AttributeDefinitions=[{"AttributeName": "username", "AttributeType": "S"}],
+                        BillingMode="PAY_PER_REQUEST",
+                    )
+                    logger.info("[STARTUP] DynamoDB table '%s' created.", users_table_name)
+                    try:
+                        dynamo.get_waiter("table_exists").wait(TableName=users_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
+                        from src.analytics.dynamodb_client import dynamodb_analytics
+                        dynamodb_analytics.save_user("admin_metro", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu", "apollo_metro", "admin")
+                        logger.info("[STARTUP] Seeded default user 'admin_metro'.")
+                    except Exception as e:
+                        logger.error("[STARTUP] Failed to seed default user: %s", e)
+                else:
+                    logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", users_table_name)
+                    try:
+                        from src.analytics.dynamodb_client import dynamodb_analytics
+                        if not dynamodb_analytics.get_user("admin_metro"):
+                            dynamodb_analytics.save_user("admin_metro", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu", "apollo_metro", "admin")
+                            logger.info("[STARTUP] Seeded missing default user 'admin_metro'.")
+                    except Exception as e:
+                        logger.error("[STARTUP] Failed to verify/seed default user: %s", e)
             
             await asyncio.to_thread(setup_dynamo)
+
         except Exception as e:
             logger.warning("[STARTUP] DynamoDB table check failed (may not have permissions yet): %s", e)
 
@@ -545,7 +762,7 @@ async def incoming_call(request: Request):
     if call_sid:
         params.append(("CallSid", call_sid))
     if call_from:
-        encrypted_from = rds_analytics.encrypt_data(call_from)
+        encrypted_from = dynamodb_analytics.encrypt_data(call_from)
         params.append(("CallFrom", encrypted_from))
     if params:
         ws_url = _append_query_params(ws_url, params)
@@ -688,7 +905,7 @@ async def exotel_stream(websocket: WebSocket):
     encrypted_call_from = websocket.query_params.get("CallFrom", "")
     
     # Decrypt phone number (PII Hardening P1)
-    ws_call_from = rds_analytics.decrypt_data(encrypted_call_from)
+    ws_call_from = dynamodb_analytics.decrypt_data(encrypted_call_from)
     
     if ws_call_sid or ws_call_from:
         logger.info("WS query params - CallSid: %s, CallFrom: %s", ws_call_sid, mask_phone(ws_call_from))
@@ -1004,7 +1221,7 @@ async def exotel_stream(websocket: WebSocket):
                             websocket.query_params.get("HospitalId") 
                             or websocket.query_params.get("hospital_id")
                             or start_data.get("hospital_id")
-                            or "default_tier2"
+                            or os.environ.get("HOSPITAL_ID", "default_tier2")
                         )
                         session.hospital_id = hospital_id
                         
@@ -1043,18 +1260,17 @@ async def exotel_stream(websocket: WebSocket):
 
                         call_start_time = datetime.now(timezone.utc)
 
-                        # Send greeting audio IMMEDIATELY so Exotel hears something
-                        # before the Nova session setup (which takes time)
-                        # Polish greeting for clarity and convert to Exotel format
-                        polished_greeting = polisher.process_chunk(hello_audio_bytes)
-                        exotel_greeting = pcm_to_exotel(polished_greeting)
-                        greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
-                        await websocket.send_text(json.dumps({
-                            "event": "media",
-                            "stream_sid": session.stream_sid,
-                            "media": {"payload": greeting_b64}
-                        }))
-                        logger.info("Greeting audio sent to Exotel (%d bytes Exotel, polished)", len(exotel_greeting))
+                        # [MODIFICATION] Disabled pre-recorded hello.pcm greeting block as requested by user.
+                        # This removes the initial male "hello" sound and lets the model start speaking immediately.
+                        # polished_greeting = polisher.process_chunk(hello_audio_bytes)
+                        # exotel_greeting = pcm_to_exotel(polished_greeting)
+                        # greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
+                        # await websocket.send_text(json.dumps({
+                        #     "event": "media",
+                        #     "stream_sid": session.stream_sid,
+                        #     "media": {"payload": greeting_b64}
+                        # }))
+                        # logger.info("Greeting audio sent to Exotel (%d bytes Exotel, polished)", len(exotel_greeting))
 
                         # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
@@ -1171,6 +1387,8 @@ async def exotel_stream(websocket: WebSocket):
     finally:
         if idle_monitor_task:
             idle_monitor_task.cancel()
+        if "task_initiate" in locals() and not task_initiate.done():
+            task_initiate.cancel()
         # Save transcript on disconnect
         if not transcript_saved:
             save_transcript(

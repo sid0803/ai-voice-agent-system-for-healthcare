@@ -47,8 +47,36 @@ class _TriageJournalWriter:
                         "Priority", "Source", "Reason", "UncertaintyFlag"
                     ])
 
+    def _rotate_files(self):
+        """Rotate triage_journal.csv if it exceeds 10MB."""
+        max_size = 10 * 1024 * 1024  # 10MB
+        if self._file_path.exists() and self._file_path.stat().st_size > max_size:
+            for i in range(4, 0, -1):
+                src = self._file_path.with_name(f"triage_journal.csv.{i}")
+                dst = self._file_path.with_name(f"triage_journal.csv.{i+1}")
+                if src.exists():
+                    try:
+                        if dst.exists():
+                            dst.unlink()
+                        src.rename(dst)
+                    except Exception:
+                        pass
+            dst = self._file_path.with_name("triage_journal.csv.1")
+            try:
+                if dst.exists():
+                    dst.unlink()
+                self._file_path.rename(dst)
+            except Exception:
+                pass
+            with open(self._file_path, "w", newline="", encoding="utf-8") as f:
+                csv.writer(f).writerow([
+                    "Timestamp", "HospitalID", "Symptoms", "PainScore",
+                    "Priority", "Source", "Reason", "UncertaintyFlag"
+                ])
+
     def write(self, row: list):
         with self._lock:
+            self._rotate_files()
             with open(self._file_path, "a", newline="", encoding="utf-8") as f:
                 csv.writer(f).writerow(row)
 
@@ -279,10 +307,101 @@ def sync_community_knowledge():
 # ---------------------------------------------------------------------------
 
 
+def _normalize_hindi_query(query: str) -> str:
+    """Normalizes Hindi / Devanagari terms to English keywords for robust search matching."""
+    if not query:
+        return ""
+    
+    normalized = query.lower()
+    
+    # Mapping dict for departments, services, FAQs, and doctors
+    mappings = {
+        # Departments
+        "कार्डियोलॉजी": "cardiology",
+        "कार्डियोलोजी": "cardiology",
+        "कार्डियो": "cardiology",
+        "हृदय": "cardiology",
+        "दिल": "cardiology",
+        "पीडियाट्रिक्स": "pediatrics",
+        "पिडियाट्रिक्स": "pediatrics",
+        "पीडिया": "pediatrics",
+        "बाल": "pediatrics",
+        "ऑर्थोपेडिक्स": "orthopedics",
+        "अर्थोपेडिक्स": "orthopedics",
+        "आर्थोपेडिक्स": "orthopedics",
+        "हड्डी": "orthopedics",
+        "डर्मेटोलॉजी": "dermatology",
+        "डर्मेटोलोजी": "dermatology",
+        "त्वचा": "dermatology",
+        "चमड़ी": "dermatology",
+        "जनरल मेडिसिन": "general medicine",
+        "सामान्य चिकित्सा": "general medicine",
+        "सामान्य": "general medicine",
+        "न्यूरोलॉजी": "neurology",
+        "न्यूरोलोजी": "neurology",
+        "न्यूरो": "neurology",
+        "तंत्रिका": "neurology",
+        "रेडियोलॉजी": "radiology",
+        "रेडियोलोजी": "radiology",
+        "एक्स-रे": "radiology",
+        "एक्सरे": "radiology",
+        
+        # FAQ Keywords
+        "पता": "address location",
+        "कहाँ": "where location",
+        "एड्रेस": "address",
+        "लोकेशन": "location",
+        "दवाई": "pharmacy medicine",
+        "फार्मेसी": "pharmacy",
+        "मेडिसिन": "medicine",
+        "समय": "hours timing schedule",
+        "टाइम": "hours timing schedule",
+        "घंटे": "hours",
+        "रिपोर्ट": "reports status",
+        "पर्चा": "reports",
+        
+        # Service Names
+        "एमआरआई": "mri scan",
+        "सीटी": "ct scan",
+        "ब्लड": "blood routine test",
+        "खून": "blood routine test",
+        "परामर्श": "consultation opd",
+        "कंसल्टेशन": "consultation opd",
+        "फीस": "fee price",
+        "पैसा": "price billing",
+        "बिल": "billing bill",
+        "खर्चा": "price cost billing",
+        
+        # Doctors & ASR corrections
+        "सेन": "sen",
+        "सेम": "sen",       # ASR error for Dr. Sen
+        "ट्रेन": "sen",     # ASR error for Dr. Sen
+        "सिंह": "singh",
+        "कविता": "kavita",
+        "गुप्ता": "gupta",
+        "अनन्या": "ananya",
+        "रे": "ray",
+        "राय": "ray",
+        "कुलकर्णी": "kulkarni",
+        "समीर": "sameer",
+        "मेघा": "megha",
+        "राव": "rao",
+        "जैन": "jain",
+        "प्रतीक": "prateek"
+    }
+    
+    for hindi_term, eng_term in mappings.items():
+        if hindi_term in normalized:
+            normalized += f" {eng_term}"
+            
+    return normalized
+
+
 def hospital_info(args: dict, hospital_id: str = None) -> dict:
     """Fetches hospital info. Priority: local tenant JSON → FAISS cache → Bedrock KB → fallback."""
     data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
+    normalized_query = _normalize_hindi_query(query)
 
     # 1. Check specific local tenant data (fastest, most reliable)
     
@@ -290,25 +409,25 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
     faq_list = data.get("faq", [])
     if isinstance(faq_list, list):
         for item in faq_list:
-            intent_match = item.get("intent", "").replace("_", " ") in query
-            question_match = any(q.lower() in query for q in item.get("questions", []))
+            intent_match = item.get("intent", "").replace("_", " ") in normalized_query
+            question_match = any(q.lower() in normalized_query for q in item.get("questions", []))
             if intent_match or question_match:
                 return {"answer": item.get("answer")}
     
     # Fallback to legacy dict FAQ
     elif isinstance(faq_list, dict):
         for key, val in faq_list.items():
-            if key in query:
+            if key in normalized_query:
                 return {"answer": val}
 
-    if any(k in query for k in ["address", "location", "where"]):
+    if any(k in normalized_query for k in ["address", "location", "where"]):
         return {"answer": f"{data.get('name')} is located at {data.get('address', 'our main facility')}."}
 
-    if any(k in query for k in ["pharmacy", "medicine"]):
+    if any(k in normalized_query for k in ["pharmacy", "medicine"]):
         return {"answer": f"Our pharmacy is open {data.get('pharmacy_hours', '24/7')}. It is located near the main exit."}
 
     # 2. Check semantic FAISS cache for a previously-answered similar query
-    cached = _faiss_search(query)
+    cached = _faiss_search(normalized_query)
     if cached:
         logger.info("[KB] Returning FAISS-cached KB answer")
         return cached
@@ -318,7 +437,7 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
         try:
             kb_result = _kb_client.retrieve(
                 knowledgeBaseId=_kb_id,
-                retrievalQuery={"text": query},
+                retrievalQuery={"text": normalized_query},
                 retrievalConfiguration={
                     "vectorSearchConfiguration": {"numberOfResults": 2}
                 }
@@ -330,7 +449,7 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
             ]
             if passages:
                 answer = passages[0]
-                _faiss_store(query, answer)  # Cache for future queries
+                _faiss_store(normalized_query, answer)  # Cache for future queries
                 logger.info("[KB] Returning live KB answer and caching")
                 return {"answer": answer}
         except Exception:
@@ -345,11 +464,24 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
     """Fetches doctor schedule. Priority: local roster -> FAISS cache -> Bedrock KB -> fallback."""
     data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
+    normalized_query = _normalize_hindi_query(query)
     doctors = data.get("doctors", [])
 
     # 1. Search in local tenant roster (most accurate for configured clinics)
     for doc in doctors:
-        if doc["name"].lower() in query or doc["dept"].lower() in query:
+        doc_name_lower = doc["name"].lower()
+        doc_dept_lower = doc["dept"].lower()
+        
+        # Extract name parts (e.g., "Kavita", "Singh", "Gupta", "Sen")
+        name_clean = doc_name_lower.replace("dr.", "").replace("dr", "").strip()
+        name_parts = [p for p in name_clean.split() if len(p) >= 3] # Keep parts with at least 3 characters
+        
+        # Check if full name, department, or any name part is in normalized query
+        name_match = (doc_name_lower in normalized_query or 
+                      any(part in normalized_query for part in name_parts))
+        dept_match = doc_dept_lower in normalized_query
+        
+        if name_match or dept_match:
             fee_str = f" Consultation fee: Rs. {doc['fee']}." if doc.get("fee") else ""
             
             # Check for AI-Ready structured availability (Requirement: Enriched AI Data)
@@ -369,7 +501,7 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
             }
 
     # 2. Check FAISS semantic cache for a previously-answered similar query
-    cached = _faiss_search(f"doctor availability {query}")
+    cached = _faiss_search(f"doctor availability {normalized_query}")
     if cached:
         logger.info("[KB] Returning FAISS-cached doctor answer")
         return cached
@@ -379,7 +511,7 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
         try:
             kb_result = _kb_client.retrieve(
                 knowledgeBaseId=_kb_id,
-                retrievalQuery={"text": f"doctor availability {query}"},
+                retrievalQuery={"text": f"doctor availability {normalized_query}"},
                 retrievalConfiguration={
                     "vectorSearchConfiguration": {"numberOfResults": 2}
                 }
@@ -391,7 +523,7 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
             ]
             if passages:
                 answer = passages[0]
-                _faiss_store(f"doctor availability {query}", answer)
+                _faiss_store(f"doctor availability {normalized_query}", answer)
                 logger.info("[KB] Returning live KB doctor answer and caching")
                 return {"answer": answer}
         except Exception:
@@ -530,9 +662,10 @@ def get_billing_info(args: dict, hospital_id: str = None) -> dict:
     
     # If query mentions a specific service, use that
     query = str(args.get("query", "")).lower()
+    normalized_query = _normalize_hindi_query(query)
     found_any = False
     for s in services:
-        if s["name"].lower() in query:
+        if s["name"].lower() in normalized_query:
             items.append({"name": s["name"], "price": s["price"]})
             total += s["price"]
             found_any = True
@@ -572,6 +705,21 @@ def predict_ot_schedule(args: dict, hospital_id: str = None) -> dict:
     procedure = args.get("procedure_name", "General Surgery").title()
     doctor = args.get("doctor_name", "the attending specialist")
     
+    # Map Devanagari procedure names to English
+    procedure_clean = procedure.lower()
+    procedure_mappings = {
+        "एंजियोप्लास्टी": "Angioplasty",
+        "अपेंडिक्स": "Appendectomy",
+        "घुटना": "Knee Replacement",
+        "कैटरेक्ट": "Cataract",
+        "मोतियाबिंद": "Cataract",
+        "सर्जरी": "General Surgery"
+    }
+    for hindi_p, eng_p in procedure_mappings.items():
+        if hindi_p in procedure_clean:
+            procedure = eng_p
+            break
+
     # Mock Clinical OT Data
     durations = {
         "Angioplasty": {"prep": 30, "proc": 90, "rec": 60},

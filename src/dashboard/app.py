@@ -6,7 +6,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.analytics.rds_client import rds_analytics
+from src.analytics.dynamodb_client import dynamodb_analytics
 from src.diagnostics.health import HealthChecker
 
 logger = logging.getLogger(__name__)
@@ -20,119 +20,73 @@ def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode(), salt).decode()
 
 def check_login(username, password):
-    """Verify credentials against RDS users table."""
-    conn = rds_analytics.get_connection()
-    if conn is None:
-        st.error("Cannot connect to database for authentication.")
+    """Verify credentials against DynamoDB users table."""
+    user = dynamodb_analytics.get_user(username)
+    if not user:
         return None
     
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            rds_analytics.format_query("SELECT hospital_id, password_hash, role FROM users WHERE username = %s"),
-            (username,)
-        )
-        result = cur.fetchone()
-        if result:
-            hospital_id, stored_hash, role = result
-            # Support both old SHA-256 (for migration) and new bcrypt
-            if len(stored_hash) == 64: # Old SHA-256 length
-                import hashlib
-                old_hash = hashlib.sha256(password.encode()).hexdigest()
-                if old_hash == stored_hash:
-                    # Auto-migrate to bcrypt on successful login
-                    new_hash = hash_password(password)
-                    cur.execute(rds_analytics.format_query("UPDATE users SET password_hash = %s WHERE username = %s"), (new_hash, username))
-                    conn.commit()
-                    logger.info(f"User {username} migrated to bcrypt.")
-                    cur.close()
-                    return {"hospital_id": hospital_id, "role": role}
-            elif bcrypt.checkpw(password.encode(), stored_hash.encode()):
-                cur.close()
-                return {"hospital_id": hospital_id, "role": role}
-        cur.close()
-        return None
-    except Exception as e:
-        logger.error(f"Login failure: {e}")
-        return None
-    finally:
-        conn.close()
+    stored_hash = user.get("password_hash")
+    hospital_id = user.get("hospital_id")
+    role = user.get("role", "staff")
+    
+    if len(stored_hash) == 64:  # Old SHA-256 length migration
+        import hashlib
+        old_hash = hashlib.sha256(password.encode()).hexdigest()
+        if old_hash == stored_hash:
+            # Migrate to bcrypt
+            new_hash = hash_password(password)
+            dynamodb_analytics.save_user(username, new_hash, hospital_id, role)
+            logger.info(f"User {username} migrated to bcrypt in DynamoDB.")
+            return {"hospital_id": hospital_id, "role": role}
+    elif bcrypt.checkpw(password.encode(), stored_hash.encode()):
+        return {"hospital_id": hospital_id, "role": role}
+    return None
 
 def register_hospital(name, hospital_id, admin_user, admin_pass):
-    """Create a new pending tenant and admin account with atomic checks."""
-    conn = rds_analytics.get_connection()
-    if not conn:
+    """Create a new pending tenant and admin account in DynamoDB."""
+    from datetime import datetime, timezone, timedelta
+    IST = timezone(timedelta(hours=5, minutes=30))
+    
+    # 1. Pre-flight check
+    if dynamodb_analytics.get_tenant(hospital_id):
+        logger.warning(f"Registration aborted: Hospital ID {hospital_id} already exists.")
         return False
-    cur = conn.cursor()
-    try:
-        # 1. Pre-flight check: Check for existing ID or Username (Requirement: Reliability P1)
-        cur.execute(rds_analytics.format_query("SELECT 1 FROM tenants WHERE hospital_id = %s"), (hospital_id,))
-        if cur.fetchone():
-            logger.warning(f"Registration aborted: Hospital ID {hospital_id} already exists.")
-            cur.close()
-            return False
-        
-        cur.execute(rds_analytics.format_query("SELECT 1 FROM users WHERE username = %s"), (admin_user,))
-        if cur.fetchone():
-            logger.warning(f"Registration aborted: Username {admin_user} already exists.")
-            cur.close()
-            return False
+    if dynamodb_analytics.get_user(admin_user):
+        logger.warning(f"Registration aborted: Username {admin_user} already exists.")
+        return False
 
-        # 2. Create Tenant
-        cur.execute(
-            rds_analytics.format_query("INSERT INTO tenants (hospital_id, hospital_name, status) VALUES (%s, %s, 'pending')"),
-            (hospital_id, name)
-        )
-        # 3. Create User
-        hashed = hash_password(admin_pass)
-        cur.execute(
-            rds_analytics.format_query("INSERT INTO users (username, password_hash, hospital_id, role) VALUES (%s, %s, %s, 'admin')"),
-            (admin_user, hashed, hospital_id)
-        )
-        conn.commit()
-        cur.close()
-        return True
-    except Exception as e:
-        logger.error(f"Registration failed: {e}")
-        # Psycopg2 with context manager handles rollback automatically on exception
-        return False
-    finally:
-        conn.close()
+    # 2. Create Tenant
+    tenant_data = {
+        "hospital_id": hospital_id,
+        "hospital_name": name,
+        "status": "pending",
+        "ingestion_strategy": "hybrid",
+        "sync_interval_mins": 10,
+        "created_at": datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST")
+    }
+    
+    # 3. Create User
+    hashed = hash_password(admin_pass)
+    
+    ok1 = dynamodb_analytics.save_tenant(tenant_data)
+    ok2 = dynamodb_analytics.save_user(admin_user, hashed, hospital_id, "admin")
+    return ok1 and ok2
 
 @st.cache_data(ttl=60)
 def load_analytics(hospital_id: str, days: int = 30):
-    """Fetch call metadata for the dashboard with Demo Mode support."""
-    conn = rds_analytics.get_connection()
-    if not conn:
-        return pd.DataFrame()
-    
+    """Fetch call metadata for the dashboard from DynamoDB."""
     try:
-        # Postgres uses INTERVAL, SQLite uses date()
-        is_sqlite = rds_analytics.is_sqlite(conn)
-        if is_sqlite:
-            query = """
-                SELECT * FROM hospital_analytics 
-                WHERE hospital_id = %s 
-                AND timestamp >= date('now', '-%s days')
-                ORDER BY timestamp DESC
-            """
-        else:
-            query = """
-                SELECT * FROM hospital_analytics 
-                WHERE hospital_id = %s 
-                AND timestamp >= CURRENT_TIMESTAMP - INTERVAL '%s days'
-                ORDER BY timestamp DESC
-            """
+        items = dynamodb_analytics.load_analytics(hospital_id, days)
+        if not items:
+            return pd.DataFrame()
         
-        # We manually format the query because read_sql needs the translated placeholders
-        formatted_query = rds_analytics.format_query(query)
-        df = pd.read_sql(formatted_query, conn, params=(hospital_id, str(days)))
+        df = pd.DataFrame(items)
+        if 'timestamp' in df.columns:
+            df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
         return df
     except Exception as e:
         logger.error(f"Failed to load analytics: {e}")
         return pd.DataFrame()
-    finally:
-        conn.close()
 
 # ---------------------------------------------------------------------------
 # Page configuration
@@ -405,20 +359,19 @@ if nav == "Analytics Dashboard":
         st.info("No call logs found for this period.")
 
 # ---------------------------------------------------------------------------
-# TAB 2: Integration Settings
-# ---------------------------------------------------------------------------
-elif nav == "Integration Settings":
+# TAB 2: Integratielif nav == "Integration Settings":
     st.title("⚙️ Data Sync & HIS Integration")
     st.markdown("Configure how Asha connects to your hospital's system.")
     
-    conn = rds_analytics.get_connection()
-    cur = conn.cursor()
-    cur.execute(rds_analytics.format_query("SELECT status, ingestion_strategy, ingestion_config, push_token, spreadsheet_id FROM tenants WHERE hospital_id = %s"), (st.session_state.hospital_id,))
-    res = cur.fetchone()
-    cur.close()
+    tenant = dynamodb_analytics.get_tenant(st.session_state.hospital_id)
     
-    if res:
-        status, strategy, config, token, sheet_id = res
+    if tenant:
+        status = tenant.get("status", "pending")
+        strategy = tenant.get("ingestion_strategy", "hybrid")
+        config = tenant.get("ingestion_config", {})
+        token = tenant.get("push_token", "")
+        sheet_id = tenant.get("spreadsheet_id", "")
+        
         st.write(f"Current Status: **{status.upper()}**")
         
         with st.form("integration_form"):
@@ -427,21 +380,20 @@ elif nav == "Integration Settings":
             new_url = st.text_input("Pull Sync URL (REST API)", value=config.get("pull_url") if config else "")
             
             if st.form_submit_button("Update Configuration"):
-                new_config = {"pull_url": new_url}
-                cur = conn.cursor()
-                cur.execute(
-                    rds_analytics.format_query("UPDATE tenants SET ingestion_strategy = %s, spreadsheet_id = %s, ingestion_config = %s WHERE hospital_id = %s"),
-                    (new_strategy, new_sheet, json.dumps(new_config), st.session_state.hospital_id)
-                )
-                conn.commit()
-                cur.close()
-                st.success("Configuration saved!")
+                tenant["ingestion_strategy"] = new_strategy
+                tenant["spreadsheet_id"] = new_sheet
+                tenant["ingestion_config"] = {"pull_url": new_url}
+                
+                if dynamodb_analytics.save_tenant(tenant):
+                    st.success("Configuration saved!")
+                    st.rerun()
+                else:
+                    st.error("Failed to save configuration.")
 
         st.markdown("---")
         st.subheader("🔑 Real-time API Push")
         st.info("Use this token to push data from your HIS to our endpoint: `POST /tenant/sync`.")
         st.code(f"X-Push-Token: {token or 'N/A'}")
-    conn.close()
 
 # ---------------------------------------------------------------------------
 # TAB 3: Super-Admin (Approvals)
@@ -450,35 +402,37 @@ elif nav == "Super-Admin Approval":
     st.title("🛡️ Governance: Super-Admin Dashboard")
     st.markdown("Review and activate clinical facilities.")
     
-    conn = rds_analytics.get_connection()
-    df_tenants = pd.read_sql(
-        rds_analytics.format_query("SELECT hospital_id, hospital_name, status, created_at FROM tenants ORDER BY created_at DESC"), 
-        conn
-    )
+    tenants = dynamodb_analytics.list_tenants()
     
-    if not df_tenants.empty:
-        for idx, row in df_tenants.iterrows():
-            with st.expander(f"{row['hospital_name']} [{row['status'].upper()}]"):
+    if tenants:
+        # Sort tenants by created_at descending
+        tenants.sort(key=lambda t: t.get("created_at", ""), reverse=True)
+        
+        for tenant in tenants:
+            h_id = tenant["hospital_id"]
+            h_name = tenant.get("hospital_name", "Unknown Hospital")
+            status = tenant.get("status", "pending")
+            
+            with st.expander(f"{h_name} [{status.upper()}]"):
                 col1, col2, col3 = st.columns(3)
-                if row['status'] == 'pending':
-                    if col1.button("Move to Sandbox", key=f"sb_{row['hospital_id']}"):
-                        with conn.cursor() as cur:
-                            import secrets
-                            token = secrets.token_hex(32)
-                            cur.execute(rds_analytics.format_query("UPDATE tenants SET status = 'sandbox', push_token = %s WHERE hospital_id = %s"), (token, row['hospital_id']))
-                        conn.commit()
+                if status == 'pending':
+                    if col1.button("Move to Sandbox", key=f"sb_{h_id}"):
+                        import secrets
+                        token = secrets.token_hex(32)
+                        tenant["status"] = "sandbox"
+                        tenant["push_token"] = token
+                        dynamodb_analytics.save_tenant(tenant)
                         st.rerun()
-                if row['status'] == 'sandbox':
-                    if col2.button("Go Live", key=f"live_{row['hospital_id']}"):
-                        with conn.cursor() as cur:
-                            cur.execute(rds_analytics.format_query("UPDATE tenants SET status = 'live' WHERE hospital_id = %s"), (row['hospital_id'],))
-                        conn.commit()
+                if status == 'sandbox':
+                    if col2.button("Go Live", key=f"live_{h_id}"):
+                        tenant["status"] = "live"
+                        dynamodb_analytics.save_tenant(tenant)
                         st.rerun()
-                if col3.button("Suspend", key=f"sus_{row['hospital_id']}"):
-                    with conn.cursor() as cur:
-                        cur.execute(rds_analytics.format_query("UPDATE tenants SET status = 'pending' WHERE hospital_id = %s"), (row['hospital_id'],))
-                    conn.commit()
+                if col3.button("Suspend", key=f"sus_{h_id}"):
+                    tenant["status"] = "pending"
+                    dynamodb_analytics.save_tenant(tenant)
                     st.rerun()
-    conn.close()
+    else:
+        st.info("No tenants registered.")
 
 st.caption("Asha SaaS Engine v5.0.0 | Production-Ready RBAC | NIST Encryption Standard")

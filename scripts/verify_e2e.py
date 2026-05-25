@@ -152,7 +152,7 @@ async def run_e2e_test():
                         test_results["hospital_info"] = True
                         break
                 if data.get("event") == "tool" and data.get("name") == "hospitalInfoTool":
-                    print("🔧 AI Triggered hospitalInfoTool correctly.")
+                    print("[TOOL] AI Triggered hospitalInfoTool correctly.")
                     test_results["hospital_info"] = True
                     break
             
@@ -177,7 +177,7 @@ async def run_e2e_test():
                 msg = await websocket.recv()
                 data = json.loads(msg)
                 if data.get("event") == "tool" and data.get("name") == "handoffTool":
-                    print("🔧 AI Triggered handoffTool correctly.")
+                    print("[TOOL] AI Triggered handoffTool correctly.")
                     test_results["emergency"] = True
                     break
                 if data.get("event") == "text":
@@ -210,7 +210,7 @@ async def run_e2e_test():
                 msg = await websocket.recv()
                 data = json.loads(msg)
                 if data.get("event") == "tool" and data.get("name") == "clinicalTriageTool":
-                    print("🔧 AI Triggered clinicalTriageTool correctly.")
+                    print("[TOOL] AI Triggered clinicalTriageTool correctly.")
                     test_results["triage"] = True
                     break
                 if data.get("event") == "text":
@@ -267,7 +267,7 @@ async def run_e2e_test():
                 msg = await websocket.recv()
                 data = json.loads(msg)
                 if data.get("event") == "tool" and data.get("name") == "predictOTScheduleTool":
-                    print("🔧 AI Triggered predictOTScheduleTool correctly.")
+                    print("[TOOL] AI Triggered predictOTScheduleTool correctly.")
                     test_results["ot_prediction"] = True
                     break
                 if data.get("event") == "text":

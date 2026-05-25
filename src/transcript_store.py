@@ -22,7 +22,8 @@ def _get_table():
     """Lazily create the DynamoDB Table resource on first use."""
     global _table
     if _table is None:
-        _table = boto3.Session(region_name=_region).resource("dynamodb").Table(_table_name)
+        session = boto3.Session(region_name=_region)
+        _table = session.resource("dynamodb").Table(_table_name)
     return _table
 
 

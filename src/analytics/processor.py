@@ -3,7 +3,7 @@ import logging
 import os
 import boto3
 import re
-from src.analytics.rds_client import rds_analytics
+from src.analytics.dynamodb_client import dynamodb_analytics
 
 logger = logging.getLogger(__name__)
 
@@ -21,11 +21,12 @@ class AnalyticsProcessor:
             retries={"max_attempts": 2, "mode": "standard"},
             tcp_keepalive=True,
         )
-        self.bedrock_runtime = boto3.client(
+        client = boto3.client(
             service_name="bedrock-runtime", 
             region_name=os.environ.get("BEDROCK_REGION", "us-east-1"),
             config=_BOTO_POOL_CONFIG
         )
+        self.bedrock_runtime = client
         # Use a cost-effective model for post-call analysis
         # us.amazon.nova-lite-v1:0 replaces the deprecated Titan Text Express v1
         self.model_id = os.environ.get("ANALYTICS_MODEL_ID", "us.amazon.nova-lite-v1:0")
@@ -96,53 +97,18 @@ class AnalyticsProcessor:
                 logger.error(f"Invalid JSON from AI for {session_id}")
                 analytics = {}
 
-            # Save to RDS in a non-blocking thread
+            # Save to DynamoDB in a non-blocking thread
             await asyncio.to_thread(
-                self._save_to_rds, session_id, phone, hospital_id, analytics, duration
+                self._save_to_dynamodb, session_id, phone, hospital_id, analytics, duration
             )
             logger.info(f"[ANALYTICS] Processed call {session_id[:8]} - Outcome: {analytics.get('outcome')}")
 
         except Exception:
             logger.exception(f"Failed to process analytics for session {session_id}")
 
-    def _save_to_rds(self, session_id, phone, hospital_id, analytics, duration):
-        """Insert processed metrics into Postgres."""
-        conn = rds_analytics.get_connection()
-        if not conn:
-            return
-
-        try:
-            # Encrypt PII before saving to analytics (Requirement P1 Hardening)
-            encrypted_phone = rds_analytics.encrypt_data(phone)
-            
-            cur = conn.cursor()
-            cur.execute(rds_analytics.format_query("""
-                INSERT INTO hospital_analytics 
-                (session_id, phone_number, hospital_id, sentiment, intent, department, outcome, duration_seconds, transcript_summary, is_successful_booking, urgency_score, is_emergency, symptoms_list, follow_up_priority)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (session_id) DO NOTHING;
-            """), (
-                session_id,
-                encrypted_phone,
-                hospital_id,
-                analytics.get("sentiment", "Neutral"),
-                analytics.get("intent", "General"),
-                analytics.get("department", "General"),
-                analytics.get("outcome", "inquiry"),
-                duration,
-                analytics.get("summary", ""),
-                analytics.get("successful_booking", False),
-                analytics.get("urgency_score", 1),
-                analytics.get("is_emergency", False),
-                analytics.get("symptoms_list", ""),
-                analytics.get("follow_up_priority", "Low")
-            ))
-            conn.commit()
-            cur.close()
-        except Exception:
-            logger.exception("Failed to insert analytics row")
-        finally:
-            conn.close()
+    def _save_to_dynamodb(self, session_id, phone, hospital_id, analytics, duration):
+        """Insert processed metrics into DynamoDB."""
+        dynamodb_analytics.save_analytics(session_id, phone, hospital_id, analytics, duration)
 
 # Global instance
 analytics_processor = AnalyticsProcessor()

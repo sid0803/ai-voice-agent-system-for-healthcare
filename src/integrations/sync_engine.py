@@ -6,7 +6,7 @@ import ipaddress
 from urllib.parse import urlparse
 from datetime import datetime, timezone
 import httpx
-from src.analytics.rds_client import rds_analytics
+from src.analytics.dynamodb_client import dynamodb_analytics
 from src.integrations.adapter import data_adapter
 from src.learning.distiller import learning_distiller
 from src.tools import sync_community_knowledge
@@ -32,7 +32,7 @@ class SyncEngine:
                 return False
 
             # [MED FIX] Use asyncio.to_thread for blocking DNS resolution
-            ip = await asyncio.to_thread(socket.gethostbyname, hostname)
+            ip = await asyncio.to_thread(getattr(socket, "gethostbyname"), hostname)
             ip_obj = ipaddress.ip_address(ip)
 
             # Block loopback, private, link-local, and multicast addresses
@@ -51,35 +51,31 @@ class SyncEngine:
 
     async def process_push(self, hospital_id: str, raw_data: dict, push_token: str) -> bool:
         """Requirement Hardening: Authenticated API Push."""
-        conn = rds_analytics.get_connection()
-        if not conn:
-            return False
-            
-        cur = conn.cursor()
         try:
-            # 1. Verify Token
-            cur.execute("SELECT push_token FROM tenants WHERE hospital_id = %s", (hospital_id,))
-            res = cur.fetchone()
-            if not res or res[0] != push_token:
+            # 1. Fetch Tenant
+            tenant = await asyncio.to_thread(dynamodb_analytics.get_tenant, hospital_id)
+            if not tenant:
+                logger.warning(f"[SYNC] Hospital ID {hospital_id} not found.")
+                return False
+            
+            stored_token = tenant.get("push_token")
+            if not stored_token or stored_token != push_token:
                 logger.warning(f"[SYNC] Unauthorized push attempt for {hospital_id}")
                 return False
 
             # 2. Normalize and Save
             normalized = data_adapter.normalize(raw_data)
-            cur.execute("""
-                UPDATE tenants 
-                SET hospital_data_normalized = %s, last_sync_at = NOW() 
-                WHERE hospital_id = %s
-            """, (json.dumps(normalized), hospital_id))
-            conn.commit()
-            logger.info(f"[SYNC] Real-time push successful for {hospital_id}")
-            return True
+            tenant["hospital_data_normalized"] = normalized
+            tenant["last_sync_at"] = datetime.now(timezone.utc).isoformat()
+            
+            saved = await asyncio.to_thread(dynamodb_analytics.save_tenant, tenant)
+            if saved:
+                logger.info(f"[SYNC] Real-time push successful for {hospital_id}")
+                return True
+            return False
         except Exception:
             logger.exception(f"[SYNC] Push processing failed for {hospital_id}")
             return False
-        finally:
-            cur.close()
-            conn.close()
 
     async def scheduled_pull_worker(self):
         """Background Thread: The 10-minute fallback sync."""
@@ -102,47 +98,44 @@ class SyncEngine:
 
     async def _perform_all_syncs(self):
         """Iterate over tenants and pull data if required."""
-        conn = rds_analytics.get_connection()
-        if not conn:
-            return
-            
         try:
-            # [FIX MED-08] Use nested try/finally to guarantee cursor is always closed
-            cur = conn.cursor()
-            try:
-                # Select only 'live' or 'sandbox' tenants set for hybrid/pull
-                cur.execute("""
-                    SELECT hospital_id, ingestion_config, sync_interval_mins, last_sync_at 
-                    FROM tenants 
-                    WHERE status IN ('live', 'sandbox') 
-                    AND ingestion_strategy IN ('pull', 'hybrid')
-                """)
-                tenants = cur.fetchall()
-            finally:
-                cur.close()
-                
+            # Select only 'live' or 'sandbox' tenants set for hybrid/pull
+            tenants = await asyncio.to_thread(dynamodb_analytics.list_tenants)
+            
             # Implementation Hardening: Parallel Sync (P1)
             # We use a semaphore to avoid overloading the DB or CPU
             tasks = []
-            for tid, config_raw, interval, last_sync in tenants:
+            for tenant in tenants:
+                status = tenant.get("status")
+                strategy = tenant.get("ingestion_strategy")
+                if status not in ['live', 'sandbox'] or strategy not in ['pull', 'hybrid']:
+                    continue
+                
+                config_raw = tenant.get("ingestion_config")
                 if not config_raw or not config_raw.get("pull_url"):
                     continue
-                    
+                
+                interval = tenant.get("sync_interval_mins", 10)
+                last_sync = tenant.get("last_sync_at")
+                
                 # Check if it's time to sync
                 now = datetime.now(timezone.utc)
                 if last_sync:
-                    seconds_since = (now - last_sync.replace(tzinfo=timezone.utc)).total_seconds()
-                    if seconds_since < (interval * 60):
-                        continue
+                    try:
+                        last_sync_dt = datetime.fromisoformat(last_sync)
+                        seconds_since = (now - last_sync_dt).total_seconds()
+                        if seconds_since < (interval * 60):
+                            continue
+                    except Exception:
+                        pass
                 
                 # Queue the task
-                tasks.append(self._sync_with_semaphore(tid, config_raw))
+                tasks.append(self._sync_with_semaphore(tenant["hospital_id"], config_raw))
             
             if tasks:
                 await asyncio.gather(*tasks)
-                
-        finally:
-            conn.close()
+        except Exception:
+            logger.exception("[SYNC] Failed to perform scheduled syncs")
 
     async def _sync_with_semaphore(self, hospital_id: str, config: dict):
         """Wrapper to respect concurrency limits."""
@@ -164,7 +157,7 @@ class SyncEngine:
             # [MED FIX] Use asyncio.to_thread for blocking DNS resolution
             from urllib.parse import urlparse, urlunparse
             parsed = urlparse(url)
-            resolved_ip = await asyncio.to_thread(socket.gethostbyname, parsed.hostname)
+            resolved_ip = await asyncio.to_thread(getattr(socket, "gethostbyname"), parsed.hostname)
             
             # Re-validate the resolved IP (redundant safety check)
             ip_obj = ipaddress.ip_address(resolved_ip)
@@ -184,17 +177,11 @@ class SyncEngine:
             # Normalize and update DB
             normalized = data_adapter.normalize(raw_data)
             
-            conn = rds_analytics.get_connection()
-            if conn:
-                cur = conn.cursor()
-                cur.execute("""
-                    UPDATE tenants 
-                    SET hospital_data_normalized = %s, last_sync_at = NOW() 
-                    WHERE hospital_id = %s
-                """, (json.dumps(normalized), hospital_id))
-                conn.commit()
-                cur.close()
-                conn.close()
+            tenant = await asyncio.to_thread(dynamodb_analytics.get_tenant, hospital_id)
+            if tenant:
+                tenant["hospital_data_normalized"] = normalized
+                tenant["last_sync_at"] = datetime.now(timezone.utc).isoformat()
+                await asyncio.to_thread(dynamodb_analytics.save_tenant, tenant)
                 logger.info(f"[SYNC] Scheduled pull successful for {hospital_id}")
         except Exception as e:
             logger.error(f"[SYNC] Failed to pull data for {hospital_id}: {str(e)}")

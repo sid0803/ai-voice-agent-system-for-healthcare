@@ -543,7 +543,9 @@ class S2SBidirectionalStreamClient:
                         session.is_active = False 
                         raise # Re-raise to trigger Mock Fallback in initiate_session
                         
-                    logger.exception("Error processing response chunk")
+                    logger.exception("Error processing response chunk. Terminating stream to prevent infinite busy loop.")
+                    session.is_active = False
+                    break
 
             self._dispatch_event(session_id, "streamComplete", {
                 "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -731,7 +733,8 @@ class S2SBidirectionalStreamClient:
         """Base64-encode audio data and send an audioInput event."""
         session = self._active_sessions.get(session_id)
         if session is None or not session.is_active or not session.audio_content_id:
-            raise ValueError(f"Invalid session {session_id} for audio streaming")
+            logger.debug("Session %s is inactive or has no audio_content_id, ignoring stream_audio_chunk call.", session_id)
+            return
         # Skip if audio is paused (idle follow-up in progress)
         if session.audio_paused:
             return

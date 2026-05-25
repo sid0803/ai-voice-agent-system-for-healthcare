@@ -160,12 +160,12 @@ def main():
     total_issues = sum(len(v) for v in issues.values())
 
     if total_issues == 0:
-        print(f"{GREEN}✓ SCAN COMPLETE: No critical issues found!{RESET}")
+        print(f"{GREEN}[PASS] SCAN COMPLETE: No critical issues found!{RESET}")
         print(f"  Files scanned: {file_count}")
         print(f"  Status: SECURE\n")
         return
 
-    print(f"{YELLOW}⚠ SCAN COMPLETE: {total_issues} potential issue(s) found{RESET}\n")
+    print(f"{YELLOW}[WARN] SCAN COMPLETE: {total_issues} potential issue(s) found{RESET}\n")
     print(f"  Files scanned: {file_count}\n")
 
     severity_order = ['SYNTAX_ERROR', 'SQL_INJECTION_RISK', 'DANGEROUS_FUNCTIONS', 
@@ -181,21 +181,21 @@ def main():
                     filepath, line_or_code, content = issue
                     print(f"  {filepath}:{line_or_code}")
                     if isinstance(content, str) and len(content) < 100:
-                        print(f"    → {content}")
+                        print(f"    -> {content}")
                 else:
                     print(f"  {issue}")
 
     print(f"\n{YELLOW}Scanned: {file_count} files{RESET}")
-    print(f"{GREEN}✓ Already fixed and hardened:{RESET}")
-    print(f"  ✓ D-03: Fernet guard in rds_client (ENCRYPTION_KEY validation)")
-    print(f"  ✓ D-05: EXOTEL_API_BASE None-guard")
-    print(f"  ✓ D-09: audit_logger consistency")
-    print(f"  ✓ D-10: asyncio.to_thread for socket operations")
-    print(f"  ✓ D-12: stream_sid guard in audio output")
-    print(f"  ✓ OPT-07: TCP keepalive and connection pooling in boto3 clients")
-    print(f"  ✓ CRIT-02: HMAC validation for Exotel WebSocket")
-    print(f"  ✓ CRIT-05: Rate limiting with slowapi")
-    print(f"  ✓ All 19 source files: Syntax check PASS")
+    print(f"{GREEN}[PASS] Already fixed and hardened:{RESET}")
+    print(f"  [PASS] D-03: Fernet guard in rds_client (ENCRYPTION_KEY validation)")
+    print(f"  [PASS] D-05: EXOTEL_API_BASE None-guard")
+    print(f"  [PASS] D-09: audit_logger consistency")
+    print(f"  [PASS] D-10: asyncio.to_thread for socket operations")
+    print(f"  [PASS] D-12: stream_sid guard in audio output")
+    print(f"  [PASS] OPT-07: TCP keepalive and connection pooling in boto3 clients")
+    print(f"  [PASS] CRIT-02: HMAC validation for Exotel WebSocket")
+    print(f"  [PASS] CRIT-05: Rate limiting with slowapi")
+    print(f"  [PASS] All 19 source files: Syntax check PASS")
     print()
 
 if __name__ == '__main__':

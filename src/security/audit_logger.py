@@ -20,7 +20,8 @@ class SecurityAuditLogger:
         self.logger.propagate = False
         
         if not self.logger.handlers:
-            handler = logging.FileHandler(self.audit_file)
+            from logging.handlers import RotatingFileHandler
+            handler = RotatingFileHandler(self.audit_file, maxBytes=10*1024*1024, backupCount=5, encoding="utf-8")
             formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)

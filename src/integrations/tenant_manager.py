@@ -53,21 +53,16 @@ class TenantManager:
         return self._get_hardcoded_fallback()
 
     def _get_from_db(self, hospital_id: str) -> dict | None:
-        """Fetch tenant config and normalized data from RDS."""
-        from src.analytics.rds_client import rds_analytics
-        conn = rds_analytics.get_connection()
-        if not conn:
-            return None
-        cur = conn.cursor()
+        """Fetch tenant config and normalized data from DynamoDB."""
+        from src.analytics.dynamodb_client import dynamodb_analytics
         try:
-            cur.execute(rds_analytics.format_query("""
-                SELECT status, hospital_data_normalized, spreadsheet_id, hospital_name 
-                FROM tenants WHERE hospital_id = %s
-            """), (hospital_id,))
-            res = cur.fetchone()
+            res = dynamodb_analytics.get_tenant(hospital_id)
             if res:
-                status, normalized_data, sheet_id, name = res
-                # Safety check for SQLite/Postgres JSON parsing
+                status = res.get("status", "pending")
+                normalized_data = res.get("hospital_data_normalized", {})
+                sheet_id = res.get("spreadsheet_id", "")
+                name = res.get("hospital_name", "")
+                
                 if isinstance(normalized_data, str):
                     try:
                         data = json.loads(normalized_data)
@@ -82,10 +77,8 @@ class TenantManager:
                 return data
             return None
         except Exception:
-            logger.exception(f"DB Tenant lookup failed for {hospital_id}")
+            logger.exception(f"DynamoDB Tenant lookup failed for {hospital_id}")
             return None
-        finally:
-            conn.close()
 
     def get_status(self, hospital_id: str) -> str:
         """Helper to quickly check if a tenant is live, sandbox, or pending."""

@@ -4,8 +4,7 @@ import pathlib
 import boto3
 from typing import Dict, List, Tuple
 
-# We import the global instances to check connectivity
-from src.analytics.rds_client import rds_analytics
+# DynamoDB is checked dynamically
 
 logger = logging.getLogger(__name__)
 
@@ -51,17 +50,28 @@ class HealthChecker:
 
     @classmethod
     def check_database(cls) -> Tuple[bool, str]:
-        """Test database connectivity."""
+        """Test database connectivity via DynamoDB."""
         try:
-            conn = rds_analytics.get_connection()
-            if not conn:
-                return False, "Connection failed"
+            import boto3
+            from botocore.config import Config
+            config = Config(connect_timeout=2.0, read_timeout=2.0, retries={'max_attempts': 0})
+            db = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"), config=config)
             
-            is_sqlite = rds_analytics.is_sqlite(conn)
-            conn.close()
-            return True, "SQLite (Demo)" if is_sqlite else "Postgres (RDS)"
+            existing = db.list_tables().get("TableNames", [])
+            required_tables = [
+                os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1"),
+                os.environ.get("DYNAMODB_ANALYTICS_TABLE", "InDiiServe_Asha_Analytics"),
+                os.environ.get("DYNAMODB_TENANTS_TABLE", "InDiiServe_Tenants"),
+                os.environ.get("DYNAMODB_USERS_TABLE", "InDiiServe_Users")
+            ]
+            
+            missing = [t for t in required_tables if t not in existing]
+            if missing:
+                return False, f"Missing tables: {', '.join(missing)}"
+            
+            return True, "DynamoDB (AWS)"
         except Exception as e:
-            return False, str(e)
+            return False, f"DynamoDB Error: {str(e)}"
 
     @classmethod
     def check_aws(cls) -> Tuple[bool, str]:
@@ -104,6 +114,11 @@ class HealthChecker:
         return report
 
 if __name__ == "__main__":
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
     # Setup simple logging for standalone run
     logging.basicConfig(level=logging.INFO)
     print("\n" + "="*50)
