@@ -1,0 +1,476 @@
+{
+  "id": "indiiserve_hospital",
+  "name": "InDiiServe Multi-Specialty Hospital",
+  "status": "live",
+  "address": "InDiiServe Medical Centre, Healthcare District, Bengaluru - 560025",
+  "contact": "+91 80 4000 9000",
+  "emergency_contact": "1066",
+  "pharmacy_hours": "24/7 (Ground Floor, near main exit)",
+  "nabh_accredited": true,
+  "website": "https://voice.indiiserve.ai",
+  "spreadsheet_id": "REPLACE_WITH_INDIISERVE_PRODUCTION_SHEET_ID",
+
+  "departments": [
+    "Cardiology & Cardiothoracic Surgery",
+    "Neurology & Neurosurgery",
+    "Orthopedics & Joint Replacement",
+    "Pediatrics & Neonatology",
+    "Gynecology & Obstetrics",
+    "Endocrinology & Diabetes Clinic",
+    "Gastroenterology & Hepatology",
+    "Pulmonology & Chest Medicine",
+    "Oncology",
+    "Ophthalmology",
+    "ENT",
+    "Dermatology & Aesthetics",
+    "Emergency & Trauma"
+  ],
+
+  "doctors": [
+    {
+      "id": "doc_001",
+      "name": "Dr. Sameer Kulkarni",
+      "dept": "Cardiology",
+      "experience": "18 years",
+      "designation": "Director - Cardiology",
+      "languages": ["English", "Hindi", "Kannada"],
+      "consultation_type": ["OPD", "Follow-up", "Post-procedure"],
+      "fee": 1200,
+      "location": "Block A, 1st Floor, Room 102",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+      }
+    },
+    {
+      "id": "doc_002",
+      "name": "Dr. Rajesh Nair",
+      "dept": "Cardiology",
+      "experience": "12 years",
+      "designation": "Senior Consultant - Interventional Cardiology",
+      "languages": ["English", "Hindi", "Malayalam"],
+      "consultation_type": ["OPD", "Angiography", "Angioplasty"],
+      "fee": 1500,
+      "location": "Block A, 1st Floor, Room 104",
+      "availability": {
+        "days": ["Mon", "Wed", "Fri"],
+        "time_slots": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"]
+      }
+    },
+    {
+      "id": "doc_003",
+      "name": "Dr. Megha Rao",
+      "dept": "Neurology",
+      "experience": "14 years",
+      "designation": "HOD - Neurology",
+      "languages": ["English", "Kannada"],
+      "consultation_type": ["OPD", "Stroke Care", "Epilepsy"],
+      "fee": 1500,
+      "location": "Neuro Wing, 4th Floor, Room 401",
+      "availability": {
+        "days": ["Mon", "Wed", "Fri"],
+        "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
+      }
+    },
+    {
+      "id": "doc_004",
+      "name": "Dr. Arjun Sood",
+      "dept": "Neurosurgery",
+      "experience": "16 years",
+      "designation": "Senior Consultant - Neurosurgery",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Pre-surgical", "Post-surgical"],
+      "fee": 1800,
+      "location": "Neuro Wing, 4th Floor, Room 403",
+      "availability": {
+        "days": ["Tue", "Thu", "Sat"],
+        "time_slots": ["10:00", "10:30", "11:00", "11:30", "12:00"]
+      }
+    },
+    {
+      "id": "doc_005",
+      "name": "Dr. Vikram Shetty",
+      "dept": "Orthopedics",
+      "experience": "20 years",
+      "designation": "Director - Orthopedics & Joint Replacement",
+      "languages": ["English", "Hindi", "Kannada"],
+      "consultation_type": ["OPD", "Joint Replacement", "Sports Injury", "Spine"],
+      "fee": 1300,
+      "location": "Block B, 2nd Floor, Room 205",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+      }
+    },
+    {
+      "id": "doc_006",
+      "name": "Dr. Sunita Pillai",
+      "dept": "Pediatrics",
+      "experience": "15 years",
+      "designation": "Senior Consultant - Pediatrics & Neonatology",
+      "languages": ["English", "Hindi", "Malayalam"],
+      "consultation_type": ["OPD", "Vaccination", "Newborn Care", "NICU"],
+      "fee": 900,
+      "location": "Block C, 3rd Floor, Room 301",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+      }
+    },
+    {
+      "id": "doc_007",
+      "name": "Dr. Ananya Reddy",
+      "dept": "Gynecology",
+      "experience": "15 years",
+      "designation": "Senior Consultant - Gynecology & Obstetrics",
+      "languages": ["English", "Hindi", "Telugu"],
+      "consultation_type": ["OPD", "Prenatal", "High-Risk Pregnancy", "Laparoscopy"],
+      "fee": 1400,
+      "location": "Block C, 4th Floor, Room 402",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Sat"],
+        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"]
+      }
+    },
+    {
+      "id": "doc_008",
+      "name": "Dr. Priya Sharma",
+      "dept": "Gynecology",
+      "experience": "10 years",
+      "designation": "Consultant - Gynecology & Reproductive Medicine",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Infertility", "PCOS", "Prenatal"],
+      "fee": 1200,
+      "location": "Block C, 4th Floor, Room 404",
+      "availability": {
+        "days": ["Mon", "Wed", "Fri", "Sat"],
+        "time_slots": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"]
+      }
+    },
+    {
+      "id": "doc_009",
+      "name": "Dr. Prateek Jain",
+      "dept": "Endocrinology",
+      "experience": "12 years",
+      "designation": "HOD - Endocrinology & Diabetes",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Diabetes Management", "Thyroid", "Obesity"],
+      "fee": 1000,
+      "location": "Block A, Ground Floor, Room 008",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+      }
+    },
+    {
+      "id": "doc_010",
+      "name": "Dr. Suresh Balaji",
+      "dept": "Gastroenterology",
+      "experience": "17 years",
+      "designation": "Senior Consultant - Gastroenterology & Hepatology",
+      "languages": ["English", "Tamil", "Hindi"],
+      "consultation_type": ["OPD", "Endoscopy", "Colonoscopy", "Liver Disease"],
+      "fee": 1400,
+      "location": "Block B, 3rd Floor, Room 305",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        "time_slots": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+      }
+    },
+    {
+      "id": "doc_011",
+      "name": "Dr. Neeraj Kapoor",
+      "dept": "Pulmonology",
+      "experience": "13 years",
+      "designation": "Consultant - Pulmonology & Sleep Medicine",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Asthma", "COPD", "Sleep Apnea"],
+      "fee": 1100,
+      "location": "Block A, 2nd Floor, Room 210",
+      "availability": {
+        "days": ["Mon", "Wed", "Fri", "Sat"],
+        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+      }
+    },
+    {
+      "id": "doc_012",
+      "name": "Dr. Kavitha Menon",
+      "dept": "Oncology",
+      "experience": "18 years",
+      "designation": "Director - Medical Oncology",
+      "languages": ["English", "Malayalam", "Hindi"],
+      "consultation_type": ["OPD", "Chemotherapy", "Cancer Screening", "Follow-up"],
+      "fee": 1800,
+      "location": "Block D, 5th Floor, Room 502",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        "time_slots": ["10:00", "10:30", "11:00", "11:30", "12:00"]
+      }
+    },
+    {
+      "id": "doc_013",
+      "name": "Dr. Anil Kumar Verma",
+      "dept": "Ophthalmology",
+      "experience": "14 years",
+      "designation": "Senior Consultant - Ophthalmology & Vitreoretinal Surgery",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Cataract", "Glaucoma", "Retina"],
+      "fee": 1000,
+      "location": "Block B, 2nd Floor, Room 201",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"]
+      }
+    },
+    {
+      "id": "doc_014",
+      "name": "Dr. Ritu Mishra",
+      "dept": "ENT",
+      "experience": "11 years",
+      "designation": "Consultant - ENT & Head Neck Surgery",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Sinus Surgery", "Hearing Aids", "Throat"],
+      "fee": 900,
+      "location": "Block B, 2nd Floor, Room 203",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Fri"],
+        "time_slots": ["11:00", "11:30", "12:00", "12:30", "13:00"]
+      }
+    },
+    {
+      "id": "doc_015",
+      "name": "Dr. Sneha Agarwal",
+      "dept": "Dermatology",
+      "experience": "9 years",
+      "designation": "Consultant - Dermatology & Cosmetology",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Skin Allergy", "Hair Fall", "Cosmetology"],
+      "fee": 800,
+      "location": "Block B, 1st Floor, Room 110",
+      "availability": {
+        "days": ["Mon", "Tue", "Thu", "Fri", "Sat"],
+        "time_slots": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+      }
+    },
+    {
+      "id": "doc_016",
+      "name": "Dr. Ramesh Gupta",
+      "dept": "General Medicine",
+      "experience": "22 years",
+      "designation": "Senior Consultant - Internal Medicine",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Walk-in", "Follow-up"],
+      "fee": 600,
+      "location": "Block A, Ground Floor, Room 010",
+      "availability": {
+        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30"]
+      }
+    },
+    {
+      "id": "doc_017",
+      "name": "Dr. Deepa Krishnamurthy",
+      "dept": "Pediatrics",
+      "experience": "8 years",
+      "designation": "Consultant - Pediatrics & Child Development",
+      "languages": ["English", "Kannada", "Tamil"],
+      "consultation_type": ["OPD", "Vaccination", "Growth Monitoring"],
+      "fee": 700,
+      "location": "Block C, 3rd Floor, Room 303",
+      "availability": {
+        "days": ["Mon", "Wed", "Thu", "Fri", "Sat"],
+        "time_slots": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"]
+      }
+    },
+    {
+      "id": "doc_018",
+      "name": "Dr. Manish Tiwari",
+      "dept": "Orthopedics",
+      "experience": "11 years",
+      "designation": "Consultant - Spine Surgery & Sports Medicine",
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Spine Surgery", "Trauma", "Sports Injury"],
+      "fee": 1100,
+      "location": "Block B, 2nd Floor, Room 207",
+      "availability": {
+        "days": ["Tue", "Thu", "Sat"],
+        "time_slots": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+      }
+    }
+  ],
+
+  "services": [
+    {"name": "Complete Blood Count (CBC)", "price": 350, "duration": "4 hours", "prep": "No fasting required"},
+    {"name": "Blood Sugar Fasting", "price": 180, "duration": "2 hours", "prep": "8 to 10 hours fasting, water allowed"},
+    {"name": "HbA1c Test", "price": 650, "duration": "4 hours", "prep": "No fasting required"},
+    {"name": "Thyroid Profile (T3, T4, TSH)", "price": 750, "duration": "6 hours", "prep": "No fasting required"},
+    {"name": "Lipid Profile", "price": 600, "duration": "6 hours", "prep": "10 to 12 hours fasting, no alcohol 24 hours before"},
+    {"name": "Liver Function Test", "price": 700, "duration": "6 hours", "prep": "8 to 10 hours fasting"},
+    {"name": "Kidney Function Test", "price": 650, "duration": "4 hours", "prep": "No fasting required, stay hydrated"},
+    {"name": "Vitamin D Test", "price": 900, "duration": "8 hours", "prep": "No fasting required"},
+    {"name": "Vitamin B12 Test", "price": 850, "duration": "8 hours", "prep": "No fasting required"},
+    {"name": "Echocardiogram (ECHO)", "price": 2800, "duration": "45 mins", "prep": "No preparation required"},
+    {"name": "Stress Test (TMT)", "price": 2200, "duration": "1 hour", "prep": "3-hour fasting, wear walking shoes"},
+    {"name": "Ultrasound Abdomen", "price": 900, "duration": "20 mins", "prep": "4-hour fasting, drink 1 litre water before and do not urinate"},
+    {"name": "X-Ray", "price": 400, "duration": "15 mins", "prep": "Remove metal objects"},
+    {"name": "Mammogram", "price": 2000, "duration": "30 mins", "prep": "No deodorant or talc on the day"},
+    {"name": "Brain MRI", "price": 8500, "duration": "45 mins", "prep": "No fasting required, remove all metal objects"},
+    {"name": "Spine MRI", "price": 9000, "duration": "50 mins", "prep": "No fasting required"},
+    {"name": "CT Head", "price": 4500, "duration": "20 mins", "prep": "No special preparation"},
+    {"name": "CT Chest", "price": 5500, "duration": "20 mins", "prep": "Inform technician of allergies"},
+    {"name": "CT Abdomen with Contrast", "price": 8000, "duration": "30 mins", "prep": "4-hour fasting for IV contrast"},
+    {"name": "PET CT Scan", "price": 25000, "duration": "2 hours", "prep": "6-hour fasting, no exercise 24 hours before"},
+    {"name": "Physiotherapy Session", "price": 1000, "duration": "45 mins", "prep": "Wear comfortable clothing"},
+    {"name": "Dialysis Session", "price": 2500, "duration": "4 hours", "prep": "Bring previous dialysis records"}
+  ],
+
+  "health_packages": [
+    {
+      "name": "Silver Wellness Package",
+      "price": 2200,
+      "target": "Ages 18 to 40",
+      "includes": "CBC, Blood Sugar, Thyroid Profile, Lipid Profile, Urine Routine, Kidney Function, ECG, Chest X-Ray, General Physician consultation"
+    },
+    {
+      "name": "Gold Comprehensive Package",
+      "price": 4500,
+      "target": "Ages 40 to 60",
+      "includes": "All Silver tests plus LFT, Vitamin D, Vitamin B12, HbA1c, Ultrasound Abdomen, Eye check, Dental check, Specialist consultation"
+    },
+    {
+      "name": "Executive Full Body Package",
+      "price": 7500,
+      "target": "Professionals and corporates",
+      "includes": "All Gold tests plus PFT, Stress Test, ECHO, Bone Density Scan, Ophthalmology exam, detailed counselling"
+    },
+    {
+      "name": "Cardiac Screening Package",
+      "price": 3200,
+      "target": "History of heart disease or hypertension",
+      "includes": "ECG, ECHO, Stress Test, Lipid Profile, Blood Sugar, HbA1c, Kidney Function, Cardiologist consultation"
+    },
+    {
+      "name": "Women's Wellness Package",
+      "price": 3800,
+      "target": "Women aged 25 and above",
+      "includes": "Gynecologist consultation, Pap Smear, Mammogram, CBC, Thyroid, Vitamin D, Vitamin B12, Urine Routine, Blood Sugar, Bone Density"
+    }
+  ],
+
+  "insurance": {
+    "cashless_available": true,
+    "tpa_desk_location": "Ground Floor, near main billing counter",
+    "tpa_desk_hours": "8:00 AM to 8:00 PM weekdays, 8:00 AM to 2:00 PM Saturday",
+    "accepted_providers": [
+      "Star Health Insurance",
+      "HDFC Ergo Health",
+      "ICICI Lombard",
+      "Bajaj Allianz",
+      "New India Assurance",
+      "United India Insurance",
+      "Oriental Insurance",
+      "Max Bupa (Niva Bupa)",
+      "Care Health Insurance",
+      "Reliance General Insurance",
+      "Aditya Birla Health Insurance",
+      "SBI General Insurance",
+      "National Insurance",
+      "Tata AIG",
+      "ManipalCigna"
+    ]
+  },
+
+  "emergency": {
+    "available": true,
+    "contact": "1066",
+    "internal_contact": "+91 80 4000 9000",
+    "location": "Ground Floor, Block A main gate entrance, open 24x7",
+    "instruction": "Our Emergency and Trauma Centre is open 24x7. No prior registration is required. Connecting you to the emergency desk immediately."
+  },
+
+  "faq": [
+    {
+      "intent": "insurance_tpa",
+      "questions": ["Do you accept health insurance?", "Is cashless available?", "Mera insurance kaam karega?", "Which TPA do you accept?"],
+      "answer": "Yes, we accept Star Health, HDFC Ergo, ICICI Lombard, Bajaj Allianz, Max Bupa, New India Assurance, and 10+ other providers. Cashless is available. TPA desk is on the Ground Floor near billing. Please bring your health card and photo ID."
+    },
+    {
+      "intent": "parking_charges",
+      "questions": ["Is parking available?", "Parking kitna lagta hai?", "Is parking free?"],
+      "answer": "Parking is available in Basement B1 and B2. Cars are Rs. 30 per hour and two-wheelers Rs. 10 per hour. First 2 hours are free with an OPD token."
+    },
+    {
+      "intent": "pharmacy_hours",
+      "questions": ["Where is the pharmacy?", "Is pharmacy open at night?", "Pharmacy kab tak khuli hai?"],
+      "answer": "Our pharmacy is open 24 hours on the Ground Floor near the main exit. Home delivery is available within the city."
+    },
+    {
+      "intent": "icu_visiting_hours",
+      "questions": ["What are ICU visiting hours?", "ICU mein kab mil sakte hain?"],
+      "answer": "ICU visiting is from 11 AM to 12 PM and 5 PM to 6 PM daily. One visitor at a time with an ICU pass from the 4th Floor."
+    },
+    {
+      "intent": "general_ward_visiting",
+      "questions": ["What are ward visiting hours?", "Ward mein milne ka time?"],
+      "answer": "General ward visiting hours are 4 PM to 7 PM daily. Maximum two visitors per patient. Children below 12 are not allowed."
+    },
+    {
+      "intent": "health_packages",
+      "questions": ["What health packages do you offer?", "Full body checkup?", "Health package kitne ka hai?"],
+      "answer": "We offer 5 packages: Silver at Rs. 2,200; Gold at Rs. 4,500; Executive at Rs. 7,500; Cardiac Screening at Rs. 3,200; Women's Wellness at Rs. 3,800. Which one would you like?"
+    },
+    {
+      "intent": "lab_reports",
+      "questions": ["How to get reports?", "Report kaise milega?", "Where to collect reports?"],
+      "answer": "You will get an SMS with a download link. Hard copies are at the Lab Report Counter on Ground Floor, Lab Wing A. Use your Reference ID."
+    },
+    {
+      "intent": "payment_modes",
+      "questions": ["What payment methods are accepted?", "Kya UPI chalega?", "Do you accept cards?"],
+      "answer": "We accept UPI, debit and credit cards, net banking, cash, and cashless insurance. EMI available for bills above Rs. 50,000. Billing counter is on the Ground Floor."
+    },
+    {
+      "intent": "cafeteria_location",
+      "questions": ["Where is the cafeteria?", "Khaana kahan milega?", "Is there food available?"],
+      "answer": "The food court is on the 5th Floor, Block B, open 7 AM to 10 PM. A kiosk is also available on the Ground Floor near OPD from 6 AM to 10 PM."
+    },
+    {
+      "intent": "ambulance_service",
+      "questions": ["Is ambulance available?", "Ambulance kaise mangaayein?", "Emergency transport?"],
+      "answer": "24x7 ambulance is available. Call plus 91 80 4000 9000 or dial 1066 for national medical emergency."
+    },
+    {
+      "intent": "doctor_directions",
+      "questions": ["Which floor is cardiology?", "Neurology kahan hai?", "Orthopedics konse block mein hai?"],
+      "answer": "Cardiology: Block A, 1st Floor. Neurology: Neuro Wing, 4th Floor. Orthopedics: Block B, 2nd Floor. Gynecology: Block C, 4th Floor. Diabetes: Block A, Ground Floor. Oncology: Block D, 5th Floor."
+    },
+    {
+      "intent": "blood_test_fasting",
+      "questions": ["Do I need to fast for blood test?", "Kya khaana band karna hoga?", "Fasting required?"],
+      "answer": "Fasting of 8 to 12 hours is required for Blood Sugar, Lipid, and Liver Function tests. No fasting for Thyroid, HbA1c, CBC, or Vitamin tests. Let me know your specific test."
+    },
+    {
+      "intent": "wheelchair_porter",
+      "questions": ["Can I get a wheelchair?", "Wheelchair chahiye", "Porter service available?"],
+      "answer": "Free wheelchair and porter service is available at all entrances. Just inform any staff member and we will arrange it immediately."
+    },
+    {
+      "intent": "emergency_department",
+      "questions": ["Where is emergency?", "Emergency department kahan hai?", "Is emergency 24 hours?"],
+      "answer": "Emergency and Trauma Centre is on Ground Floor, Block A main gate, open 24 hours. No registration needed. For emergencies call 1066."
+    },
+    {
+      "intent": "second_opinion",
+      "questions": ["Second opinion clinic?", "Can I get another doctor's opinion?"],
+      "answer": "Yes, our Second Opinion Clinic runs every Saturday from 9 AM to 1 PM. Prior appointment required. Please bring all medical records."
+    }
+  ],
+
+  "ai_settings": {
+    "default_language": "English",
+    "fallback_language": "Hindi",
+    "confidence_threshold": 0.7,
+    "enable_memory": true,
+    "voice": "kiara"
+  }
+}
