@@ -337,6 +337,63 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
             if key in normalized_query:
                 return {"answer": val}
 
+    # Check services (e.g. MRI, Thyroid, CT Head, Complete Blood Count, etc.)
+    services = data.get("services", [])
+    matched_services = []
+    for s in services:
+        s_name = s.get("name", "").lower()
+        if (s_name in normalized_query) or (normalized_query in s_name and len(normalized_query) >= 3):
+            matched_services.append(s)
+    
+    if matched_services:
+        if len(matched_services) == 1:
+            s = matched_services[0]
+            price_str = f" costs Rs. {s['price']}" if s.get("price") else ""
+            prep_str = f" Prep: {s['prep']}." if s.get("prep") else ""
+            loc_str = f" Location: {s['location']}." if s.get("location") else ""
+            dur_str = f" It takes about {s['duration']}." if s.get("duration") else ""
+            return {"answer": f"{s['name']}{price_str}.{dur_str}{prep_str}{loc_str}"}
+        else:
+            ans = "We offer: " + ", ".join([f"{s['name']} (Rs. {s['price']})" for s in matched_services]) + "."
+            return {"answer": ans}
+
+    # Check health packages
+    packages = data.get("health_packages", [])
+    matched_packages = []
+    for p in packages:
+        p_name = p.get("name", "").lower()
+        if (p_name in normalized_query) or (normalized_query in p_name and len(normalized_query) >= 3):
+            matched_packages.append(p)
+            
+    if matched_packages:
+        if len(matched_packages) == 1:
+            p = matched_packages[0]
+            price_str = f" costs Rs. {p['price']}" if p.get("price") else ""
+            inc_str = f" It includes: {p['includes']}." if p.get("includes") else ""
+            prep_str = f" Prep: {p['prep']}." if p.get("prep") else ""
+            return {"answer": f"{p['name']}{price_str}.{inc_str}{prep_str}"}
+        else:
+            ans = "We offer the following packages: " + ", ".join([f"{p['name']} (Rs. {p['price']})" for p in matched_packages]) + "."
+            return {"answer": ans}
+
+    # Check room types
+    rooms = data.get("room_types", [])
+    for r in rooms:
+        r_name = r.get("name", "").lower()
+        if (r_name in normalized_query) or (normalized_query in r_name and len(normalized_query) >= 3):
+            return {"answer": f"{r['name']} rate is Rs. {r['price_per_day']} per day. Description: {r['description']}."}
+
+    # Check amenities (like parking, cafeteria, ATM, wifi, wheelchair)
+    amenities = data.get("amenities", {})
+    if isinstance(amenities, dict):
+        for key, val in amenities.items():
+            if key in normalized_query:
+                if isinstance(val, dict):
+                    details = ", ".join([f"{k.replace('_', ' ').title()}: {v}" for k, v in val.items()])
+                    return {"answer": f"Details for {key}: {details}."}
+                else:
+                    return {"answer": f"{key.title()}: {val}."}
+
     if any(k in normalized_query for k in ["address", "location", "where"]):
         return {"answer": f"{data.get('name')} is located at {data.get('address', 'our main facility')}."}
 
@@ -749,7 +806,7 @@ available_tools: list[dict] = [
     {
         "toolSpec": {
             "name": "hospitalInfoTool",
-            "description": "MUST be called when the caller asks about hospital location, address, directions, where to go, hospital contact details, pharmacy hours, visiting hours, or any general hospital information. Do NOT answer from memory — always call this tool.",
+            "description": "MUST be called when the caller asks about hospital location, address, directions, where to go, contact details, pharmacy hours, visiting hours, parking details/charges/availability, diagnostic or scan pricing (e.g. MRI, CT, thyroid, blood tests, ultrasound, PET scan, x-ray costs), room rent/charges (e.g. ICU, deluxe, general ward rent), cafeteria, ATM, Wi-Fi, wheelchair, or any general hospital information/facilities/prices. Do NOT answer from memory — always call this tool.",
             "inputSchema": {"json": _hospital_info_schema},
         }
     },
