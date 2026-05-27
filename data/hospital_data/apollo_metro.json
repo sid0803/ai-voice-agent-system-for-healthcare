@@ -576,6 +576,12 @@
     {
       "intent": "insurance_tpa",
       "questions": [
+        "insurance",
+        "insurance accepted",
+        "cashless",
+        "tpa",
+        "mediclaim",
+        "health card",
         "Do you accept health insurance?",
         "Is cashless available here?",
         "Which insurance companies do you support?",
@@ -589,6 +595,10 @@
     {
       "intent": "parking_charges",
       "questions": [
+        "parking",
+        "parking available",
+        "parking charges",
+        "parking rate",
         "Is parking available?",
         "Where to park?",
         "Parking ka kharcha kitna hai?",
@@ -600,6 +610,10 @@
     {
       "intent": "pharmacy_hours",
       "questions": [
+        "pharmacy",
+        "pharmacy hours",
+        "pharmacy open",
+        "medicine counter",
         "Where is the pharmacy?",
         "Is pharmacy open at night?",
         "Pharmacy kab tak khuli hai?",
@@ -641,6 +655,13 @@
     {
       "intent": "lab_reports",
       "questions": [
+        "lab reports",
+        "my reports",
+        "collect reports",
+        "download report",
+        "test results",
+        "get reports",
+        "how to get reports",
         "How do I get my reports?",
         "Report kaise milega?",
         "Where do I collect lab reports?",
@@ -652,6 +673,10 @@
     {
       "intent": "blood_test_fasting",
       "questions": [
+        "fasting",
+        "fast before",
+        "khana khana hai",
+        "khaana ban karna",
         "Do I need to fast before blood test?",
         "Blood test se pehle kuch khana chahiye?",
         "Kya fasting zaroori hai?",
@@ -662,6 +687,12 @@
     {
       "intent": "payment_modes",
       "questions": [
+        "payment methods",
+        "payment modes",
+        "upi payment",
+        "pay by card",
+        "pay cash",
+        "billing payment",
         "What payment methods are accepted?",
         "Kya UPI se payment ho sakti hai?",
         "Do you accept credit cards?",
@@ -682,6 +713,10 @@
     {
       "intent": "wheelchair_porter",
       "questions": [
+        "wheelchair",
+        "porter",
+        "stretcher",
+        "help walking",
         "Can I get a wheelchair?",
         "Is porter service available?",
         "Wheelchair chahiye",
@@ -692,6 +727,10 @@
     {
       "intent": "ambulance_service",
       "questions": [
+        "ambulance",
+        "ambulance available",
+        "ambulance service",
+        "emergency transport",
         "Is ambulance available?",
         "Ambulance kaise mangaayein?",
         "How to call ambulance?",
@@ -712,6 +751,12 @@
     {
       "intent": "doctor_directions",
       "questions": [
+        "which floor",
+        "which block",
+        "which room",
+        "doctor directions",
+        "department location",
+        "floor number",
         "Which floor is cardiology on?",
         "Where is neurology department?",
         "Orthopedics kahan hai?",
