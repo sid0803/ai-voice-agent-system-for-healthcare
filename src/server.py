@@ -258,6 +258,15 @@ In real hospital environments, patients are often hesitant or unclear (e.g., "Do
 
 ---
 
+## ROBOTIC SPEECH BAN (CRITICAL)
+- NEVER say "I understand...", "I apologize...", "Certainly...", "Okay sure...", or similar bot-like preambles.
+- NEVER format your speech as numbered options or bullet points (e.g., do not say "press 1 for X, 2 for Y" or "Option 1... Option 2..."). This is a voice call, not a key-press IVR. Speak like a natural human female receptionist.
+- If you need to give options, phrase them in a smooth conversational sentence, e.g., "Would you like me to check cardiology or general medicine?" or "We have private and deluxe rooms, which one would you like to know about?"
+- Avoid listing more than 2 or 3 items at once. Keep the options short.
+- NEVER say "Unfortunately, the system isn't providing the specific information" or any variation admitting database/system limitations. A real human receptionist would never say that. If a tool doesn't return the exact detail, gently offer to connect them to the receptionist desk or look up what we DO have.
+
+---
+
 ## SECURE MEMORY & PRIVACY
 You recognize returning patients via secure, encrypted identifiers to provide a premium experience.
 - If you recognize a name (e.g., Rohan), mention it warmly: "Hello [Name], welcome back. I see you've visited us before. How can I assist you today?"
@@ -437,6 +446,14 @@ async def run_async_startup_checks():
         aws_ok, aws_msg = diag["aws"]
         logger.info(f"☁️ AWS Cloud: {aws_msg} {'✅' if aws_ok else '❌'}")
         logger.info(f"{'='*40}\n")
+        
+        # Warm up FAISS cache with distilled facts
+        try:
+            from src.tools import sync_community_knowledge
+            await asyncio.to_thread(sync_community_knowledge)
+            logger.info("[STARTUP] Successfully synchronized distilled facts to FAISS vector cache.")
+        except Exception as e:
+            logger.error("[STARTUP] Failed to sync distilled facts to FAISS: %s", e)
     except Exception:
         logger.exception("[STARTUP] Health diagnostic failed to run")
 
@@ -1168,14 +1185,23 @@ async def exotel_stream(websocket: WebSocket):
         nonlocal detected_language, current_user_text, current_assistant_text
         content = str(data.get("content", ""))
         role = data.get("role", "")
-        logger.info("Text output [%s]: %s", role, content[:80])
-
-        if DEMO_MODE and role == "ASSISTANT":
-            asyncio.ensure_future(websocket.send_text(json.dumps({"event": "text", "text": content})))
-
-        # Dedup key - defined before any branch so it's always available
+        
+        # Filter out Bedrock system/interruption events from voice stream
+        if "interrupted" in content and "true" in content:
+            return
+            
+        # Dedup key - check if this content was already processed in a previous turn
         dedup_key = (role, content)
         is_new = content.strip() and dedup_key not in seen_transcript_entries
+
+        # Only process fresh assistant text or user inputs to avoid duplication
+        if not is_new and role == "ASSISTANT":
+            return
+
+        logger.info("Text output [%s] (is_new=%s): %s", role, is_new, content[:80])
+
+        if DEMO_MODE and role == "ASSISTANT" and is_new:
+            asyncio.ensure_future(websocket.send_text(json.dumps({"event": "text", "text": content})))
 
         # Store transcript (deduplicate)
         if is_new:

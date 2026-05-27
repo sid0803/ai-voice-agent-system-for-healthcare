@@ -306,6 +306,22 @@ def sync_community_knowledge():
 # Hospital Tool Implementations (Asha / InDiiServe Healthcare)
 # ---------------------------------------------------------------------------
 
+import re
+
+def _has_word(query: str, word: str) -> bool:
+    """Check if a word or phrase exists in the query with word boundaries."""
+    if not query or not word:
+        return False
+    pattern = r"\b" + re.escape(word) + r"\b"
+    return bool(re.search(pattern, query))
+
+def _has_prefix_word(query: str, prefix: str) -> bool:
+    """Check if a prefix matches the beginning of any word in the query."""
+    if not query or not prefix:
+        return False
+    pattern = r"\b" + re.escape(prefix)
+    return bool(re.search(pattern, query))
+
 
 def _normalize_query(query: str) -> str:
     """Cleans up the query string for matching."""
@@ -321,30 +337,120 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
     normalized_query = _normalize_query(query)
 
     # 1. Check specific local tenant data (fastest, most reliable)
-    
-    # Check new structured FAQ (Requirement: Enriched AI Data)
     faq_list = data.get("faq", [])
+
+    # Map keywords to FAQ intents to make matching extremely robust
+    keyword_to_intent = {
+        "icu_visiting_hours": [["visiting", "icu"], ["milne", "icu"], ["visit", "icu"], ["icu", "milne"], ["icu", "time"]],
+        "general_ward_visiting": [["visiting", "ward"], ["milne", "ward"], ["milne", "time"], ["visiting", "hours"], ["visiting", "time"], ["ward", "milne"]],
+        "nicu_visiting": [["nicu"], ["newborn", "visit"], ["baby", "nicu"], ["nicu", "parent"]],
+        "night_visiting": [["night", "visit"], ["overnight"], ["raat", "milna"], ["night", "restriction"]],
+        "nabh_accreditation": [["nabh"], ["accreditation"], ["accredited"], ["certified"]],
+        "insurance_tpa": [["insurance"], ["cashless"], ["tpa"], ["mediclaim"], ["health", "card"]],
+        "parking_charges": [["parking"], ["park"], ["flat", "rate"], ["admitted", "patient", "parking"], ["visitor", "parking"]],
+        "pharmacy_hours": [["pharmacy"], ["medicine"], ["dawai"], ["medical", "store"]],
+        "lab_reports": [["report"], ["reports"], ["test", "result"]],
+        "blood_test_fasting": [["fasting"], ["fast", "before"], ["khana", "pehle"]],
+        "payment_modes": [["payment"], ["upi"], ["card"], ["cash"], ["pay"]],
+        "cafeteria_location": [["cafeteria"], ["food"], ["eat"], ["khana"]],
+        "wheelchair_porter": [["wheelchair"], ["porter"], ["stretcher"]],
+        "ambulance_service": [["ambulance"]],
+        "emergency_department": [["emergency"], ["accident"]],
+        "doctor_directions": [["floor"], ["block"], ["which", "room"], ["room", "number"], ["room", "direction"], ["where", "room"], ["room", "kahan"], ["direction"], ["where", "is"], ["kahan", "hai"]],
+        "second_opinion": [["second", "opinion"]],
+    }
+
+
+    # First check keyword mapping for FAQs
     if isinstance(faq_list, list):
+        for intent, word_groups in keyword_to_intent.items():
+            if intent == "blood_test_fasting":
+                scan_kws = ["mri", "ct", "scan", "ultrasound", "usg", "xray", "x-ray", "mammogram", "echo", "tmt"]
+                if any(_has_word(normalized_query, kw) for kw in scan_kws):
+                    continue
+            if intent == "doctor_directions":
+                room_rent_kws = ["rent", "rate", "price", "cost", "type", "tariff", "deluxe", "icu", "ward"]
+                if any(_has_word(normalized_query, kw) for kw in room_rent_kws):
+                    continue
+            for group in word_groups:
+                if all(_has_word(normalized_query, word) for word in group):
+                    for item in faq_list:
+                        if item.get("intent") == intent:
+                            return {"answer": item.get("answer")}
+
+        # Substring/questions matching in FAQ
         for item in faq_list:
-            intent_match = item.get("intent", "").replace("_", " ") in normalized_query
-            question_match = any(q.lower() in normalized_query for q in item.get("questions", []))
+            intent = item.get("intent", "")
+            if intent == "blood_test_fasting":
+                scan_kws = ["mri", "ct", "scan", "ultrasound", "usg", "xray", "x-ray", "mammogram", "echo", "tmt"]
+                if any(_has_word(normalized_query, kw) for kw in scan_kws):
+                    continue
+            if intent == "doctor_directions":
+                room_rent_kws = ["rent", "rate", "price", "cost", "type", "tariff", "deluxe", "icu", "ward"]
+                if any(_has_word(normalized_query, kw) for kw in room_rent_kws):
+                    continue
+            intent_match = _has_word(normalized_query, intent.replace("_", " "))
+            question_match = any(_has_word(normalized_query, q.lower()) or _has_word(q.lower(), normalized_query) for q in item.get("questions", []))
             if intent_match or question_match:
                 return {"answer": item.get("answer")}
-    
-    # Fallback to legacy dict FAQ
+
     elif isinstance(faq_list, dict):
         for key, val in faq_list.items():
-            if key in normalized_query:
+            if _has_word(normalized_query, key):
                 return {"answer": val}
 
     # Check services (e.g. MRI, Thyroid, CT Head, Complete Blood Count, etc.)
     services = data.get("services", [])
     matched_services = []
+    
+    # Category detection for services
+    service_keywords = {
+        "mri": ["mri", "magnetic"],
+        "ct": ["ct", "pet ct", "contrast ct"],
+        "thyroid": ["thyroid", "t3", "t4", "tsh"],
+        "cbc": ["cbc", "complete blood count"],
+        "blood sugar": ["blood sugar", "fasting sugar", "hba1c", "glucose"],
+        "ultrasound": ["ultrasound", "usg", "sonography"],
+        "lipid": ["lipid", "cholesterol"],
+        "liver": ["liver", "lft"],
+        "kidney": ["kidney", "kft", "rft"],
+        "vitamin d": ["vitamin d"],
+        "vitamin b12": ["b12"],
+        "x-ray": ["x-ray", "xray"],
+        "physiotherapy": ["physiotherapy", "rehabilitation", "therapy"],
+        "dialysis": ["dialysis"],
+        "cardiac": ["cardiac", "heart", "ecg", "echo", "tmt", "stress test"],
+    }
+    
+    detected_cats = []
+    for cat, kw_list in service_keywords.items():
+        if any(_has_word(normalized_query, kw) for kw in kw_list):
+            detected_cats.append(cat)
+            
+    # Collect matches
     for s in services:
         s_name = s.get("name", "").lower()
-        if (s_name in normalized_query) or (normalized_query in s_name and len(normalized_query) >= 3):
+        if _has_word(normalized_query, s_name) or _has_word(s_name, normalized_query):
             matched_services.append(s)
-    
+            continue
+            
+        for cat in detected_cats:
+            if _has_word(s_name, cat) or any(_has_word(s_name, kw) for kw in service_keywords[cat]):
+                matched_services.append(s)
+                break
+                
+    # Refine matches if there are multiple matches
+    if len(matched_services) > 1:
+        refined = []
+        for s in matched_services:
+            s_name = s.get("name", "").lower()
+            for word in ["brain", "spine", "head", "chest", "abdomen", "contrast", "fasting", "package"]:
+                if word in normalized_query and word in s_name:
+                    refined.append(s)
+                    break
+        if len(refined) == 1:
+            matched_services = refined
+
     if matched_services:
         if len(matched_services) == 1:
             s = matched_services[0]
@@ -364,6 +470,21 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
         p_name = p.get("name", "").lower()
         if (p_name in normalized_query) or (normalized_query in p_name and len(normalized_query) >= 3):
             matched_packages.append(p)
+            continue
+        if any(kw in normalized_query for kw in ["package", "wellness", "checkup", "preventive"]):
+            matched_packages.append(p)
+            
+    # Refine packages
+    if len(matched_packages) > 1:
+        refined = []
+        for p in matched_packages:
+            p_name = p.get("name", "").lower()
+            for word in ["silver", "gold", "executive", "cardiac", "women"]:
+                if word in normalized_query and word in p_name:
+                    refined.append(p)
+                    break
+        if len(refined) == 1:
+            matched_packages = refined
             
     if matched_packages:
         if len(matched_packages) == 1:
@@ -378,26 +499,63 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
 
     # Check room types
     rooms = data.get("room_types", [])
+    matched_rooms = []
     for r in rooms:
         r_name = r.get("name", "").lower()
         if (r_name in normalized_query) or (normalized_query in r_name and len(normalized_query) >= 3):
+            matched_rooms.append(r)
+            
+    if not matched_rooms:
+        if "icu" in normalized_query:
+            matched_rooms = [r for r in rooms if "icu" in r.get("name", "").lower()]
+        elif "deluxe" in normalized_query or "private" in normalized_query:
+            matched_rooms = [r for r in rooms if "deluxe" in r.get("name", "").lower() or "private" in r.get("name", "").lower()]
+        elif "semi" in normalized_query:
+            matched_rooms = [r for r in rooms if "semi" in r.get("name", "").lower()]
+        elif "ward" in normalized_query or "general" in normalized_query:
+            matched_rooms = [r for r in rooms if "general" in r.get("name", "").lower() or "ward" in r.get("name", "").lower()]
+        elif any(kw in normalized_query for kw in ["room", "rent", "tariff", "charges", "rate", "price"]):
+            matched_rooms = rooms
+            
+    if matched_rooms:
+        if len(matched_rooms) == 1:
+            r = matched_rooms[0]
             return {"answer": f"{r['name']} rate is Rs. {r['price_per_day']} per day. Description: {r['description']}."}
+        else:
+            ans = "Our daily room rates are: " + ", ".join([f"{r['name']}: Rs. {r['price_per_day']}" for r in rooms]) + "."
+            return {"answer": ans}
 
     # Check amenities (like parking, cafeteria, ATM, wifi, wheelchair)
     amenities = data.get("amenities", {})
+    
+    # Specific Wi-Fi check (handles hyphen and spaces safely)
+    if "wifi" in normalized_query or "wi-fi" in normalized_query or "wi fi" in normalized_query:
+        wifi_info = amenities.get("wifi")
+        if wifi_info:
+            return {"answer": wifi_info}
+            
+    # Specific flat rate parking check for visitors/attendants
+    if any(_has_word(normalized_query, k) for k in ["flat rate", "flat", "attendant", "visitor parking"]):
+        parking_info = amenities.get("parking", {})
+        if isinstance(parking_info, dict) and "admitted_patient_visitors" in parking_info:
+            return {"answer": f"For admitted patients' visitors, the parking rate is {parking_info['admitted_patient_visitors']}."}
+            
     if isinstance(amenities, dict):
         for key, val in amenities.items():
-            if key in normalized_query:
+            if _has_word(normalized_query, key):
                 if isinstance(val, dict):
                     details = ", ".join([f"{k.replace('_', ' ').title()}: {v}" for k, v in val.items()])
                     return {"answer": f"Details for {key}: {details}."}
                 else:
                     return {"answer": f"{key.title()}: {val}."}
 
-    if any(k in normalized_query for k in ["address", "location", "where"]):
+    if any(_has_word(normalized_query, k) for k in ["address", "location", "where"]):
         return {"answer": f"{data.get('name')} is located at {data.get('address', 'our main facility')}."}
 
-    if any(k in normalized_query for k in ["pharmacy", "medicine"]):
+    if any(_has_word(normalized_query, k) for k in ["contact", "phone", "number", "telephone", "mobile"]):
+        return {"answer": f"{data.get('name')} contact number is {data.get('contact', '+91 80 4000 9000')}."}
+
+    if any(_has_word(normalized_query, k) for k in ["pharmacy", "medicine", "dawai"]):
         return {"answer": f"Our pharmacy is open {data.get('pharmacy_hours', '24/7')}. It is located near the main exit."}
 
     # 2. Check semantic FAISS cache for a previously-answered similar query
@@ -441,7 +599,54 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
     normalized_query = _normalize_query(query)
     doctors = data.get("doctors", [])
 
+    # Specialty to department mapping
+    specialty_to_dept = {
+        "cardio": "cardiology",
+        "heart": "cardiology",
+        "neuro": "neurology",
+        "brain": "neurology",
+        "ortho": "orthopedics",
+        "joint": "orthopedics",
+        "bone": "orthopedics",
+        "knee": "orthopedics",
+        "child": "pediatrics",
+        "baby": "pediatrics",
+        "pediatr": "pediatrics",
+        "gyneco": "gynecology",
+        "obstetr": "gynecology",
+        "pregnancy": "gynecology",
+        "women": "gynecology",
+        "diabetes": "endocrinology",
+        "diabeto": "endocrinology",
+        "thyroid": "endocrinology",
+        "stomach": "gastroenterology",
+        "gastro": "gastroenterology",
+        "lung": "pulmonology",
+        "chest": "pulmonology",
+        "breathing": "pulmonology",
+        "cancer": "oncology",
+        "oncolo": "oncology",
+        "eye": "ophthalmology",
+        "ophthalm": "ophthalmology",
+        "ent": "ent",
+        "ear": "ent",
+        "nose": "ent",
+        "throat": "ent",
+        "skin": "dermatology",
+        "dermat": "dermatology",
+        "physician": "general medicine",
+        "medicine": "general medicine",
+        "fever": "general medicine",
+        "general doctor": "general medicine",
+    }
+
+    query_depts = []
+    for spec, dept in specialty_to_dept.items():
+        if _has_prefix_word(normalized_query, spec):
+            query_depts.append(dept)
+
     # 1. Search in local tenant roster (most accurate for configured clinics)
+    matched_docs = []
     for doc in doctors:
         doc_name_lower = doc["name"].lower()
         doc_dept_lower = doc["dept"].lower()
@@ -451,12 +656,23 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
         name_parts = [p for p in name_clean.split() if len(p) >= 3] # Keep parts with at least 3 characters
         
         # Check if full name, department, or any name part is in normalized query
-        name_match = (doc_name_lower in normalized_query or 
-                      any(part in normalized_query for part in name_parts))
-        dept_match = doc_dept_lower in normalized_query
+        name_match = (_has_word(normalized_query, doc_name_lower) or 
+                      any(_has_word(normalized_query, part) for part in name_parts))
+        dept_match = (_has_word(normalized_query, doc_dept_lower) or 
+                      any(_has_word(doc_dept_lower, d) for d in query_depts))
+        # Also check specialty_keywords field from JSON for precise specialist queries
+        keyword_match = any(
+            _has_prefix_word(normalized_query, kw.lower())
+            for kw in doc.get("specialty_keywords", [])
+        )
         
-        if name_match or dept_match:
-            fee_str = f" Consultation fee: Rs. {doc['fee']}." if doc.get("fee") else ""
+        if name_match or dept_match or keyword_match:
+            matched_docs.append(doc)
+            
+    if matched_docs:
+        if len(matched_docs) == 1:
+            doc = matched_docs[0]
+            fee_str = f" Consultation fee is Rs. {doc['fee']}." if doc.get("fee") else ""
             
             # Check for AI-Ready structured availability (Requirement: Enriched AI Data)
             availability = doc.get("availability")
@@ -470,9 +686,22 @@ def doctor_availability(args: dict, hospital_id: str = None) -> dict:
             return {
                 "answer": (
                     f"{doc['name']} ({doc['dept']}) is {schedule_str}{fee_str} "
-                    "Would you like me to book a slot?"
+                    "Should I go ahead and book this slot for you?"
                 )
             }
+        else:
+            ans = f"We have {len(matched_docs)} specialists: "
+            doc_strings = []
+            for doc in matched_docs:
+                availability = doc.get("availability")
+                if availability:
+                    days = ", ".join(availability.get("days", []))
+                    schedule_str = f"on {days}"
+                else:
+                    schedule_str = doc.get('schedule', 'during OPD')
+                doc_strings.append(f"{doc['name']} ({schedule_str})")
+            ans += ", ".join(doc_strings) + ". Who would you like to consult?"
+            return {"answer": ans}
 
     # 2. Check FAISS semantic cache for a previously-answered similar query
     cached = _faiss_search(f"doctor availability {normalized_query}")

@@ -24,7 +24,7 @@ class TenantManager:
         self._refresh_interval = 60 + random.randint(-15, 15) 
 
     def get_hospital_data(self, hospital_id: str = None) -> dict:
-        """Load data with Database Priority -> Local File Fallback -> Mock Default."""
+        """Load data with Local File Priority -> Database Lookup -> Mock Default."""
         tid = hospital_id or self.current_tenant
         tid = re.sub(r'[^a-zA-Z0-9_-]', '', tid)
 
@@ -32,25 +32,55 @@ class TenantManager:
         if tid in self._db_cache and (time.time() - self._last_refresh < self._refresh_interval):
             return self._db_cache[tid]
 
-        # 2. Try Database Lookup (SaaS Tier)
-        db_data = self._get_from_db(tid)
-        if db_data:
-            self._db_cache[tid] = db_data
-            return db_data
-
-        # 3. Fallback to Local JSON (Developer Tier)
+        # 2. Prefer Local JSON (Developer Tier / Local override)
         data_path = self.data_dir / f"{tid}.json"
         if data_path.exists():
             try:
                 with open(data_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
+                    # Sync to DynamoDB in the background so SaaS analytics are correct
+                    self._sync_local_to_db_async(tid, data)
                     self._db_cache[tid] = data
                     return data
             except Exception:
                 logger.error(f"Failed to load file for {tid}")
 
+        # 3. Try Database Lookup (SaaS Tier)
+        db_data = self._get_from_db(tid)
+        if db_data:
+            self._db_cache[tid] = db_data
+            return db_data
+
         # 4. Final Mock Fallback
         return self._get_hardcoded_fallback()
+
+    def _sync_local_to_db_async(self, hospital_id: str, data: dict):
+        """Update DynamoDB in a background thread to sync local JSON data."""
+        import threading
+        def run_sync():
+            try:
+                from src.analytics.dynamodb_client import dynamodb_analytics
+                from datetime import datetime
+                # Get existing tenant to preserve spreadsheet_id, status etc if already present
+                existing = dynamodb_analytics.get_tenant(hospital_id) or {}
+                
+                tenant_record = {
+                    "hospital_id": hospital_id,
+                    "hospital_name": data.get("name", "Unknown Hospital"),
+                    "status": existing.get("status") or data.get("status") or "live",
+                    "ingestion_strategy": existing.get("ingestion_strategy") or "hybrid",
+                    "sync_interval_mins": existing.get("sync_interval_mins") or 10,
+                    "spreadsheet_id": existing.get("spreadsheet_id") or data.get("spreadsheet_id") or "",
+                    "created_at": existing.get("created_at") or datetime.now().isoformat(),
+                    "hospital_data_normalized": data
+                }
+                dynamodb_analytics.save_tenant(tenant_record)
+                logger.info(f"[TENANT] Successfully synced local JSON for {hospital_id} to DynamoDB.")
+            except Exception as e:
+                logger.error(f"[TENANT] Failed to sync local JSON for {hospital_id} to DynamoDB: {e}")
+                
+        threading.Thread(target=run_sync, daemon=True).start()
+
 
     def _get_from_db(self, hospital_id: str) -> dict | None:
         """Fetch tenant config and normalized data from DynamoDB."""

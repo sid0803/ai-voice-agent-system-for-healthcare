@@ -130,11 +130,22 @@ class StreamSession:
         self._is_processing_audio: bool = False
         self._is_active: bool = True
         self.stream_sid: str = ""
-        self.hospital_id: str = "default_tier2"
+        self._hospital_id: str = "default_tier2"
 
     @property
     def session_id(self) -> str:
         return self._session_id
+
+    @property
+    def hospital_id(self) -> str:
+        return self._hospital_id
+
+    @hospital_id.setter
+    def hospital_id(self, value: str) -> None:
+        self._hospital_id = value
+        session_data = self._client._active_sessions.get(self._session_id)
+        if session_data:
+            session_data.hospital_id = value
 
     def on_event(self, event_type: str, handler: Callable) -> StreamSession:
         """Register an event handler for this session. Returns self for chaining."""
@@ -568,6 +579,24 @@ class S2SBidirectionalStreamClient:
             return
 
         async with session.write_lock:
+            # AWS Nova Sonic: Close the active audio content block before sending TOOL results.
+            # Bidirectional streaming only allows one open content block at a time.
+            if session.is_audio_content_start_sent:
+                logger.info("_send_tool_result: closing open audio content block %s", session.audio_content_id[:8])
+                await self._send_event(session_id, {
+                    "event": {
+                        "contentEnd": {
+                            "promptName": session.prompt_name,
+                            "contentName": session.audio_content_id,
+                        }
+                    }
+                })
+                session.is_audio_content_start_sent = False
+                session.is_audio_data_sent = False
+                session.open_content_ids.discard(session.audio_content_id)
+                # Brief sleep to let Bedrock process contentEnd
+                await asyncio.sleep(0.2)
+
             content_id = str(uuid4())
 
             await self._send_event(session_id, {
