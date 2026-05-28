@@ -1198,7 +1198,11 @@ async def exotel_stream(websocket: WebSocket):
         if not is_new and role == "ASSISTANT":
             return
 
-        logger.info("Text output [%s] (is_new=%s): %s", role, is_new, content[:80])
+        if is_new:
+            if role == "USER":
+                logger.info("🎙️ [USER] (Call: %s): %s", mask_phone(caller_phone), content)
+            elif role == "ASSISTANT":
+                logger.info("👩‍⚕️ [ASHA] (Call: %s): %s", mask_phone(caller_phone), content)
 
         if DEMO_MODE and role == "ASSISTANT" and is_new:
             asyncio.ensure_future(websocket.send_text(json.dumps({"event": "text", "text": content})))
@@ -1256,6 +1260,9 @@ async def exotel_stream(websocket: WebSocket):
         logger.info("Tool result received")
         reset_idle_timer()
 
+    def _handle_completion_end(data):
+        logger.info("[SYSTEM] Completion ended (stopReason: %s)", data.get("stopReason", "unknown"))
+
     def _handle_stream_complete(data=None):
         logger.info("Stream completed for client: %s", session.stream_sid)
 
@@ -1278,6 +1285,7 @@ async def exotel_stream(websocket: WebSocket):
     session.on_event("textOutput", _handle_text_output)
     session.on_event("error", _handle_error)
     session.on_event("toolResult", _handle_tool_result)
+    session.on_event("completionEnd", _handle_completion_end)
     session.on_event("streamComplete", _handle_stream_complete)
 
     # -----------------------------------------------------------------------

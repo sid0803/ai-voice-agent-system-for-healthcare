@@ -110,6 +110,7 @@ class SessionData:
     # Server waits on this instead of polling, eliminating the busy-wait loop.
     _stream_ready: asyncio.Event = field(default_factory=asyncio.Event)
     write_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    tool_call_pending: bool = False
 
 
 class StreamSession:
@@ -287,6 +288,7 @@ class S2SBidirectionalStreamClient:
             is_prompt_start_sent=False,
             is_audio_content_start_sent=False,
             audio_content_id=str(uuid4()),
+            tool_call_pending=False,
             # [D-11] hospital_id injected later via session.hospital_id = ...
             # SessionData.hospital_id default is fine; StreamSession.hospital_id is the live field
         )
@@ -475,7 +477,7 @@ class S2SBidirectionalStreamClient:
 
                     self._update_session_activity(session_id)
                     text_response = value.bytes_.decode("utf-8")
-                    logger.info("[BEDROCK_RECV] %s", text_response)
+                    logger.debug("[BEDROCK_RECV] %s", text_response)
                     try:
                         json_response = json.loads(text_response)
                         evt = json_response.get("event", {})
@@ -484,6 +486,8 @@ class S2SBidirectionalStreamClient:
                             self._dispatch_event(session_id, "contentStart", evt["contentStart"])
                         elif evt.get("completionStart"):
                             self._dispatch_event(session_id, "completionStart", evt["completionStart"])
+                            # Reset tool use state for the new turn
+                            session.tool_call_pending = False
                             # Gracefully close the active audio input block of the user turn that just ended
                             if session.is_audio_content_start_sent:
                                 old_id = session.audio_content_id
@@ -504,14 +508,16 @@ class S2SBidirectionalStreamClient:
                             session.is_audio_content_start_sent = False
                             session.is_audio_data_sent = False
                             session.audio_content_id = str(uuid4())
-                            session.audio_paused = False
-                            logger.info("Reset user audio block state and unpaused audio on completionStart for session %s", session_id[:8])
+                            # Keep audio paused during speech generation
+                            session.audio_paused = True
+                            logger.info("Reset user audio block state and paused audio on completionStart for session %s", session_id[:8])
                         elif evt.get("textOutput"):
                             self._dispatch_event(session_id, "textOutput", evt["textOutput"])
                         elif evt.get("audioOutput"):
                             self._dispatch_event(session_id, "audioOutput", evt["audioOutput"])
                         elif evt.get("toolUse"):
                             self._dispatch_event(session_id, "toolUse", evt["toolUse"])
+                            session.tool_call_pending = True
                             session.tool_use_content = evt["toolUse"]
                             session.tool_use_id = evt["toolUse"].get("toolUseId", "")
                             session.tool_name = evt["toolUse"].get("name") or evt["toolUse"].get("toolName", "")
@@ -550,6 +556,13 @@ class S2SBidirectionalStreamClient:
                                 ue.get("totalTokens", 0),
                             )
                             self._dispatch_event(session_id, "usageEvent", ue)
+                        elif evt.get("completionEnd"):
+                            self._dispatch_event(session_id, "completionEnd", evt["completionEnd"])
+                            if session.tool_call_pending:
+                                logger.info("completionEnd: tool call pending, keeping audio paused for session %s", session_id[:8])
+                            else:
+                                session.audio_paused = False
+                                logger.info("completionEnd: unpaused audio for session %s", session_id[:8])
                         else:
                             event_keys = list(evt.keys())
                             if event_keys:

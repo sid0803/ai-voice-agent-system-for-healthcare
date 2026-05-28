@@ -30,7 +30,7 @@ class AudioHardener:
         self.alpha_noise = 0.02
         self.target_rms = 4500.0
         self.max_gain = 4.0
-        self.gate_threshold_mult = 2.0
+        self.gate_threshold_mult = 2.5
         
     def _apply_hpf(self, samples: np.ndarray) -> np.ndarray:
         """[OPT-01] Vectorized first-order high-pass filter via scipy.signal.lfilter.
