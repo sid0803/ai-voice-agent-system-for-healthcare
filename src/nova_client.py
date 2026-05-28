@@ -483,6 +483,22 @@ class S2SBidirectionalStreamClient:
                             self._dispatch_event(session_id, "contentStart", evt["contentStart"])
                         elif evt.get("completionStart"):
                             self._dispatch_event(session_id, "completionStart", evt["completionStart"])
+                            # Gracefully close the active audio input block of the user turn that just ended
+                            if session.is_audio_content_start_sent:
+                                old_id = session.audio_content_id
+                                logger.info("completionStart: closing user audio block %s", old_id[:8])
+                                async def close_audio(target_id):
+                                    async with session.write_lock:
+                                        await self._send_event(session_id, {
+                                            "event": {
+                                                "contentEnd": {
+                                                    "promptName": session.prompt_name,
+                                                    "contentName": target_id,
+                                                }
+                                            }
+                                        })
+                                asyncio.create_task(close_audio(old_id))
+                                session.open_content_ids.discard(old_id)
                             # Reset user audio block state for the next turn
                             session.is_audio_content_start_sent = False
                             session.is_audio_data_sent = False
@@ -605,7 +621,7 @@ class S2SBidirectionalStreamClient:
                         "promptName": session.prompt_name,
                         "contentName": content_id,
                         "interactive": False,
-                        "type": "TOOL_RESULT",
+                        "type": "TOOL",
                         "toolResultInputConfiguration": {
                             "toolUseId": tool_use_id,
                             "type": "TEXT",
