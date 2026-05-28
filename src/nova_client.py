@@ -475,6 +475,7 @@ class S2SBidirectionalStreamClient:
 
                     self._update_session_activity(session_id)
                     text_response = value.bytes_.decode("utf-8")
+                    logger.info("[BEDROCK_RECV] %s", text_response)
                     try:
                         json_response = json.loads(text_response)
                         evt = json_response.get("event", {})
@@ -503,7 +504,8 @@ class S2SBidirectionalStreamClient:
                             session.is_audio_content_start_sent = False
                             session.is_audio_data_sent = False
                             session.audio_content_id = str(uuid4())
-                            logger.info("Reset user audio block state on completionStart for session %s", session_id[:8])
+                            session.audio_paused = False
+                            logger.info("Reset user audio block state and unpaused audio on completionStart for session %s", session_id[:8])
                         elif evt.get("textOutput"):
                             self._dispatch_event(session_id, "textOutput", evt["textOutput"])
                         elif evt.get("audioOutput"):
@@ -594,6 +596,9 @@ class S2SBidirectionalStreamClient:
         if session is None or not session.is_active:
             return
 
+        # 1. Pause audio ingestion immediately to prevent any incoming audio events
+        session.audio_paused = True
+
         async with session.write_lock:
             # AWS Nova Sonic: Close the active audio content block before sending TOOL results.
             # Bidirectional streaming only allows one open content block at a time.
@@ -612,6 +617,9 @@ class S2SBidirectionalStreamClient:
                 session.open_content_ids.discard(session.audio_content_id)
                 # Brief sleep to let Bedrock process contentEnd
                 await asyncio.sleep(0.2)
+
+            # Ensure we generate a fresh audio ID for the next turn, so no delayed task uses the old ID
+            session.audio_content_id = str(uuid4())
 
             content_id = str(uuid4())
 
