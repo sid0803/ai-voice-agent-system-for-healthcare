@@ -1,172 +1,146 @@
-2026-05-20 13:25:08,149 src.integrations.sheets_client WARNING [SHEETS] GOOGLE_SHEET_ID not set. Sheets integration disabled.
-2026-05-20 13:25:08,179 botocore.credentials INFO Found credentials in environment variables.
-2026-05-20 13:25:08,458 faiss.loader INFO Loading faiss with AVX2 support.
-2026-05-20 13:25:08,548 faiss.loader INFO Successfully loaded faiss with AVX2 support.
-2026-05-20 13:25:08,563 src.tools INFO [FAISS] Loaded cache: 44 entries
-2026-05-20 13:25:10,248 src.cache.response_cache INFO Warmed cache with asset: hello.pcm
-2026-05-20 13:25:10,249 src.cache.response_cache INFO Warmed cache with asset: transfer.pcm
-2026-05-20 13:25:10,249 src.cache.response_cache INFO Warmed cache with asset: emergency.pcm
-2026-05-20 13:25:10,253 src.credential_validation INFO Exotel credentials validated: EXOTEL_API_KEY, EXOTEL_API_TOKEN, EXOTEL_SID, EXOTEL_SUBDOMAIN
-2026-05-20 13:25:10,715 __main__ WARNING [MEMORY] No MEMORY_ID configured - memory features disabled
-INFO:     Started server process [17776]
+2026-05-28 01:23:10,744 src.integrations.sheets_client WARNING [SHEETS] GOOGLE_SHEET_ID not set. Sheets integration disabled.
+2026-05-28 01:23:10,773 botocore.credentials INFO Found credentials in environment variables.
+2026-05-28 01:23:11,294 faiss.loader INFO Loading faiss with AVX2 support.
+2026-05-28 01:23:11,694 faiss.loader INFO Successfully loaded faiss with AVX2 support.
+2026-05-28 01:23:11,708 src.tools INFO [FAISS] Loaded cache: 44 entries
+2026-05-28 01:23:18,010 src.cache.response_cache INFO Warmed cache with asset: hello.pcm
+2026-05-28 01:23:18,020 src.cache.response_cache INFO Warmed cache with asset: transfer.pcm
+2026-05-28 01:23:18,028 src.cache.response_cache INFO Warmed cache with asset: emergency.pcm
+2026-05-28 01:23:18,420 src.credential_validation INFO Exotel credentials validated: EXOTEL_API_KEY, EXOTEL_API_TOKEN, EXOTEL_SID, EXOTEL_SUBDOMAIN
+2026-05-28 01:23:18,704 __main__ WARNING [MEMORY] No MEMORY_ID configured - memory features disabled
+INFO:     Started server process [22732]
 INFO:     Waiting for application startup.
-2026-05-20 13:25:10,832 __main__ INFO [STARTUP] InDiiServe Asha Voice Agent starting...
+2026-05-28 01:23:18,858 __main__ INFO [STARTUP] InDiiServe Asha Voice Agent starting...
 INFO:     Application startup complete.
-2026-05-20 13:25:10,836 src.analytics.rds_client INFO 📡 [DB] RDS not configured. Falling back to local SQLite (Demo Mode).
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:56706 - "GET /health HTTP/1.1" 200 OK
-INFO:     ('127.0.0.1', 56714) - "WebSocket /exotel-stream?hospital_id=apollo_metro&CallSid=7fc9c9c9-1e37-4d74-b3d3-d42ccf04aed2" [accepted]
-2026-05-20 13:25:11,334 __main__ INFO Exotel client connected from 127.0.0.1
-2026-05-20 13:25:11,334 __main__ INFO WS query params - CallSid: 7fc9c9c9-1e37-4d74-b3d3-d42ccf04aed2, CallFrom: unknown
-2026-05-20 13:25:11,334 src.analytics.rds_client INFO 📡 [DB] RDS not configured. Falling back to local SQLite (Demo Mode).
-2026-05-20 13:25:11,342 __main__ WARNING [SECURITY] DEMO_MODE=true with real Exotel credentials detected! The chat backdoor is active. Set DEMO_MODE=false for production.
+INFO:     127.0.0.1:49426 - "GET /health HTTP/1.1" 200 OK
+INFO:     ('127.0.0.1', 49429) - "WebSocket /exotel-stream?hospital_id=apollo_metro&CallSid=77e71f89-8cbf-48e7-8353-3b2caf2a1c18" [accepted]
+2026-05-28 01:23:18,913 __main__ INFO Exotel client connected from 127.0.0.1
+2026-05-28 01:23:18,913 __main__ INFO WS query params - CallSid: 77e71f89-8cbf-48e7-8353-3b2caf2a1c18, CallFrom: unknown
+2026-05-28 01:23:18,923 __main__ WARNING [SECURITY] DEMO_MODE=true with real Exotel credentials detected! The chat backdoor is active. Set DEMO_MODE=false for production.
 INFO:     connection open
-2026-05-20 13:25:11,347 __main__ INFO Exotel stream started - streamSid: f3a5048b-72af-48e1-9dd5-31008fe56b5e, callSid: 2f9fbbc9-f245-4fd4-b65c-d2327b027cb8, caller: unknown, raw start keys: ['hospital_id', 'callSid', 'streamSid']
-2026-05-20 13:25:11,349 __main__ INFO Greeting audio sent to Exotel (5781 bytes Exotel, polished)
-2026-05-20 13:25:11,350 __main__ INFO Nova session setup complete, idle monitor started
-2026-05-20 13:25:11,350 src.nova_client INFO send_text_message: pausing audio and closing audio content
-2026-05-20 13:25:11,863 src.nova_client INFO send_text_message: sending cross-modal text content 853173ac
-2026-05-20 13:25:11,864 src.nova_client INFO send_text_message: text content sent
-2026-05-20 13:25:11,864 src.nova_client INFO send_text_message: pre-opened audio content 3cd39361 and sent initial silence
-2026-05-20 13:25:12,426 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=0 text=22 | output: speech=0 text=0 | totalTokens=22
-2026-05-20 13:25:12,474 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=22 | output: speech=0 text=0 | totalTokens=179
-2026-05-20 13:25:12,474 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=23 | output: speech=0 text=0 | totalTokens=180
-2026-05-20 13:25:12,587 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=70 | output: speech=0 text=0 | totalTokens=227
-2026-05-20 13:25:12,587 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=117 | output: speech=0 text=0 | totalTokens=274
-2026-05-20 13:25:12,589 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=160 | output: speech=0 text=0 | totalTokens=317
-2026-05-20 13:25:12,609 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=164 | output: speech=0 text=0 | totalTokens=321
-2026-05-20 13:25:12,634 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=0 text=0 | totalTokens=1986
-2026-05-20 13:25:13,015 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=0 text=25 | totalTokens=2011
-2026-05-20 13:25:13,038 src.nova_client INFO Reset user audio block state on completionStart for session 69bc49e7
-2026-05-20 13:25:13,038 __main__ INFO Text output [ASSISTANT]: Hello, welcome to InDiiServe Healthcare! This is Asha.
-2026-05-20 13:25:13,039 __main__ INFO [DEMO] Received test input: Hello, can you tell me where you are located?
-2026-05-20 13:25:13,039 src.nova_client INFO send_text_message: pausing audio and closing audio content
-2026-05-20 13:25:13,195 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=18 text=27 | totalTokens=2031
-2026-05-20 13:25:13,446 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=38 text=27 | totalTokens=2051
-2026-05-20 13:25:13,544 src.nova_client INFO send_text_message: sending cross-modal text content 56d67cb5
-2026-05-20 13:25:13,545 src.nova_client INFO send_text_message: text content sent
-2026-05-20 13:25:13,545 src.nova_client INFO send_text_message: pre-opened audio content ee519a31 and sent initial silence
-2026-05-20 13:25:13,607 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=58 text=27 | totalTokens=2071
-2026-05-20 13:25:13,893 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=78 text=27 | totalTokens=2091
-2026-05-20 13:25:13,897 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1829 | output: speech=98 text=27 | totalTokens=2111
-2026-05-20 13:25:13,897 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1840 | output: speech=98 text=27 | totalTokens=2122
-2026-05-20 13:25:13,897 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
-2026-05-20 13:25:13,898 __main__ INFO Text output [ASSISTANT]: Hello, welcome to InDiiServe Healthcare! This is Asha.
-2026-05-20 13:25:13,900 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1842 | output: speech=98 text=27 | totalTokens=2124
-2026-05-20 13:25:13,921 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1846 | output: speech=98 text=27 | totalTokens=2128
-2026-05-20 13:25:14,366 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1846 | output: speech=98 text=54 | totalTokens=2155
-2026-05-20 13:25:14,366 __main__ INFO Tool called: hospitalInfoTool
-2026-05-20 13:25:14,367 src.analytics.rds_client INFO 📡 [DB] RDS not configured. Falling back to local SQLite (Demo Mode).
-2026-05-20 13:25:14,370 __main__ INFO Tool result received
-2026-05-20 13:25:14,370 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1847 | output: speech=98 text=54 | totalTokens=2156
-2026-05-20 13:25:14,942 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1880 | output: speech=98 text=54 | totalTokens=2189
-2026-05-20 13:25:15,911 __main__ INFO [DEMO] Received test input: I am having severe chest pain right now, please help!
-2026-05-20 13:25:15,911 src.nova_client INFO send_text_message: pausing audio and closing audio content
-2026-05-20 13:25:16,425 src.nova_client INFO send_text_message: closed audio content ee519a31
-2026-05-20 13:25:16,936 src.nova_client INFO send_text_message: sending cross-modal text content e1ed50a1
-2026-05-20 13:25:16,937 src.nova_client INFO send_text_message: text content sent
-2026-05-20 13:25:16,937 src.nova_client INFO send_text_message: pre-opened audio content 8cb7254f and sent initial silence
-2026-05-20 13:25:17,229 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1892 | output: speech=98 text=54 | totalTokens=2201
-2026-05-20 13:25:17,246 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1896 | output: speech=98 text=54 | totalTokens=2205
-2026-05-20 13:25:17,281 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1897 | output: speech=98 text=54 | totalTokens=2206
-2026-05-20 13:25:17,301 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1901 | output: speech=98 text=54 | totalTokens=2210
-2026-05-20 13:25:17,814 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1901 | output: speech=98 text=106 | totalTokens=2262
-2026-05-20 13:25:17,815 __main__ INFO Tool called: handoffTool
-2026-05-20 13:25:17,815 src.tools WARNING !!! EMERGENCY HANDOFF TRIGGERED !!!
-2026-05-20 13:25:17,815 src.analytics.rds_client INFO 📡 [DB] RDS not configured. Falling back to local SQLite (Demo Mode).
-2026-05-20 13:25:17,817 __main__ INFO Tool result received
-2026-05-20 13:25:17,834 __main__ INFO Text output [ASSISTANT]: This sounds urgent. Please stay on the line, I am connecting you to our emergenc
-2026-05-20 13:25:17,893 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1901 | output: speech=106 text=118 | totalTokens=2282
-2026-05-20 13:25:18,052 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1901 | output: speech=126 text=118 | totalTokens=2302
-2026-05-20 13:25:18,122 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1950 | output: speech=126 text=118 | totalTokens=2351
-2026-05-20 13:25:18,215 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1950 | output: speech=146 text=118 | totalTokens=2371
-2026-05-20 13:25:18,386 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1950 | output: speech=166 text=118 | totalTokens=2391
-2026-05-20 13:25:18,669 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1950 | output: speech=186 text=118 | totalTokens=2411
-2026-05-20 13:25:18,951 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1950 | output: speech=206 text=118 | totalTokens=2431
-2026-05-20 13:25:18,955 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1950 | output: speech=224 text=120 | totalTokens=2451
-2026-05-20 13:25:19,823 __main__ INFO [DEMO] Received test input: I have a severe fever and my head hurts.
-2026-05-20 13:25:19,823 src.nova_client INFO send_text_message: pausing audio and closing audio content
-2026-05-20 13:25:19,840 __main__ INFO 
+2026-05-28 01:23:18,928 __main__ INFO Exotel stream started - streamSid: 90804d29-7a29-46a3-9389-ff26c0cdd682, callSid: 24f87206-c771-41ae-af08-2610733a5237, caller: unknown, raw start keys: ['hospital_id', 'callSid', 'streamSid']
+2026-05-28 01:23:18,929 __main__ INFO Nova session setup complete, idle monitor started
+2026-05-28 01:23:18,929 src.nova_client INFO send_text_message: pausing audio and closing audio content
+2026-05-28 01:23:19,003 botocore.credentials INFO Found credentials in environment variables.
+2026-05-28 01:23:19,441 src.nova_client INFO send_text_message: sending cross-modal text content 53c4f929
+2026-05-28 01:23:19,442 src.nova_client INFO send_text_message: text content sent
+2026-05-28 01:23:19,442 src.nova_client INFO send_text_message: pre-opened audio content da87bd34 and sent initial silence
+2026-05-28 01:23:19,931 src.integrations.tenant_manager INFO [TENANT] Successfully synced local JSON for apollo_metro to DynamoDB.
+2026-05-28 01:23:20,078 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=0 text=22 | output: speech=0 text=0 | totalTokens=22
+2026-05-28 01:23:20,117 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=22 | output: speech=0 text=0 | totalTokens=237
+2026-05-28 01:23:20,118 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=23 | output: speech=0 text=0 | totalTokens=238
+2026-05-28 01:23:20,229 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=70 | output: speech=0 text=0 | totalTokens=285
+2026-05-28 01:23:20,229 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=117 | output: speech=0 text=0 | totalTokens=332
+2026-05-28 01:23:20,232 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=160 | output: speech=0 text=0 | totalTokens=375
+2026-05-28 01:23:20,253 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=164 | output: speech=0 text=0 | totalTokens=379
+2026-05-28 01:23:20,279 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3165 | output: speech=0 text=0 | totalTokens=3380
+2026-05-28 01:23:20,894 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3165 | output: speech=0 text=25 | totalTokens=3405
+2026-05-28 01:23:20,906 src.nova_client INFO Reset user audio block state on completionStart for session f8dbbf0c
+2026-05-28 01:23:20,907 __main__ INFO Text output [ASSISTANT]: Hello, welcome to InDiiServe Healthcare! This is Asha.
+2026-05-28 01:23:20,908 __main__ INFO [DEMO] Received test input: Hello, can you tell me where you are located?
+2026-05-28 01:23:20,909 src.nova_client INFO send_text_message: pausing audio and closing audio content
+2026-05-28 01:23:21,093 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3165 | output: speech=18 text=27 | totalTokens=3425
+2026-05-28 01:23:21,341 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3165 | output: speech=38 text=27 | totalTokens=3445
+2026-05-28 01:23:21,417 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3165 | output: speech=58 text=27 | totalTokens=3465
+2026-05-28 01:23:21,417 src.nova_client INFO send_text_message: sending cross-modal text content c37ebe71
+2026-05-28 01:23:21,418 src.nova_client INFO send_text_message: text content sent
+2026-05-28 01:23:21,418 src.nova_client INFO send_text_message: pre-opened audio content d0177a6a and sent initial silence
+2026-05-28 01:23:21,556 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3165 | output: speech=78 text=27 | totalTokens=3485
+2026-05-28 01:23:21,666 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3176 | output: speech=78 text=27 | totalTokens=3496
+2026-05-28 01:23:21,667 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
+2026-05-28 01:23:21,669 __main__ INFO Text output [ASSISTANT]: Hello, welcome to InDiiServe Healthcare! This is Asha.
+2026-05-28 01:23:21,723 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3176 | output: speech=93 text=32 | totalTokens=3516
+2026-05-28 01:23:21,729 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3178 | output: speech=93 text=32 | totalTokens=3518
+2026-05-28 01:23:21,750 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3182 | output: speech=93 text=32 | totalTokens=3522
+2026-05-28 01:23:22,148 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3182 | output: speech=93 text=59 | totalTokens=3549
+2026-05-28 01:23:22,149 __main__ INFO Tool called: hospitalInfoTool
+2026-05-28 01:23:22,153 src.nova_client INFO _send_tool_result: closing open audio content block d0177a6a
+2026-05-28 01:23:22,364 __main__ INFO Tool result received
+2026-05-28 01:23:22,364 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3183 | output: speech=93 text=59 | totalTokens=3550
+2026-05-28 01:23:22,407 src.integrations.tenant_manager INFO [TENANT] Successfully synced local JSON for apollo_metro to DynamoDB.
+2026-05-28 01:23:22,611 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3222 | output: speech=93 text=59 | totalTokens=3589
+2026-05-28 01:23:22,701 __main__ INFO 
 ========================================
-🏥 SYSTEM HEALTH: DEGRADED ⚠️
+\U0001f3e5 SYSTEM HEALTH: HEALTHY \U0001f7e2
 ========================================
-2026-05-20 13:25:19,840 __main__ INFO 📁 Database: SQLite (Demo) ✅
-2026-05-20 13:25:19,840 __main__ INFO ☁️ AWS Cloud: AWS Error: Read timeout on endpoint URL: "https://bedrock.us-east-1.amazonaws.com/foundation-models?byProvider=Amazon" ❌
-2026-05-20 13:25:19,840 __main__ INFO ========================================
+2026-05-28 01:23:22,704 __main__ INFO \U0001f4c1 Database: DynamoDB (AWS) \u2705
+2026-05-28 01:23:22,704 __main__ INFO \u2601\ufe0f AWS Cloud: Connected (IAM & Bedrock Validated) \u2705
+2026-05-28 01:23:22,704 __main__ INFO ========================================
 
-2026-05-20 13:25:19,840 __main__ INFO [STARTUP] RDS initialization skipped (Mock/Offline mode).
-2026-05-20 13:25:20,331 src.nova_client INFO send_text_message: closed audio content 8cb7254f
-2026-05-20 13:25:20,397 __main__ INFO [STARTUP] DynamoDB table 'InDiiServe_Asha_Healthcare_Transcripts_NEW' already exists. ✅
-2026-05-20 13:25:20,761 src.integrations.sync_engine INFO [SYNC] Background sync worker started (Adaptive Frequency).
-2026-05-20 13:25:20,761 src.analytics.rds_client INFO 📡 [DB] RDS not configured. Falling back to local SQLite (Demo Mode).
-2026-05-20 13:25:20,762 src.learning.distiller INFO [LEARNING] Starting knowledge distillation cycle...
-2026-05-20 13:25:29,749 src.learning.distiller INFO [LEARNING] Discovered 11 new facts from recent calls.
-2026-05-20 13:25:29,768 src.tools INFO [LEARNING] Syncing 308 pieces of community knowledge into Vector Brain.
-2026-05-20 13:25:29,768 src.nova_client INFO send_text_message: sending cross-modal text content b2e9b7ad
-2026-05-20 13:25:29,769 src.nova_client INFO send_text_message: text content sent
-2026-05-20 13:25:29,769 src.nova_client INFO send_text_message: pre-opened audio content 73945184 and sent initial silence
-2026-05-20 13:25:30,061 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1960 | output: speech=224 text=120 | totalTokens=2461
-2026-05-20 13:25:30,063 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
-2026-05-20 13:25:30,063 __main__ INFO Text output [ASSISTANT]: This sounds urgent. Please stay on the line, I am connecting you to our emergenc
-2026-05-20 13:25:30,064 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1962 | output: speech=224 text=120 | totalTokens=2463
-2026-05-20 13:25:30,088 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=224 text=120 | totalTokens=2467
-2026-05-20 13:25:30,570 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=224 text=165 | totalTokens=2512
-2026-05-20 13:25:30,616 __main__ INFO Text output [ASSISTANT]: I'm sorry you're feeling this way. This sounds urgent.
-2026-05-20 13:25:30,740 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=238 text=171 | totalTokens=2532
-2026-05-20 13:25:30,897 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=258 text=171 | totalTokens=2552
-2026-05-20 13:25:31,150 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=278 text=171 | totalTokens=2572
-2026-05-20 13:25:31,213 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=295 text=174 | totalTokens=2592
-2026-05-20 13:25:31,436 __main__ INFO Text output [ASSISTANT]:  Please stay on the line, I am connecting you to our emergency desk immediately.
-2026-05-20 13:25:31,437 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=312 text=177 | totalTokens=2612
-2026-05-20 13:25:31,720 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=332 text=177 | totalTokens=2632
-2026-05-20 13:25:32,003 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=352 text=177 | totalTokens=2652
-2026-05-20 13:25:32,006 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=372 text=177 | totalTokens=2672
-2026-05-20 13:25:32,076 __main__ INFO [DEMO] Received test input: How much is my current bill?
-2026-05-20 13:25:32,076 src.nova_client INFO send_text_message: pausing audio and closing audio content
-2026-05-20 13:25:32,292 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=390 text=179 | totalTokens=2692
-2026-05-20 13:25:32,293 __main__ INFO Text output [ASSISTANT]:  If we get disconnected, please dial 1066 immediately.
-2026-05-20 13:25:32,575 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=406 text=183 | totalTokens=2712
-2026-05-20 13:25:32,578 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=426 text=183 | totalTokens=2732
-2026-05-20 13:25:32,579 src.nova_client INFO send_text_message: closed audio content 73945184
-2026-05-20 13:25:32,861 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=446 text=183 | totalTokens=2752
-2026-05-20 13:25:33,086 src.nova_client INFO send_text_message: sending cross-modal text content 74339c4d
-2026-05-20 13:25:33,086 src.nova_client INFO send_text_message: text content sent
-2026-05-20 13:25:33,087 src.nova_client INFO send_text_message: pre-opened audio content 760f2587 and sent initial silence
-2026-05-20 13:25:33,375 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=466 text=183 | totalTokens=2772
-2026-05-20 13:25:33,657 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=486 text=183 | totalTokens=2792
-2026-05-20 13:25:33,661 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1966 | output: speech=506 text=183 | totalTokens=2812
-2026-05-20 13:25:33,943 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1973 | output: speech=506 text=183 | totalTokens=2819
-2026-05-20 13:25:33,944 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
-2026-05-20 13:25:33,945 __main__ INFO Text output [ASSISTANT]: I'm sorry you're feeling this way. This sounds urgent.
-2026-05-20 13:25:33,945 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1975 | output: speech=506 text=183 | totalTokens=2821
-2026-05-20 13:25:33,946 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=506 text=183 | totalTokens=2825
-2026-05-20 13:25:33,946 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=506 text=230 | totalTokens=2872
-2026-05-20 13:25:33,960 __main__ INFO Text output [ASSISTANT]: I can help you check your billing information. To look up your current bill, I'l
-2026-05-20 13:25:34,043 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=518 text=238 | totalTokens=2892
-2026-05-20 13:25:34,227 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=538 text=238 | totalTokens=2912
-2026-05-20 13:25:34,509 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=558 text=238 | totalTokens=2932
-2026-05-20 13:25:34,516 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=578 text=238 | totalTokens=2952
-2026-05-20 13:25:34,795 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=598 text=238 | totalTokens=2972
-2026-05-20 13:25:35,089 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=618 text=238 | totalTokens=2992
-2026-05-20 13:25:35,372 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=638 text=238 | totalTokens=3012
-2026-05-20 13:25:35,375 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=658 text=238 | totalTokens=3032
-2026-05-20 13:25:35,660 __main__ INFO Text output [ASSISTANT]:  Could you please provide one of these so I can retrieve your billing details fo
-2026-05-20 13:25:35,660 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=672 text=244 | totalTokens=3052
-2026-05-20 13:25:35,941 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=692 text=244 | totalTokens=3072
-2026-05-20 13:25:35,944 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=712 text=244 | totalTokens=3092
-2026-05-20 13:25:35,998 __main__ INFO [DEMO] Received test input: How long will an angioplasty surgery take?
-2026-05-20 13:25:35,998 src.nova_client INFO send_text_message: pausing audio and closing audio content
-2026-05-20 13:25:36,227 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=732 text=244 | totalTokens=3112
-2026-05-20 13:25:36,503 src.nova_client INFO send_text_message: closed audio content 760f2587
-2026-05-20 13:25:36,508 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1979 | output: speech=752 text=244 | totalTokens=3132
-2026-05-20 13:25:37,005 src.nova_client INFO send_text_message: sending cross-modal text content 733e46bb
-2026-05-20 13:25:37,005 src.nova_client INFO send_text_message: text content sent
-2026-05-20 13:25:37,006 src.nova_client INFO send_text_message: pre-opened audio content a62d84bc and sent initial silence
-2026-05-20 13:25:37,298 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1989 | output: speech=752 text=244 | totalTokens=3142
-2026-05-20 13:25:37,300 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
-2026-05-20 13:25:37,301 __main__ INFO Text output [ASSISTANT]: I can help you check your billing information. To look up your current bill, I'l
-2026-05-20 13:25:37,301 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1991 | output: speech=752 text=244 | totalTokens=3144
-2026-05-20 13:25:37,323 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1995 | output: speech=752 text=244 | totalTokens=3148
-2026-05-20 13:25:37,735 src.nova_client INFO [USAGE] session=69bc49e7 | input: speech=157 text=1995 | output: speech=752 text=274 | totalTokens=3178
-2026-05-20 13:25:37,735 __main__ INFO Tool called: predictOTScheduleTool
-2026-05-20 13:25:37,737 __main__ INFO Tool result received
+2026-05-28 01:23:23,678 __main__ INFO [DEMO] Received test input: I am having severe chest pain right now, please help!
+2026-05-28 01:23:23,678 src.nova_client INFO send_text_message: pausing audio and closing audio content
+2026-05-28 01:23:24,189 src.nova_client INFO send_text_message: sending cross-modal text content 9beac766
+2026-05-28 01:23:24,190 src.nova_client INFO send_text_message: text content sent
+2026-05-28 01:23:24,190 src.nova_client INFO send_text_message: pre-opened audio content 4d846fc8 and sent initial silence
+2026-05-28 01:23:24,438 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3234 | output: speech=93 text=59 | totalTokens=3601
+2026-05-28 01:23:24,455 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3238 | output: speech=93 text=59 | totalTokens=3605
+2026-05-28 01:23:24,493 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3239 | output: speech=93 text=59 | totalTokens=3606
+2026-05-28 01:23:24,511 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=93 text=59 | totalTokens=3610
+2026-05-28 01:23:24,938 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=93 text=82 | totalTokens=3633
+2026-05-28 01:23:24,961 __main__ INFO Text output [ASSISTANT]: This sounds urgent. Please stay on the line, I am connecting you to our emergenc
+2026-05-28 01:23:25,079 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=106 text=89 | totalTokens=3653
+2026-05-28 01:23:25,243 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=126 text=89 | totalTokens=3673
+2026-05-28 01:23:25,410 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=146 text=89 | totalTokens=3693
+2026-05-28 01:23:25,600 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=166 text=89 | totalTokens=3713
+2026-05-28 01:23:25,744 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=186 text=89 | totalTokens=3733
+2026-05-28 01:23:25,905 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=206 text=89 | totalTokens=3753
+2026-05-28 01:23:26,084 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=226 text=89 | totalTokens=3773
+2026-05-28 01:23:26,323 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3243 | output: speech=240 text=95 | totalTokens=3793
+2026-05-28 01:23:26,979 __main__ INFO [DEMO] Received test input: I have a severe fever and my head hurts.
+2026-05-28 01:23:26,979 src.nova_client INFO send_text_message: pausing audio and closing audio content
+2026-05-28 01:23:27,491 src.nova_client INFO send_text_message: closed audio content 4d846fc8
+2026-05-28 01:23:28,005 src.nova_client INFO send_text_message: sending cross-modal text content 2833b32f
+2026-05-28 01:23:28,006 src.nova_client INFO send_text_message: text content sent
+2026-05-28 01:23:28,006 src.nova_client INFO send_text_message: pre-opened audio content 260a3d3d and sent initial silence
+2026-05-28 01:23:28,254 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3253 | output: speech=240 text=95 | totalTokens=3803
+2026-05-28 01:23:28,254 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
+2026-05-28 01:23:28,255 __main__ INFO Text output [ASSISTANT]: This sounds urgent. Please stay on the line, I am connecting you to our emergenc
+2026-05-28 01:23:28,256 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3255 | output: speech=240 text=95 | totalTokens=3805
+2026-05-28 01:23:28,274 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=240 text=95 | totalTokens=3809
+2026-05-28 01:23:28,744 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=240 text=125 | totalTokens=3839
+2026-05-28 01:23:28,776 __main__ INFO Text output [ASSISTANT]: I'm sorry you're feeling this way. Please tell me your pain level from 1 to 10 a
+2026-05-28 01:23:28,933 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=258 text=127 | totalTokens=3859
+2026-05-28 01:23:29,095 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=278 text=127 | totalTokens=3879
+2026-05-28 01:23:29,288 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=298 text=127 | totalTokens=3899
+2026-05-28 01:23:29,442 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=318 text=127 | totalTokens=3919
+2026-05-28 01:23:29,679 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=338 text=127 | totalTokens=3939
+2026-05-28 01:23:29,747 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=358 text=127 | totalTokens=3959
+2026-05-28 01:23:29,920 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=378 text=127 | totalTokens=3979
+2026-05-28 01:23:30,157 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3259 | output: speech=398 text=127 | totalTokens=3999
+2026-05-28 01:23:30,264 __main__ INFO [DEMO] Received test input: How much is my current bill?
+2026-05-28 01:23:30,264 src.nova_client INFO send_text_message: pausing audio and closing audio content
+2026-05-28 01:23:30,780 src.nova_client INFO send_text_message: closed audio content 260a3d3d
+2026-05-28 01:23:31,296 src.nova_client INFO send_text_message: sending cross-modal text content 7e16ecdf
+2026-05-28 01:23:31,297 src.nova_client INFO send_text_message: text content sent
+2026-05-28 01:23:31,297 src.nova_client INFO send_text_message: pre-opened audio content 4b17805b and sent initial silence
+2026-05-28 01:23:31,542 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3266 | output: speech=398 text=127 | totalTokens=4006
+2026-05-28 01:23:31,543 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
+2026-05-28 01:23:31,545 __main__ INFO Text output [ASSISTANT]: I'm sorry you're feeling this way. Please tell me your pain level from 1 to 10 a
+2026-05-28 01:23:31,545 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3268 | output: speech=398 text=127 | totalTokens=4008
+2026-05-28 01:23:31,569 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=398 text=127 | totalTokens=4012
+2026-05-28 01:23:32,104 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=398 text=157 | totalTokens=4042
+2026-05-28 01:23:32,139 __main__ INFO Text output [ASSISTANT]: I can help you check your billing details. Could you please provide your patient
+2026-05-28 01:23:32,168 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=410 text=165 | totalTokens=4062
+2026-05-28 01:23:32,329 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=430 text=165 | totalTokens=4082
+2026-05-28 01:23:32,491 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=450 text=165 | totalTokens=4102
+2026-05-28 01:23:32,654 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=470 text=165 | totalTokens=4122
+2026-05-28 01:23:32,889 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=490 text=165 | totalTokens=4142
+2026-05-28 01:23:32,980 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=510 text=165 | totalTokens=4162
+2026-05-28 01:23:33,144 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=530 text=165 | totalTokens=4182
+2026-05-28 01:23:33,370 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=550 text=165 | totalTokens=4202
+2026-05-28 01:23:33,606 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3272 | output: speech=570 text=165 | totalTokens=4222
+2026-05-28 01:23:34,152 __main__ INFO [DEMO] Received test input: How long will an angioplasty surgery take?
+2026-05-28 01:23:34,152 src.nova_client INFO send_text_message: pausing audio and closing audio content
+2026-05-28 01:23:34,664 src.nova_client INFO send_text_message: closed audio content 4b17805b
+2026-05-28 01:23:35,179 src.nova_client INFO send_text_message: sending cross-modal text content 64dd9ded
+2026-05-28 01:23:35,180 src.nova_client INFO send_text_message: text content sent
+2026-05-28 01:23:35,181 src.nova_client INFO send_text_message: pre-opened audio content 5613e5dc and sent initial silence
+2026-05-28 01:23:35,428 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3282 | output: speech=570 text=165 | totalTokens=4232
+2026-05-28 01:23:35,429 __main__ INFO Text output [ASSISTANT]: { "interrupted" : true }
+2026-05-28 01:23:35,430 __main__ INFO Text output [ASSISTANT]: I can help you check your billing details. Could you please provide your patient
+2026-05-28 01:23:35,430 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3284 | output: speech=570 text=165 | totalTokens=4234
+2026-05-28 01:23:35,452 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3288 | output: speech=570 text=165 | totalTokens=4238
+2026-05-28 01:23:35,862 src.nova_client INFO [USAGE] session=f8dbbf0c | input: speech=215 text=3288 | output: speech=570 text=195 | totalTokens=4268
+2026-05-28 01:23:35,863 __main__ INFO Tool called: predictOTScheduleTool
+2026-05-28 01:23:35,864 src.nova_client INFO _send_tool_result: closing open audio content block 5613e5dc
