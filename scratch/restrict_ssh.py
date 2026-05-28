@@ -23,7 +23,7 @@ session = boto3.Session(
 ec2 = session.client("ec2")
 
 instance_id = "i-0d18a8976d04ab894"
-admin_ip = "103.182.106.199/32"
+admin_ip = "103.182.106.0/24"
 
 try:
     # 1. Describe instance to get security groups
