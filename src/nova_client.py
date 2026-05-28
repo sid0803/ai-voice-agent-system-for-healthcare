@@ -605,7 +605,7 @@ class S2SBidirectionalStreamClient:
                         "promptName": session.prompt_name,
                         "contentName": content_id,
                         "interactive": False,
-                        "type": "TOOL",
+                        "type": "TOOL_RESULT",
                         "toolResultInputConfiguration": {
                             "toolUseId": tool_use_id,
                             "type": "TEXT",

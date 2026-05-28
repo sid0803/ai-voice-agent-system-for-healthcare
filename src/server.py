@@ -1256,7 +1256,7 @@ async def exotel_stream(websocket: WebSocket):
         logger.info("Tool result received")
         reset_idle_timer()
 
-    def _handle_stream_complete():
+    def _handle_stream_complete(data=None):
         logger.info("Stream completed for client: %s", session.stream_sid)
 
     async def stream_cached_audio(pcm_bytes: bytes):
