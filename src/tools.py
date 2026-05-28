@@ -27,6 +27,8 @@ import numpy as np
 from src.integrations.tenant_manager import tenant_manager
 from src.integrations.sheets_client import sheets_client
 from src.integrations.local_sink import local_sink
+from src.kb_config import DISABLE_FAISS_FOR_UNIFIED, ENABLE_MULTI_INTENT, KB_SYSTEM
+from src.kb_loader import get_kb_loader
 # [LOW-04] Thread-safe, buffered triage journal writer.
 # Avoids per-event filesystem sync by using a lock and explicit flush control.
 class _TriageJournalWriter:
@@ -177,8 +179,11 @@ def _save_faiss_cache_async():
     threading.Thread(target=_save_faiss_cache, daemon=True).start()
 
 
-# Load on module import
-_load_faiss_cache()
+# Load FAISS only for legacy mode. Unified KB uses deterministic local lookups.
+if not (KB_SYSTEM == "unified" and DISABLE_FAISS_FOR_UNIFIED):
+    _load_faiss_cache()
+else:
+    logger.info("[FAISS] Skipped because unified KB mode is active")
 
 
 def _embed_query(text: str) -> np.ndarray | None:
@@ -208,6 +213,8 @@ def _embed_query(text: str) -> np.ndarray | None:
 
 def _faiss_search(query: str) -> dict | None:
     """Search FAISS cache for a similar query. Returns cached result or None."""
+    if _faiss_index is None:
+        return None
     if _faiss_index.ntotal == 0:
         return None
     try:
@@ -239,6 +246,8 @@ def _faiss_search(query: str) -> dict | None:
 def _faiss_store(query: str, answer: str):
     """Add a query+answer to the FAISS cache and persist to disk."""
     global _faiss_index, _faiss_meta
+    if _faiss_index is None:
+        return
     try:
         embedding = _embed_query(query)
         if embedding is None:
@@ -282,6 +291,8 @@ def _faiss_store(query: str, answer: str):
 
 def sync_community_knowledge():
     """Requirement: Automatic Learning. Indexes distilled facts from local knowledge store into FAISS."""
+    if KB_SYSTEM == "unified":
+        return
     knowledge_file = pathlib.Path(__file__).resolve().parent.parent / "data" / "knowledge" / "distilled_facts.json"
     if not knowledge_file.exists():
         return
@@ -330,8 +341,371 @@ def _normalize_query(query: str) -> str:
     return query.lower().strip()
 
 
+_DAY_ALIASES = {
+    "mon": "Monday", "monday": "Monday",
+    "tue": "Tuesday", "tues": "Tuesday", "tuesday": "Tuesday",
+    "wed": "Wednesday", "wednesday": "Wednesday",
+    "thu": "Thursday", "thur": "Thursday", "thurs": "Thursday", "thursday": "Thursday",
+    "fri": "Friday", "friday": "Friday",
+    "sat": "Saturday", "saturday": "Saturday",
+    "sun": "Sunday", "sunday": "Sunday",
+}
+
+
+def _tokens(text: str) -> set[str]:
+    return {t for t in re.findall(r"[a-z0-9]+", _normalize_query(text)) if len(t) >= 2}
+
+
+def _contains_any(query: str, words: list[str]) -> bool:
+    return any(word in query for word in words)
+
+
+def _get_unified_loader():
+    return get_kb_loader(kb_system="unified")
+
+
+def _format_price(value: Any) -> str:
+    if value in (None, ""):
+        return ""
+    try:
+        return f"Rs. {int(value):,}"
+    except (TypeError, ValueError):
+        return f"Rs. {value}"
+
+
+def _department_name(dept: Any) -> str:
+    return dept.get("name", "") if isinstance(dept, dict) else str(dept)
+
+
+def _doctor_department(doc: dict) -> str:
+    return doc.get("department") or doc.get("dept") or ""
+
+
+def _score_text_match(query: str, candidate_text: str) -> int:
+    q_tokens = _tokens(query)
+    c_tokens = _tokens(candidate_text)
+    if not q_tokens or not c_tokens:
+        return 0
+    score = len(q_tokens & c_tokens)
+    if query in candidate_text or candidate_text in query:
+        score += 4
+    return score
+
+
+def _service_search_text(service: dict) -> str:
+    parts = [
+        service.get("name", ""),
+        service.get("category", ""),
+        service.get("description", ""),
+        " ".join(service.get("synonyms", [])),
+        " ".join(service.get("keywords", [])),
+    ]
+    return " ".join(str(p) for p in parts if p).lower()
+
+
+def _doctor_search_text(doc: dict) -> str:
+    parts = [
+        doc.get("name", ""),
+        _doctor_department(doc),
+        doc.get("designation", ""),
+        doc.get("biography", ""),
+        " ".join(doc.get("specializations", [])),
+        " ".join(doc.get("specialty_keywords", [])),
+    ]
+    return " ".join(str(p) for p in parts if p).lower()
+
+
+def _match_services(query: str, services: list[dict]) -> list[dict]:
+    price_words = ["cost", "price", "charge", "charges", "rate", "kitna", "kharcha"]
+    service_words = ["mri", "ct", "scan", "xray", "x-ray", "ultrasound", "usg", "blood", "thyroid", "cbc", "test", "lab", "echo", "ecg", "tmt", "dialysis", "physiotherapy"]
+    if not (_contains_any(query, price_words) or _contains_any(query, service_words)):
+        return []
+    scored = []
+    for service in services:
+        text = _service_search_text(service)
+        score = _score_text_match(query, text)
+        for phrase in [service.get("name", "").lower(), *[s.lower() for s in service.get("synonyms", [])]]:
+            if phrase and phrase in query:
+                score += 6
+        if score > 0:
+            scored.append((score, service))
+    if not scored:
+        return []
+    scored.sort(key=lambda item: item[0], reverse=True)
+    best_score = scored[0][0]
+    return [service for score, service in scored if score >= max(1, best_score - 1)]
+
+
+def _format_service_answer(matches: list[dict]) -> str:
+    if len(matches) == 1:
+        service = matches[0]
+        price = _format_price(service.get("price"))
+        duration = service.get("duration_minutes") or service.get("duration")
+        prep = service.get("prep_instructions") or service.get("prep")
+        location = service.get("location")
+        name = service.get("name", "This service")
+        parts = []
+        if price:
+            parts.append(f"costs {price}")
+        if duration:
+            parts.append(f"takes about {duration} minutes" if isinstance(duration, int) else f"takes about {duration}")
+        answer = f"{name} " + " and ".join(parts) + "." if parts else f"{name} is available."
+        if prep:
+            answer += f" Prep: {prep}"
+        if location:
+            answer += f" Location: {location}."
+        return answer
+    return "We offer: " + ", ".join(
+        f"{service.get('name')} ({_format_price(service.get('price'))})"
+        for service in matches[:6]
+    ) + ". Which one should I check?"
+
+
+def _match_faq(query: str, faq_entries: list[dict]) -> dict | None:
+    best = (0, None)
+    for item in faq_entries:
+        fields = [
+            item.get("intent", ""),
+            item.get("category", ""),
+            item.get("answer", ""),
+            " ".join(item.get("tags", [])),
+            " ".join(item.get("question_variants", [])),
+            " ".join(item.get("questions", [])),
+            item.get("question", ""),
+        ]
+        score = _score_text_match(query, " ".join(fields).lower())
+        intent = item.get("intent", "").replace("_", " ")
+        if intent and intent in query:
+            score += 5
+        if score > best[0]:
+            best = (score, item)
+    return best[1] if best[0] >= 2 else None
+
+
+def _format_departments(loader) -> str:
+    departments = [_department_name(d) for d in loader.get_departments()]
+    departments = [d for d in departments if d]
+    return f"We have {len(departments)} departments: {', '.join(departments)}."
+
+
+def _match_rooms(query: str, rooms: list[dict]) -> list[dict]:
+    if not _contains_any(query, ["room", "rent", "tariff", "ward", "icu", "deluxe", "private"]):
+        return []
+    specific = {
+        "icu": ["icu"],
+        "deluxe": ["deluxe"],
+        "semi": ["semi"],
+        "private": ["private"],
+        "general": ["general", "ward"],
+    }
+    for label, words in specific.items():
+        if any(_has_word(query, word) for word in words):
+            exact = [room for room in rooms if label in room.get("name", "").lower()]
+            if exact:
+                return exact
+    matches = []
+    for room in rooms:
+        text = f"{room.get('name', '')} {room.get('description', '')}".lower()
+        if _score_text_match(query, text) > 0:
+            matches.append(room)
+    return matches or rooms
+
+
+def _format_rooms(matches: list[dict]) -> str:
+    if len(matches) == 1:
+        room = matches[0]
+        return f"{room.get('name')} rate is {_format_price(room.get('price_per_day'))} per day. {room.get('description', '')}."
+    return "Our daily room rates are: " + ", ".join(
+        f"{room.get('name')}: {_format_price(room.get('price_per_day'))}"
+        for room in matches
+    ) + "."
+
+
+def _match_amenity(query: str, amenities: dict) -> str | None:
+    if not isinstance(amenities, dict):
+        return None
+    for key, value in amenities.items():
+        key_text = key.replace("_", " ").lower()
+        if key_text in query or any(_has_word(query, part) for part in key_text.split()):
+            if isinstance(value, dict):
+                details = ", ".join(f"{k.replace('_', ' ').title()}: {v}" for k, v in value.items())
+                return f"{key_text.title()}: {details}."
+            return f"{key_text.title()}: {value}."
+    return None
+
+
+def _requested_day(query: str) -> str | None:
+    import datetime
+    ist_now = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
+    if "tomorrow" in query or "kal" in query:
+        return (ist_now + datetime.timedelta(days=1)).strftime("%A")
+    if "today" in query or "aaj" in query:
+        return ist_now.strftime("%A")
+    for alias, day in _DAY_ALIASES.items():
+        if _has_word(query, alias):
+            return day
+    return None
+
+
+def _doctor_slots_for_day(doc: dict, day: str | None) -> tuple[str, list[str]]:
+    availability = doc.get("availability") or {}
+    if not availability:
+        return doc.get("schedule", "during OPD hours"), []
+    if "days" in availability:
+        days = availability.get("days", [])
+        slots = availability.get("time_slots", [])
+        if day:
+            short = day[:3]
+            if short in days or day in days:
+                return day, slots
+            return day, []
+        return ", ".join(days), slots
+    if day:
+        return day, availability.get(day, [])
+    active_days = [d for d, slots in availability.items() if slots]
+    first_slots = []
+    for d in active_days:
+        first_slots = availability.get(d, [])
+        if first_slots:
+            break
+    return ", ".join(active_days), first_slots
+
+
+def _match_doctors(query: str, doctors: list[dict]) -> list[dict]:
+    specialty_to_dept = {
+        "cardio": "cardiology", "heart": "cardiology",
+        "neuro": "neurology", "brain": "neurology",
+        "ortho": "orthopedics", "joint": "orthopedics", "bone": "orthopedics", "knee": "orthopedics",
+        "child": "pediatrics", "baby": "pediatrics", "pediatr": "pediatrics",
+        "gyneco": "gynecology", "obstetr": "gynecology", "pregnancy": "gynecology", "women": "gynecology",
+        "diabetes": "endocrinology", "thyroid": "endocrinology",
+        "stomach": "gastroenterology", "gastro": "gastroenterology",
+        "lung": "pulmonology", "chest": "pulmonology", "breathing": "pulmonology",
+        "cancer": "oncology", "eye": "ophthalmology", "ent": "ent", "ear": "ent", "nose": "ent", "throat": "ent",
+        "skin": "dermatology", "physician": "general medicine", "fever": "general medicine",
+    }
+    expanded_query = query
+    for token, dept in specialty_to_dept.items():
+        if _has_prefix_word(query, token):
+            expanded_query += f" {dept}"
+
+    scored = []
+    for doc in doctors:
+        text = _doctor_search_text(doc)
+        score = _score_text_match(expanded_query, text)
+        name_parts = [p for p in _tokens(doc.get("name", "")) if p not in {"dr"}]
+        if any(_has_word(query, part) for part in name_parts):
+            score += 5
+        if score > 0:
+            scored.append((score, doc))
+    if not scored:
+        return []
+    scored.sort(key=lambda item: item[0], reverse=True)
+    best = scored[0][0]
+    return [doc for score, doc in scored if score >= max(1, best - 1)]
+
+
+def _format_doctor_answer(matches: list[dict], query: str) -> str:
+    day = _requested_day(query)
+    available = []
+    unavailable = []
+    for doc in matches:
+        day_label, slots = _doctor_slots_for_day(doc, day)
+        if day and not slots:
+            unavailable.append(doc)
+            continue
+        available.append((doc, day_label, slots))
+
+    if day and not available:
+        names = ", ".join(doc.get("name", "Doctor") for doc in unavailable[:3])
+        return f"{names} do not have listed slots on {day}. Which other day should I check?"
+
+    if len(available) == 1:
+        doc, day_label, slots = available[0]
+        dept = _doctor_department(doc)
+        fee = _format_price(doc.get("fee"))
+        slot_text = ", ".join(slots[:3]) if slots else day_label
+        answer = f"{doc.get('name')} ({dept}) is available"
+        if day_label:
+            answer += f" on {day_label}"
+        if slot_text:
+            answer += f" at {slot_text}"
+        if fee:
+            answer += f". Consultation fee is {fee}"
+        return answer + ". Should I go ahead and book this slot for you?"
+
+    parts = []
+    for doc, day_label, slots in available[:5]:
+        slot_text = ", ".join(slots[:2]) if slots else day_label
+        parts.append(f"{doc.get('name')} ({slot_text})")
+    return f"We have {len(available)} matching specialists: " + ", ".join(parts) + ". Who would you like to consult?"
+
+
+def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
+    loader = _get_unified_loader()
+    query = _normalize_query(args.get("query", ""))
+    core = loader.get_core_info()
+
+    if ENABLE_MULTI_INTENT and _contains_any(query, ["department", "departments"]) and _contains_any(query, ["doctor", "doctors", "available", "availability"]):
+        dept_answer = _format_departments(loader)
+        doc_matches = _match_doctors(query, loader.get_doctors()) or loader.get_doctors()
+        return {"answer": f"{dept_answer} {_format_doctor_answer(doc_matches, query)}"}
+
+    services = _match_services(query, loader.get_services())
+    if services:
+        return {"answer": _format_service_answer(services)}
+
+    if _contains_any(query, ["department", "departments", "specialties", "speciality"]):
+        return {"answer": _format_departments(loader)}
+
+    rooms = _match_rooms(query, loader.get_room_types())
+    if rooms:
+        return {"answer": _format_rooms(rooms)}
+
+    amenity = _match_amenity(query, loader.get_amenities())
+    if amenity:
+        return {"answer": amenity}
+
+    faq = _match_faq(query, loader.get_faq())
+    if faq and faq.get("answer"):
+        return {"answer": faq["answer"]}
+
+    hours = loader.get_operating_hours()
+    if _contains_any(query, ["hour", "time", "timing", "open", "close"]):
+        if "emergency" in query:
+            return {"answer": f"Emergency is {hours.get('emergency', '24/7 open')}."}
+        if "pharmacy" in query:
+            return {"answer": f"Pharmacy is {hours.get('pharmacy', core.get('pharmacy_hours', '24/7 open'))}."}
+        return {"answer": "Hospital timings: " + ", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in hours.items()) + "."}
+
+    if _contains_any(query, ["address", "location", "where", "kahan"]):
+        return {"answer": f"{core.get('name')} is located at {core.get('address', 'our main facility')}."}
+
+    if _contains_any(query, ["contact", "phone", "number", "telephone", "mobile"]):
+        return {"answer": f"{core.get('name')} contact number is {core.get('contact', '+91 80 4000 9000')}."}
+
+    return {"answer": f"{core.get('name', 'InDiiServe Hospital')} provides {len(loader.get_departments())} departments and {len(loader.get_services())} listed services. What would you like to check?"}
+
+
+def _unified_doctor_availability(args: dict, hospital_id: str = None) -> dict:
+    loader = _get_unified_loader()
+    query = _normalize_query(args.get("query", ""))
+    matches = _match_doctors(query, loader.get_doctors())
+    if matches:
+        return {"answer": _format_doctor_answer(matches, query)}
+    return {
+        "answer": (
+            f"We have specialists across {len(loader.get_departments())} departments. "
+            "Which department or doctor should I check?"
+        )
+    }
+
+
 def hospital_info(args: dict, hospital_id: str = None) -> dict:
     """Fetches hospital info. Priority: local tenant JSON → FAISS cache → Bedrock KB → fallback."""
+    if KB_SYSTEM == "unified":
+        return _unified_hospital_info(args, hospital_id)
+
     data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
     normalized_query = _normalize_query(query)
@@ -594,6 +968,9 @@ def hospital_info(args: dict, hospital_id: str = None) -> dict:
 
 def doctor_availability(args: dict, hospital_id: str = None) -> dict:
     """Fetches doctor schedule. Priority: local roster -> FAISS cache -> Bedrock KB -> fallback."""
+    if KB_SYSTEM == "unified":
+        return _unified_doctor_availability(args, hospital_id)
+
     data = tenant_manager.get_hospital_data(hospital_id)
     query = args.get("query", "").lower()
     normalized_query = _normalize_query(query)
@@ -855,9 +1232,12 @@ def get_billing_info(args: dict, hospital_id: str = None) -> dict:
     patient_id = args.get("patient_id", "unknown")
     patient_name = args.get("patient_name", "the patient")
     
-    # 1. Fetch prices from tenant data
-    data = tenant_manager.get_hospital_data(hospital_id)
-    services = data.get("services", [])
+    # 1. Fetch prices from the active hospital data source.
+    if KB_SYSTEM == "unified":
+        services = _get_unified_loader().get_services()
+    else:
+        data = tenant_manager.get_hospital_data(hospital_id)
+        services = data.get("services", [])
     
     # Mock items based on common inquiries
     items = []
@@ -867,11 +1247,14 @@ def get_billing_info(args: dict, hospital_id: str = None) -> dict:
     query = str(args.get("query", "")).lower()
     normalized_query = _normalize_query(query)
     found_any = False
-    for s in services:
-        if s["name"].lower() in normalized_query:
+    matched_services = _match_services(normalized_query, services) if KB_SYSTEM == "unified" else []
+    for s in matched_services or services:
+        if matched_services or s["name"].lower() in normalized_query:
             items.append({"name": s["name"], "price": s["price"]})
             total += s["price"]
             found_any = True
+            if matched_services:
+                break
             
     if not found_any:
         # Default mock bill for demonstration

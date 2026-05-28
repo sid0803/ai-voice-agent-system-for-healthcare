@@ -28,6 +28,14 @@ class TenantManager:
         tid = hospital_id or self.current_tenant
         tid = re.sub(r'[^a-zA-Z0-9_-]', '', tid)
 
+        # Unified KB is now the local single source of truth. Keep this path
+        # before DynamoDB so local/server deployments do not depend on deleted
+        # legacy hospital_data JSON files for status or emergency metadata.
+        unified_data = self._get_unified_local_data(tid)
+        if unified_data:
+            self._db_cache[tid] = unified_data
+            return unified_data
+
         # 1. Check Memory Cache (Fastest)
         if tid in self._db_cache and (time.time() - self._last_refresh < self._refresh_interval):
             return self._db_cache[tid]
@@ -109,6 +117,39 @@ class TenantManager:
         except Exception:
             logger.exception(f"DynamoDB Tenant lookup failed for {hospital_id}")
             return None
+
+    def _get_unified_local_data(self, hospital_id: str) -> dict | None:
+        """Return unified KB data in the shape older callers expect."""
+        kb_path = Path("data") / "unified_hospital_kb.json"
+        if not kb_path.exists():
+            return None
+        try:
+            with open(kb_path, "r", encoding="utf-8") as f:
+                kb = json.load(f)
+        except Exception:
+            logger.exception("Failed to load unified hospital KB")
+            return None
+
+        metadata = kb.get("metadata", {})
+        if hospital_id and metadata.get("hospital_id") and hospital_id != metadata.get("hospital_id"):
+            return None
+
+        core = dict(kb.get("core_info", {}))
+        core["id"] = metadata.get("hospital_id") or core.get("id") or hospital_id
+        core["name"] = metadata.get("hospital_name") or core.get("name", "")
+        core["departments"] = kb.get("departments", [])
+        core["doctors"] = kb.get("doctors", [])
+        core["services"] = kb.get("services", [])
+        core["health_packages"] = kb.get("health_packages", [])
+        core["room_types"] = kb.get("room_types", [])
+        core["operating_hours"] = kb.get("operating_hours", {})
+        core["amenities"] = kb.get("amenities", {})
+        core["faq"] = kb.get("faq", [])
+        core["emergency"] = {
+            "contact": core.get("emergency_contact", "1066"),
+            "instruction": "I'm connecting you to our emergency desk immediately. Please stay on the line.",
+        }
+        return core
 
     def get_status(self, hospital_id: str) -> str:
         """Helper to quickly check if a tenant is live, sandbox, or pending."""

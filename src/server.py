@@ -79,7 +79,7 @@ limiter = Limiter(key_func=get_remote_address)
 _session_lock = asyncio.Lock()
 
 # [CRIT-02] Exotel WebSocket shared secret for HMAC validation
-# Set EXOTEL_WS_SECRET in .env to enable. If unset, falls back to IP allowlist.
+# Set EXOTEL_WS_SECRET in .env to enable.
 _EXOTEL_WS_SECRET = os.environ.get("EXOTEL_WS_SECRET", "")
 
 # Known Exotel IP ranges (CIDR blocks from Exotel docs - update if Exotel changes)
@@ -95,7 +95,7 @@ def _is_exotel_ip(client_ip: str) -> bool:
 def _verify_exotel_ws_token(token: str) -> bool:
     """Verify the shared WS token passed as a query param by Exotel."""
     if not _EXOTEL_WS_SECRET:
-        return True  # Secret not configured — skip (IP check is fallback)
+        return False
     return hmac.compare_digest(token, _EXOTEL_WS_SECRET)
 
 def _append_query_params(url: str, params: list[tuple[str, str]]) -> str:
@@ -121,14 +121,33 @@ _bearer_scheme = HTTPBearer(auto_error=False)
 async def _verify_health_token(
     credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
 ) -> bool:
-    """Allow AWS ALB/ECS (no token) and authenticated monitoring tools."""
-    # If no token configured, allow all (for AWS ALB health checks)
+    """Full health metrics require a configured bearer token."""
     if not _HEALTH_TOKEN:
+        return False
+    return bool(credentials and hmac.compare_digest(credentials.credentials, _HEALTH_TOKEN))
+
+# [CRIT-03] Admin token security for outbound and failover actions
+_ADMIN_API_KEY = os.environ.get("ADMIN_API_KEY", "")
+
+async def _verify_admin_token(
+    credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
+) -> bool:
+    """Protect endpoints that can trigger Exotel side effects or call transfers."""
+    if not _ADMIN_API_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized - Admin API key not configured")
+    if credentials and hmac.compare_digest(credentials.credentials, _ADMIN_API_KEY):
         return True
-    if credentials and hmac.compare_digest(credentials.credentials, _HEALTH_TOKEN):
-        return True
-    # Return basic status without session count for unauthenticated requests
-    return False
+    raise HTTPException(status_code=401, detail="Unauthorized")
+
+def _get_websocket_client_ip(websocket: WebSocket) -> str:
+    """Resolve client IP, honoring reverse proxy forwarding headers."""
+    forwarded_for = websocket.headers.get("x-forwarded-for", "")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    real_ip = websocket.headers.get("x-real-ip", "")
+    if real_ip:
+        return real_ip.strip()
+    return websocket.client.host if websocket.client else ""
 
 # ---------------------------------------------------------------------------
 # Greeting audio (read once at module level) - P0 Guard
@@ -446,67 +465,171 @@ async def run_async_startup_checks():
         aws_ok, aws_msg = diag["aws"]
         logger.info(f"☁️ AWS Cloud: {aws_msg} {'✅' if aws_ok else '❌'}")
         logger.info(f"{'='*40}\n")
-        
-        # Warm up FAISS cache with distilled facts
+    except Exception:
+        logger.exception("[STARTUP] Health diagnostic failed to run")
+
+    # Warm up FAISS cache with distilled facts (skip in unified KB mode)
+    from src.kb_config import KB_SYSTEM
+    if KB_SYSTEM != "unified":
         try:
             from src.tools import sync_community_knowledge
             await asyncio.to_thread(sync_community_knowledge)
             logger.info("[STARTUP] Successfully synchronized distilled facts to FAISS vector cache.")
         except Exception as e:
             logger.error("[STARTUP] Failed to sync distilled facts to FAISS: %s", e)
-    except Exception:
-        logger.exception("[STARTUP] Health diagnostic failed to run")
 
-        # [LOW-02] DynamoDB table auto-creation (idempotent)
-        try:
-            import boto3
-            # Set short timeouts for table check
-            from botocore.config import Config
-            config = Config(connect_timeout=2.0, read_timeout=2.0, retries={'max_attempts': 0})
+    # [LOW-02] DynamoDB table auto-creation (idempotent)
+    try:
+        import boto3
+        # Set short timeouts for table check
+        from botocore.config import Config
+        config = Config(connect_timeout=2.0, read_timeout=2.0, retries={'max_attempts': 0})
+        
+        def setup_dynamo():
+            dynamo = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"), config=config)
+            existing = dynamo.list_tables().get("TableNames", [])
             
-            def setup_dynamo():
-                dynamo = boto3.client("dynamodb", region_name=os.environ.get("AWS_REGION", "ap-south-1"), config=config)
-                
-                # Check Transcripts Table
-                table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
-                existing = dynamo.list_tables().get("TableNames", [])
-                if table_name not in existing:
-                    dynamo.create_table(
-                        TableName=table_name,
-                        KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
-                        AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
-                        BillingMode="PAY_PER_REQUEST",
-                    )
-                    logger.info("[STARTUP] DynamoDB table '%s' created.", table_name)
-                else:
-                    logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", table_name)
+            # Check Transcripts Table
+            table_name = os.environ.get("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
+            if table_name not in existing:
+                dynamo.create_table(
+                    TableName=table_name,
+                    KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
+                    AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
+                    BillingMode="PAY_PER_REQUEST",
+                )
+                logger.info("[STARTUP] DynamoDB table '%s' created.", table_name)
+            else:
+                logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", table_name)
 
-                # Check Analytics Table
-                analytics_table_name = os.environ.get("DYNAMODB_ANALYTICS_TABLE", "InDiiServe_Asha_Analytics")
-                if analytics_table_name not in existing:
-                    dynamo.create_table(
-                        TableName=analytics_table_name,
-                        KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
-                        AttributeDefinitions=[{"AttributeName": "session_id", "AttributeType": "S"}],
-                        BillingMode="PAY_PER_REQUEST",
-                    )
-                    logger.info("[STARTUP] DynamoDB table '%s' created.", analytics_table_name)
-                else:
-                    logger.info("[STARTUP] DynamoDB Analytics table '%s' already exists. ✅", analytics_table_name)
+            # Check Analytics Table with GSI support
+            analytics_table_name = os.environ.get("DYNAMODB_ANALYTICS_TABLE", "InDiiServe_Asha_Analytics")
+            if analytics_table_name not in existing:
+                dynamo.create_table(
+                    TableName=analytics_table_name,
+                    KeySchema=[{"AttributeName": "session_id", "KeyType": "HASH"}],
+                    AttributeDefinitions=[
+                        {"AttributeName": "session_id", "AttributeType": "S"},
+                        {"AttributeName": "hospital_id", "AttributeType": "S"},
+                        {"AttributeName": "timestamp", "AttributeType": "S"},
+                    ],
+                    GlobalSecondaryIndexes=[
+                        {
+                            "IndexName": "HospitalTimestampIndex",
+                            "KeySchema": [
+                                {"AttributeName": "hospital_id", "KeyType": "HASH"},
+                                {"AttributeName": "timestamp", "KeyType": "RANGE"},
+                            ],
+                            "Projection": {"ProjectionType": "ALL"},
+                        }
+                    ],
+                    BillingMode="PAY_PER_REQUEST",
+                )
+                logger.info("[STARTUP] DynamoDB Analytics table '%s' created with HospitalTimestampIndex GSI.", analytics_table_name)
+            else:
+                logger.info("[STARTUP] DynamoDB Analytics table '%s' already exists. ✅", analytics_table_name)
 
-                # Check Tenants Table
-                tenants_table_name = os.environ.get("DYNAMODB_TENANTS_TABLE", "InDiiServe_Tenants")
-                if tenants_table_name not in existing:
-                    dynamo.create_table(
-                        TableName=tenants_table_name,
-                        KeySchema=[{"AttributeName": "hospital_id", "KeyType": "HASH"}],
-                        AttributeDefinitions=[{"AttributeName": "hospital_id", "AttributeType": "S"}],
-                        BillingMode="PAY_PER_REQUEST",
-                    )
-                    logger.info("[STARTUP] DynamoDB table '%s' created.", tenants_table_name)
-                    try:
-                        dynamo.get_waiter("table_exists").wait(TableName=tenants_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
-                        from src.analytics.dynamodb_client import dynamodb_analytics
+            # Check Tenants Table
+            tenants_table_name = os.environ.get("DYNAMODB_TENANTS_TABLE", "InDiiServe_Tenants")
+            if tenants_table_name not in existing:
+                dynamo.create_table(
+                    TableName=tenants_table_name,
+                    KeySchema=[{"AttributeName": "hospital_id", "KeyType": "HASH"}],
+                    AttributeDefinitions=[{"AttributeName": "hospital_id", "AttributeType": "S"}],
+                    BillingMode="PAY_PER_REQUEST",
+                )
+                logger.info("[STARTUP] DynamoDB table '%s' created.", tenants_table_name)
+                try:
+                    dynamo.get_waiter("table_exists").wait(TableName=tenants_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
+                    from src.analytics.dynamodb_client import dynamodb_analytics
+                    apollo_data = {
+                        "hospital_id": "apollo_metro",
+                        "hospital_name": "Apollo Metro Super-Specialty",
+                        "status": "live",
+                        "ingestion_strategy": "hybrid",
+                        "sync_interval_mins": 10,
+                        "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
+                        "created_at": "2026-04-18T21:25:34.512531",
+                        "hospital_data_normalized": {
+                            "id": "apollo_metro",
+                            "name": "Apollo Metro Super-Specialty",
+                            "status": "live",
+                            "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
+                            "contact": "+91 80 4000 9000",
+                            "departments": ["Cardiology", "Neurology", "Diabetes Clinic", "Physiotherapy", "Emergency"],
+                            "doctors": [
+                                {
+                                    "id": "doc_001",
+                                    "name": "Dr. Sameer Kulkarni",
+                                    "dept": "Cardiology",
+                                    "experience": "12 years",
+                                    "languages": ["English", "Hindi"],
+                                    "consultation_type": ["OPD", "Follow-up"],
+                                    "fee": 1200,
+                                    "location": "Block A, 1st Floor",
+                                    "availability": {
+                                        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
+                                    }
+                                },
+                                {
+                                    "id": "doc_002",
+                                    "name": "Dr. Megha Rao",
+                                    "dept": "Neurology",
+                                    "experience": "10 years",
+                                    "languages": ["English"],
+                                    "consultation_type": ["OPD"],
+                                    "fee": 1500,
+                                    "location": "Neuro Wing, 4th Floor",
+                                    "availability": {
+                                        "days": ["Mon", "Wed", "Fri"],
+                                        "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
+                                    }
+                                },
+                                {
+                                    "id": "doc_003",
+                                    "name": "Dr. Prateek Jain",
+                                    "dept": "Diabetes Clinic",
+                                    "experience": "8 years",
+                                    "languages": ["English", "Hindi"],
+                                    "consultation_type": ["OPD", "Routine Check"],
+                                    "fee": 800,
+                                    "location": "OPD Block G",
+                                    "availability": {
+                                        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                                        "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
+                                    }
+                                }
+                            ],
+                            "services": [
+                                {"name": "Cardiac Checkup", "price": 2500, "duration": "2 hours"},
+                                {"name": "Brain MRI", "price": 12000, "duration": "45 mins"},
+                                {"name": "Blood Sugar (HbA1c)", "price": 650, "duration": "15 mins"},
+                                {"name": "Physiotherapy Session", "price": 1000, "duration": "30 mins"}
+                            ],
+                            "emergency": {
+                                "available": True,
+                                "contact": "1066",
+                                "instruction": "Immediate assistance available. Connecting to emergency desk."
+                            },
+                            "faq": [
+                                {"intent": "pharmacy_location", "questions": ["Where is pharmacy?", "Pharmacy location?", "Is pharmacy open?"], "answer": "Our pharmacy is near the main exit and is open 24/7."},
+                                {"parking": True, "questions": ["Is parking available?", "Where to park?"], "answer": "Multi-level parking is available for all visitors."},
+                                {"faq_cafeteria": True, "questions": ["Is there food?", "Any cafeteria?"], "answer": "The food court is on the 5th floor with healthy meal options."}
+                            ],
+                            "integration": {"spreadsheet_id": "APOLLO_METRO_LIVE_SINK", "crm_enabled": True, "api_enabled": True},
+                            "ai_settings": {"default_language": "English", "fallback_language": "Hindi", "confidence_threshold": 0.7, "enable_memory": True}
+                        }
+                    }
+                    dynamodb_analytics.save_tenant(apollo_data)
+                    logger.info("[STARTUP] Seeded default tenant 'apollo_metro'.")
+                except Exception as e:
+                    logger.error("[STARTUP] Failed to seed default tenant: %s", e)
+            else:
+                logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", tenants_table_name)
+                try:
+                    from src.analytics.dynamodb_client import dynamodb_analytics
+                    if not dynamodb_analytics.get_tenant("apollo_metro"):
                         apollo_data = {
                             "hospital_id": "apollo_metro",
                             "hospital_name": "Apollo Metro Super-Specialty",
@@ -587,131 +710,45 @@ async def run_async_startup_checks():
                             }
                         }
                         dynamodb_analytics.save_tenant(apollo_data)
-                        logger.info("[STARTUP] Seeded default tenant 'apollo_metro'.")
-                    except Exception as e:
-                        logger.error("[STARTUP] Failed to seed default tenant: %s", e)
-                else:
-                    logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", tenants_table_name)
-                    try:
-                        from src.analytics.dynamodb_client import dynamodb_analytics
-                        if not dynamodb_analytics.get_tenant("apollo_metro"):
-                            apollo_data = {
-                                "hospital_id": "apollo_metro",
-                                "hospital_name": "Apollo Metro Super-Specialty",
-                                "status": "live",
-                                "ingestion_strategy": "hybrid",
-                                "sync_interval_mins": 10,
-                                "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
-                                "created_at": "2026-04-18T21:25:34.512531",
-                                "hospital_data_normalized": {
-                                    "id": "apollo_metro",
-                                    "name": "Apollo Metro Super-Specialty",
-                                    "status": "live",
-                                    "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
-                                    "contact": "+91 80 4000 9000",
-                                    "departments": ["Cardiology", "Neurology", "Diabetes Clinic", "Physiotherapy", "Emergency"],
-                                    "doctors": [
-                                        {
-                                            "id": "doc_001",
-                                            "name": "Dr. Sameer Kulkarni",
-                                            "dept": "Cardiology",
-                                            "experience": "12 years",
-                                            "languages": ["English", "Hindi"],
-                                            "consultation_type": ["OPD", "Follow-up"],
-                                            "fee": 1200,
-                                            "location": "Block A, 1st Floor",
-                                            "availability": {
-                                                "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                                                "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
-                                            }
-                                        },
-                                        {
-                                            "id": "doc_002",
-                                            "name": "Dr. Megha Rao",
-                                            "dept": "Neurology",
-                                            "experience": "10 years",
-                                            "languages": ["English"],
-                                            "consultation_type": ["OPD"],
-                                            "fee": 1500,
-                                            "location": "Neuro Wing, 4th Floor",
-                                            "availability": {
-                                                "days": ["Mon", "Wed", "Fri"],
-                                                "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
-                                            }
-                                        },
-                                        {
-                                            "id": "doc_003",
-                                            "name": "Dr. Prateek Jain",
-                                            "dept": "Diabetes Clinic",
-                                            "experience": "8 years",
-                                            "languages": ["English", "Hindi"],
-                                            "consultation_type": ["OPD", "Routine Check"],
-                                            "fee": 800,
-                                            "location": "OPD Block G",
-                                            "availability": {
-                                                "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                                                "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
-                                            }
-                                        }
-                                    ],
-                                    "services": [
-                                        {"name": "Cardiac Checkup", "price": 2500, "duration": "2 hours"},
-                                        {"name": "Brain MRI", "price": 12000, "duration": "45 mins"},
-                                        {"name": "Blood Sugar (HbA1c)", "price": 650, "duration": "15 mins"},
-                                        {"name": "Physiotherapy Session", "price": 1000, "duration": "30 mins"}
-                                    ],
-                                    "emergency": {
-                                        "available": True,
-                                        "contact": "1066",
-                                        "instruction": "Immediate assistance available. Connecting to emergency desk."
-                                    },
-                                    "faq": [
-                                        {"intent": "pharmacy_location", "questions": ["Where is pharmacy?", "Pharmacy location?", "Is pharmacy open?"], "answer": "Our pharmacy is near the main exit and is open 24/7."},
-                                        {"parking": True, "questions": ["Is parking available?", "Where to park?"], "answer": "Multi-level parking is available for all visitors."},
-                                        {"faq_cafeteria": True, "questions": ["Is there food?", "Any cafeteria?"], "answer": "The food court is on the 5th floor with healthy meal options."}
-                                    ],
-                                    "integration": {"spreadsheet_id": "APOLLO_METRO_LIVE_SINK", "crm_enabled": True, "api_enabled": True},
-                                    "ai_settings": {"default_language": "English", "fallback_language": "Hindi", "confidence_threshold": 0.7, "enable_memory": True}
-                                }
-                            }
-                            dynamodb_analytics.save_tenant(apollo_data)
-                            logger.info("[STARTUP] Seeded missing default tenant 'apollo_metro'.")
-                    except Exception as e:
-                        logger.error("[STARTUP] Failed to verify/seed default tenant: %s", e)
+                        logger.info("[STARTUP] Seeded missing default tenant 'apollo_metro'.")
+                except Exception as e:
+                    logger.error("[STARTUP] Failed to verify/seed default tenant: %s", e)
 
-                # Check Users Table
-                users_table_name = os.environ.get("DYNAMODB_USERS_TABLE", "InDiiServe_Users")
-                if users_table_name not in existing:
-                    dynamo.create_table(
-                        TableName=users_table_name,
-                        KeySchema=[{"AttributeName": "username", "KeyType": "HASH"}],
-                        AttributeDefinitions=[{"AttributeName": "username", "AttributeType": "S"}],
-                        BillingMode="PAY_PER_REQUEST",
-                    )
-                    logger.info("[STARTUP] DynamoDB table '%s' created.", users_table_name)
-                    try:
-                        dynamo.get_waiter("table_exists").wait(TableName=users_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
-                        from src.analytics.dynamodb_client import dynamodb_analytics
-                        dynamodb_analytics.save_user("admin_metro", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu", "apollo_metro", "admin")
-                        logger.info("[STARTUP] Seeded default user 'admin_metro'.")
-                    except Exception as e:
-                        logger.error("[STARTUP] Failed to seed default user: %s", e)
-                else:
-                    logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", users_table_name)
-                    try:
-                        from src.analytics.dynamodb_client import dynamodb_analytics
-                        if not dynamodb_analytics.get_user("admin_metro"):
-                            dynamodb_analytics.save_user("admin_metro", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu", "apollo_metro", "admin")
-                            logger.info("[STARTUP] Seeded missing default user 'admin_metro'.")
-                    except Exception as e:
-                        logger.error("[STARTUP] Failed to verify/seed default user: %s", e)
-            
-            await asyncio.to_thread(setup_dynamo)
+            # Check Users Table
+            users_table_name = os.environ.get("DYNAMODB_USERS_TABLE", "InDiiServe_Users")
+            if users_table_name not in existing:
+                dynamo.create_table(
+                    TableName=users_table_name,
+                    KeySchema=[{"AttributeName": "username", "KeyType": "HASH"}],
+                    AttributeDefinitions=[{"AttributeName": "username", "AttributeType": "S"}],
+                    BillingMode="PAY_PER_REQUEST",
+                )
+                logger.info("[STARTUP] DynamoDB table '%s' created.", users_table_name)
+                try:
+                    dynamo.get_waiter("table_exists").wait(TableName=users_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
+                    from src.analytics.dynamodb_client import dynamodb_analytics
+                    admin_hash = os.environ.get("ADMIN_PASSWORD_HASH", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu")
+                    dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
+                    logger.info("[STARTUP] Seeded default user 'admin_metro'.")
+                except Exception as e:
+                    logger.error("[STARTUP] Failed to seed default user: %s", e)
+            else:
+                logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", users_table_name)
+                try:
+                    from src.analytics.dynamodb_client import dynamodb_analytics
+                    if not dynamodb_analytics.get_user("admin_metro"):
+                        admin_hash = os.environ.get("ADMIN_PASSWORD_HASH", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu")
+                        dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
+                        logger.info("[STARTUP] Seeded missing default user 'admin_metro'.")
+                except Exception as e:
+                    logger.error("[STARTUP] Failed to verify/seed default user: %s", e)
+        
+        await asyncio.to_thread(setup_dynamo)
+    except Exception as e:
+        logger.warning("[STARTUP] DynamoDB table check failed: %s", e)
 
-        except Exception as e:
-            logger.warning("[STARTUP] DynamoDB table check failed (may not have permissions yet): %s", e)
-
-        # Start Background Sync Worker (SaaS Tier)
+    # Start Background Sync Worker (SaaS Tier)
+    try:
         from src.integrations.sync_engine import sync_engine
         sync_task = asyncio.create_task(sync_engine.scheduled_pull_worker())
         _background_tasks.add(sync_task)
@@ -759,9 +796,25 @@ app = FastAPI(
 )
 
 # [MED-01] CORS — restrict to known origins in production
-_ALLOWED_ORIGINS = [
-    o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()
-]
+cors_origins_env = os.environ.get("CORS_ORIGINS", "")
+if not cors_origins_env or cors_origins_env.strip() == "*":
+    # Fallback: derive origin from WS_PUBLIC_URL to avoid wildcard "*" allow_credentials issue
+    from urllib.parse import urlsplit
+    def _derive_cors_origin(ws_url: str) -> str:
+        if not ws_url:
+            return "http://localhost:3000"
+        parts = urlsplit(ws_url)
+        scheme = "https" if parts.scheme in ("wss", "https") else "http"
+        netloc = parts.netloc
+        if not netloc:
+            return "http://localhost:3000"
+        return f"{scheme}://{netloc}"
+    _ALLOWED_ORIGINS = [_derive_cors_origin(os.environ.get("WS_PUBLIC_URL", ""))]
+else:
+    _ALLOWED_ORIGINS = [
+        o.strip() for o in cors_origins_env.split(",") if o.strip()
+    ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_ALLOWED_ORIGINS,
@@ -853,7 +906,10 @@ async def incoming_call(request: Request):
 
 
 @app.api_route("/outbound-call", methods=["GET", "POST"])
-async def outbound_call(request: Request):
+async def outbound_call(
+    request: Request,
+    authorized: bool = Depends(_verify_admin_token),
+):
     """Initiate an outbound call via the Exotel REST API."""
     host = request.headers.get("host", "localhost")
 
@@ -904,7 +960,10 @@ async def outbound_call(request: Request):
 
 
 @app.api_route("/failover", methods=["GET", "POST"])
-async def failover(request: Request):
+async def failover(
+    request: Request,
+    authorized: bool = Depends(_verify_admin_token),
+):
     """Transfer an active call to the SIP endpoint via Exotel call transfer API."""
     # Accept call_sid from query param or form field
     call_sid = request.query_params.get("call_sid")
@@ -950,27 +1009,18 @@ async def exotel_stream(websocket: WebSocket):
     - Raw binary frames for PCM audio (16-bit signed LE, 8kHz, mono)
     """
     # [CRIT-02] WebSocket Authentication: verify caller identity before accepting
-    # Strategy 1: Shared secret token passed as a query param (set EXOTEL_WS_SECRET)
-    # Strategy 2: IP allowlist fallback (known Exotel IP ranges)
-    client_ip = websocket.client.host if websocket.client else ""
+    client_ip = _get_websocket_client_ip(websocket)
     ws_token = websocket.query_params.get("token", "")
 
-    if _EXOTEL_WS_SECRET:
-        # Secret is configured — enforce HMAC token check
-        if not _verify_exotel_ws_token(ws_token):
-            logger.warning("[AUTH] WebSocket rejected — invalid token from IP: %s", client_ip)
-            await websocket.close(code=1008)  # Policy Violation
-            return
-    else:
-        # No secret — fall back to IP allowlist (log but don't block in dev)
-        if client_ip and not _is_exotel_ip(client_ip):
-            demo_mode = os.environ.get("DEMO_MODE", "false").lower() == "true"
-            if not demo_mode:
-                logger.warning(
-                    "[AUTH] WebSocket from non-Exotel IP %s. Set EXOTEL_WS_SECRET for hard enforcement.",
-                    client_ip,
-                )
-            # In demo mode allow any IP; in production log and continue (degraded auth)
+    if not _EXOTEL_WS_SECRET:
+        logger.error("[AUTH] EXOTEL_WS_SECRET is not configured/empty. Rejecting WebSocket connection.")
+        await websocket.close(code=1008)
+        return
+
+    if not ws_token or not _verify_exotel_ws_token(ws_token):
+        logger.warning("[AUTH] WebSocket rejected — invalid or missing token from IP: %s", client_ip)
+        await websocket.close(code=1008)
+        return
 
     await websocket.accept()
     logger.info("Exotel client connected from %s", client_ip)

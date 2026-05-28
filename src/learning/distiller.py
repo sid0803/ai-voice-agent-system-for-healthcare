@@ -16,8 +16,7 @@ class KnowledgeDistiller:
         self.dynamo = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION", "ap-south-1"), config=boto_config)
         self.table_name = os.getenv("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
         
-        self.knowledge_file = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "knowledge" / "distilled_facts.json"
-        self.knowledge_file.parent.mkdir(parents=True, exist_ok=True)
+        self.knowledge_file = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "unified_hospital_kb.json"
 
     def _get_recent_transcripts(self, limit=10):
         """Fetch the latest call transcripts from DynamoDB."""
@@ -114,18 +113,63 @@ class KnowledgeDistiller:
         return False
 
     def _save_knowledge(self, new_facts):
-        existing = []
-        if self.knowledge_file.exists():
-            with open(self.knowledge_file, "r") as f:
-                try:
-                    existing = json.load(f)
-                except Exception:
-                    existing = []
+        if not self.knowledge_file.exists():
+            logger.error(f"[LEARNING] KB file does not exist at {self.knowledge_file}")
+            return
+            
+        try:
+            with open(self.knowledge_file, "r", encoding="utf-8") as f:
+                kb_data = json.load(f)
+        except Exception as e:
+            logger.error(f"[LEARNING] Failed to read unified KB file: {e}")
+            return
+            
+        if "faq" not in kb_data:
+            kb_data["faq"] = []
+            
+        import time
+        import random
+        from datetime import datetime, timezone
         
-        # Simple de-duplication
-        combined = existing + new_facts
-        with open(self.knowledge_file, "w") as f:
-            json.dump(combined, f, indent=2)
+        added_count = 0
+        for fact in new_facts:
+            q = fact.get("question", "").strip()
+            a = fact.get("answer", "").strip()
+            if not q or not a:
+                continue
+                
+            # Check for duplicate in existing question_variants
+            duplicate = False
+            for entry in kb_data["faq"]:
+                variants = [v.lower().strip() for v in entry.get("question_variants", [])]
+                if q.lower().strip() in variants:
+                    duplicate = True
+                    break
+                    
+            if not duplicate:
+                timestamp = int(time.time())
+                rand_id = random.randint(1000, 9999)
+                new_faq = {
+                    "id": f"faq_learned_{timestamp}_{rand_id}",
+                    "category": "Learned Fact",
+                    "intent": f"learned_fact_{timestamp}_{rand_id}",
+                    "question_variants": [q],
+                    "answer": a,
+                    "tags": ["learned"]
+                }
+                kb_data["faq"].append(new_faq)
+                added_count += 1
+                
+        if added_count > 0:
+            if "metadata" in kb_data:
+                kb_data["metadata"]["last_updated"] = datetime.now(timezone.utc).isoformat()
+                
+            try:
+                with open(self.knowledge_file, "w", encoding="utf-8") as f:
+                    json.dump(kb_data, f, indent=2, ensure_ascii=False)
+                logger.info(f"[LEARNING] Appended {added_count} learned facts directly to {self.knowledge_file}")
+            except Exception as e:
+                logger.error(f"[LEARNING] Failed to write updated unified KB file: {e}")
 
 # Global Instance
 learning_distiller = KnowledgeDistiller()

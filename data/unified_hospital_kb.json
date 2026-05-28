@@ -1,0 +1,1034 @@
+{
+  "metadata": {
+    "hospital_id": "apollo_metro",
+    "hospital_name": "InDiiServe Multi-Specialty Hospital",
+    "version": "2.0.0",
+    "creation_date": "2026-05-28T00:00:00Z",
+    "last_updated": "2026-05-28T14:35:00Z",
+    "data_freshness_guarantee": "updated_daily",
+    "schema_version": "2.0",
+    "note": "Unified Knowledge Base - Single source of truth for all hospital data"
+  },
+
+  "core_info": {
+    "id": "apollo_metro",
+    "name": "InDiiServe Multi-Specialty Hospital",
+    "status": "live",
+    "address": "12-B, MG Road, Residency Area, Bengaluru - 560025",
+    "contact": "+91 80 4000 9000",
+    "emergency_contact": "1066",
+    "website": "https://voice.indiiserve.ai",
+    "pharmacy_hours": "24/7 (Ground Floor, near main exit)",
+    "nabh_accredited": true,
+    "accreditations": ["NABH", "ISO 9001:2015"]
+  },
+
+  "departments": [
+    {
+      "id": "dept_001",
+      "name": "Cardiology & Cardiothoracic Surgery",
+      "description": "Comprehensive cardiac care including interventional procedures",
+      "floor": "1st Floor",
+      "block": "Block A",
+      "specialists": ["Dr. Sameer Kulkarni", "Dr. Rajesh Nair"]
+    },
+    {
+      "id": "dept_002",
+      "name": "Neurology & Neurosurgery",
+      "description": "Neurological and neurosurgical care",
+      "floor": "4th Floor",
+      "block": "Neuro Wing",
+      "specialists": ["Dr. Megha Rao", "Dr. Arjun Sood"]
+    },
+    {
+      "id": "dept_003",
+      "name": "Orthopedics & Joint Replacement",
+      "description": "Orthopedic care including joint replacement surgeries",
+      "floor": "2nd Floor",
+      "block": "Block B",
+      "specialists": ["Dr. Vikram Shetty"]
+    },
+    {
+      "id": "dept_004",
+      "name": "Pediatrics & Neonatology",
+      "description": "Child and newborn care",
+      "floor": "3rd Floor",
+      "block": "Block C",
+      "specialists": ["Dr. Sunita Pillai"]
+    },
+    {
+      "id": "dept_005",
+      "name": "Gynecology & Obstetrics",
+      "description": "Women's health and maternity services",
+      "floor": "4th Floor",
+      "block": "Block C",
+      "specialists": ["Dr. Ananya Reddy", "Dr. Priya Sharma"]
+    },
+    {
+      "id": "dept_006",
+      "name": "Endocrinology & Diabetes Clinic",
+      "description": "Endocrine and metabolic disorders",
+      "floor": "Ground Floor",
+      "block": "Block A",
+      "specialists": ["Dr. Prateek Jain"]
+    },
+    {
+      "id": "dept_007",
+      "name": "Gastroenterology & Hepatology",
+      "description": "Digestive system and liver disease care",
+      "floor": "3rd Floor",
+      "block": "Block B",
+      "specialists": ["Dr. Suresh Balaji"]
+    },
+    {
+      "id": "dept_008",
+      "name": "Pulmonology & Chest Medicine",
+      "description": "Lung and respiratory care",
+      "floor": "2nd Floor",
+      "block": "Block A",
+      "specialists": ["Dr. Neeraj Kapoor"]
+    },
+    {
+      "id": "dept_009",
+      "name": "Oncology",
+      "description": "Cancer treatment and management",
+      "floor": "5th Floor",
+      "block": "Block D",
+      "specialists": ["Dr. Kavitha Menon"]
+    },
+    {
+      "id": "dept_010",
+      "name": "Ophthalmology",
+      "description": "Eye care and vision services",
+      "floor": "2nd Floor",
+      "block": "Block B",
+      "specialists": ["Dr. Rajini Kumar"]
+    },
+    {
+      "id": "dept_011",
+      "name": "ENT (Ear, Nose & Throat)",
+      "description": "ENT and hearing care",
+      "floor": "2nd Floor",
+      "block": "Block B",
+      "specialists": ["Dr. Anil Sharma"]
+    },
+    {
+      "id": "dept_012",
+      "name": "Dermatology & Aesthetics",
+      "description": "Skin and cosmetic services",
+      "floor": "Ground Floor",
+      "block": "Block A",
+      "specialists": ["Dr. Meera Singh"]
+    },
+    {
+      "id": "dept_013",
+      "name": "Emergency & Trauma",
+      "description": "24x7 emergency and trauma care",
+      "floor": "Ground Floor",
+      "block": "Block A",
+      "specialists": ["On-call team available 24/7"]
+    }
+  ],
+
+  "doctors": [
+    {
+      "id": "doc_001",
+      "name": "Dr. Sameer Kulkarni",
+      "department": "Cardiology",
+      "designation": "Director - Cardiology",
+      "experience": "18 years",
+      "specializations": ["Interventional Cardiology", "Coronary Angioplasty", "Heart Failure Management"],
+      "languages": ["English", "Hindi", "Kannada"],
+      "consultation_type": ["OPD", "Follow-up", "Post-procedure"],
+      "fee": 1200,
+      "location": "Block A, 1st Floor, Room 102",
+      "availability": {
+        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Saturday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Sunday": []
+      },
+      "biography": "Director of Cardiology with 18 years of experience in interventional procedures and complex cardiac cases."
+    },
+    {
+      "id": "doc_002",
+      "name": "Dr. Rajesh Nair",
+      "department": "Cardiology",
+      "designation": "Senior Consultant - Interventional Cardiology",
+      "experience": "12 years",
+      "specializations": ["Interventional Cardiology", "Angiography", "Angioplasty"],
+      "languages": ["English", "Hindi", "Malayalam"],
+      "consultation_type": ["OPD", "Angiography", "Angioplasty"],
+      "fee": 1500,
+      "location": "Block A, 1st Floor, Room 104",
+      "availability": {
+        "Monday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Tuesday": [],
+        "Wednesday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Thursday": [],
+        "Friday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Saturday": [],
+        "Sunday": []
+      },
+      "biography": "Senior Consultant specializing in interventional cardiology with expertise in complex coronary interventions."
+    },
+    {
+      "id": "doc_003",
+      "name": "Dr. Megha Rao",
+      "department": "Neurology",
+      "designation": "HOD - Neurology",
+      "experience": "14 years",
+      "specializations": ["Neurology", "Stroke Care", "Epilepsy Management", "Movement Disorders"],
+      "languages": ["English", "Kannada"],
+      "consultation_type": ["OPD", "Stroke Care", "Epilepsy"],
+      "fee": 1500,
+      "location": "Neuro Wing, 4th Floor, Room 401",
+      "availability": {
+        "Monday": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
+        "Tuesday": [],
+        "Wednesday": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
+        "Thursday": [],
+        "Friday": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
+        "Saturday": [],
+        "Sunday": []
+      },
+      "biography": "Head of Neurology department with special focus on acute stroke management and epilepsy."
+    },
+    {
+      "id": "doc_004",
+      "name": "Dr. Arjun Sood",
+      "department": "Neurosurgery",
+      "designation": "Senior Consultant - Neurosurgery",
+      "experience": "16 years",
+      "specializations": ["Neurosurgery", "Spine Surgery", "Brain Tumor Surgery"],
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Pre-surgical", "Post-surgical"],
+      "fee": 1800,
+      "location": "Neuro Wing, 4th Floor, Room 403",
+      "availability": {
+        "Monday": [],
+        "Tuesday": ["10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Wednesday": [],
+        "Thursday": ["10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Friday": [],
+        "Saturday": ["10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Sunday": []
+      },
+      "biography": "Senior Neurosurgeon with extensive experience in complex brain and spine surgeries."
+    },
+    {
+      "id": "doc_005",
+      "name": "Dr. Vikram Shetty",
+      "department": "Orthopedics",
+      "designation": "Director - Orthopedics & Joint Replacement",
+      "experience": "20 years",
+      "specializations": ["Orthopedics", "Joint Replacement", "Sports Medicine", "Spine Surgery"],
+      "languages": ["English", "Hindi", "Kannada"],
+      "consultation_type": ["OPD", "Joint Replacement", "Sports Injury", "Spine"],
+      "fee": 1300,
+      "location": "Block B, 2nd Floor, Room 205",
+      "availability": {
+        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Saturday": [],
+        "Sunday": []
+      },
+      "biography": "Director of Orthopedics with 20 years of experience in joint replacement and sports injuries."
+    },
+    {
+      "id": "doc_006",
+      "name": "Dr. Sunita Pillai",
+      "department": "Pediatrics",
+      "designation": "Senior Consultant - Pediatrics & Neonatology",
+      "experience": "15 years",
+      "specializations": ["Pediatrics", "Neonatology", "Vaccination", "Newborn Care"],
+      "languages": ["English", "Hindi", "Malayalam"],
+      "consultation_type": ["OPD", "Vaccination", "Newborn Care", "NICU"],
+      "fee": 900,
+      "location": "Block C, 3rd Floor, Room 301",
+      "availability": {
+        "Monday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Tuesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Wednesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Thursday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Friday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Saturday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Sunday": []
+      },
+      "biography": "Senior Pediatrician and Neonatologist with special expertise in newborn care."
+    },
+    {
+      "id": "doc_007",
+      "name": "Dr. Ananya Reddy",
+      "department": "Gynecology",
+      "designation": "Senior Consultant - Gynecology & Obstetrics",
+      "experience": "15 years",
+      "specializations": ["Gynecology", "Obstetrics", "High-Risk Pregnancy", "Laparoscopy"],
+      "languages": ["English", "Hindi", "Telugu"],
+      "consultation_type": ["OPD", "Prenatal", "High-Risk Pregnancy", "Laparoscopy"],
+      "fee": 1400,
+      "location": "Block C, 4th Floor, Room 402",
+      "availability": {
+        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Friday": [],
+        "Saturday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Sunday": []
+      },
+      "biography": "Senior Obstetric specialist with expertise in managing high-risk pregnancies."
+    },
+    {
+      "id": "doc_008",
+      "name": "Dr. Priya Sharma",
+      "department": "Gynecology",
+      "designation": "Consultant - Gynecology & Reproductive Medicine",
+      "experience": "10 years",
+      "specializations": ["Gynecology", "Infertility", "PCOS", "Prenatal Care"],
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Infertility", "PCOS", "Prenatal"],
+      "fee": 1200,
+      "location": "Block C, 4th Floor, Room 404",
+      "availability": {
+        "Monday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Tuesday": [],
+        "Wednesday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Thursday": [],
+        "Friday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Saturday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Sunday": []
+      },
+      "biography": "Reproductive medicine specialist focusing on infertility and PCOS management."
+    },
+    {
+      "id": "doc_009",
+      "name": "Dr. Prateek Jain",
+      "department": "Endocrinology",
+      "designation": "HOD - Endocrinology & Diabetes",
+      "experience": "12 years",
+      "specializations": ["Endocrinology", "Diabetes Management", "Thyroid Disorders", "Obesity"],
+      "keywords": ["diabetologist", "diabetes", "diabetic", "sugar", "thyroid", "endocrinologist", "hormone"],
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Diabetes Management", "Thyroid", "Obesity"],
+      "fee": 1000,
+      "location": "Block A, Ground Floor, Room 008",
+      "availability": {
+        "Monday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Tuesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Wednesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Thursday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Friday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Saturday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Sunday": ["08:00", "08:30", "09:00", "09:30", "10:00"]
+      },
+      "biography": "Head of Endocrinology with special focus on diabetes management and thyroid disorders."
+    },
+    {
+      "id": "doc_010",
+      "name": "Dr. Suresh Balaji",
+      "department": "Gastroenterology",
+      "designation": "Senior Consultant - Gastroenterology & Hepatology",
+      "experience": "17 years",
+      "specializations": ["Gastroenterology", "Hepatology", "Endoscopy", "Colonoscopy"],
+      "languages": ["English", "Tamil", "Hindi"],
+      "consultation_type": ["OPD", "Endoscopy", "Colonoscopy", "Liver Disease"],
+      "fee": 1400,
+      "location": "Block B, 3rd Floor, Room 305",
+      "availability": {
+        "Monday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Tuesday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Wednesday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Thursday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Friday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Saturday": [],
+        "Sunday": []
+      },
+      "biography": "Senior Gastroenterologist with expertise in liver diseases and advanced endoscopy procedures."
+    },
+    {
+      "id": "doc_011",
+      "name": "Dr. Neeraj Kapoor",
+      "department": "Pulmonology",
+      "designation": "Consultant - Pulmonology & Sleep Medicine",
+      "experience": "13 years",
+      "specializations": ["Pulmonology", "Sleep Medicine", "Asthma", "COPD"],
+      "keywords": ["pulmonologist", "lung", "lungs", "chest", "breathing", "asthma", "copd", "respiratory", "phephde"],
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Asthma", "COPD", "Sleep Apnea"],
+      "fee": 1100,
+      "location": "Block A, 2nd Floor, Room 210",
+      "availability": {
+        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Tuesday": [],
+        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Thursday": [],
+        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Saturday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Sunday": []
+      },
+      "biography": "Pulmonologist specializing in sleep disorders and chronic respiratory diseases."
+    },
+    {
+      "id": "doc_012",
+      "name": "Dr. Kavitha Menon",
+      "department": "Oncology",
+      "designation": "Senior Consultant - Oncology",
+      "experience": "18 years",
+      "specializations": ["Oncology", "Medical Oncology", "Chemotherapy", "Cancer Management"],
+      "languages": ["English", "Malayalam", "Hindi"],
+      "consultation_type": ["OPD", "Chemotherapy", "Cancer Consultation"],
+      "fee": 1600,
+      "location": "Block D, 5th Floor, Room 502",
+      "availability": {
+        "Monday": ["11:00", "11:30", "12:00", "12:30", "14:00", "14:30"],
+        "Tuesday": ["11:00", "11:30", "12:00", "12:30", "14:00", "14:30"],
+        "Wednesday": [],
+        "Thursday": ["11:00", "11:30", "12:00", "12:30", "14:00", "14:30"],
+        "Friday": [],
+        "Saturday": ["11:00", "11:30", "12:00", "12:30"],
+        "Sunday": []
+      },
+      "biography": "Senior Oncologist with 18 years of experience in comprehensive cancer management."
+    },
+    {
+      "id": "doc_013",
+      "name": "Dr. Rajini Kumar",
+      "department": "Ophthalmology",
+      "designation": "Senior Consultant - Ophthalmology",
+      "experience": "14 years",
+      "specializations": ["Ophthalmology", "Cataract Surgery", "Glaucoma", "Retina"],
+      "languages": ["English", "Hindi", "Tamil"],
+      "consultation_type": ["OPD", "Cataract", "Glaucoma", "Retina"],
+      "fee": 1000,
+      "location": "Block B, 2nd Floor, Room 215",
+      "availability": {
+        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
+        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
+        "Wednesday": [],
+        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
+        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
+        "Saturday": ["10:00", "10:30", "11:00"],
+        "Sunday": []
+      },
+      "biography": "Ophthalmologist with expertise in cataract surgery and retinal diseases."
+    },
+    {
+      "id": "doc_014",
+      "name": "Dr. Anil Sharma",
+      "department": "ENT",
+      "designation": "Consultant - ENT",
+      "experience": "11 years",
+      "specializations": ["ENT", "Hearing Care", "Sinusitis", "Vertigo"],
+      "languages": ["English", "Hindi", "Punjabi"],
+      "consultation_type": ["OPD", "Hearing Test", "Sinus Treatment"],
+      "fee": 1000,
+      "location": "Block B, 2nd Floor, Room 220",
+      "availability": {
+        "Monday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
+        "Tuesday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
+        "Wednesday": [],
+        "Thursday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
+        "Friday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
+        "Saturday": [],
+        "Sunday": []
+      },
+      "biography": "ENT specialist with expertise in hearing disorders and sinus conditions."
+    },
+    {
+      "id": "doc_015",
+      "name": "Dr. Meera Singh",
+      "department": "Dermatology",
+      "designation": "Consultant - Dermatology & Aesthetics",
+      "experience": "9 years",
+      "specializations": ["Dermatology", "Aesthetics", "Skin Disorders", "Hair Loss"],
+      "languages": ["English", "Hindi"],
+      "consultation_type": ["OPD", "Skin Treatment", "Cosmetic"],
+      "fee": 900,
+      "location": "Block A, Ground Floor, Room 012",
+      "availability": {
+        "Monday": ["15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Tuesday": [],
+        "Wednesday": ["15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Thursday": ["15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Friday": [],
+        "Saturday": ["15:00", "15:30", "16:00", "16:30"],
+        "Sunday": []
+      },
+      "biography": "Dermatologist with expertise in cosmetic dermatology and hair loss management."
+    }
+  ],
+
+  "services": [
+    {
+      "id": "svc_mri_brain",
+      "category": "Imaging",
+      "name": "Brain MRI",
+      "description": "High-resolution magnetic resonance imaging for brain and neurological imaging",
+      "price": 8500,
+      "duration_minutes": 45,
+      "prep_instructions": "Remove all metal objects. No special fasting required. Wear comfortable clothes without metal.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "synonyms": ["brain scan", "mri brain", "cerebral mri", "brain imaging"],
+      "keywords": ["mri", "brain", "imaging", "neuro", "neuroimaging"]
+    },
+    {
+      "id": "svc_mri_spine",
+      "category": "Imaging",
+      "name": "Spine MRI",
+      "description": "MRI scan for spinal cord and vertebral imaging",
+      "price": 9000,
+      "duration_minutes": 50,
+      "prep_instructions": "Remove all metal jewelry and objects. No special fasting required.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "synonyms": ["spine scan", "mri spine", "back imaging"],
+      "keywords": ["mri", "spine", "back", "imaging"]
+    },
+    {
+      "id": "svc_mri_abdomen",
+      "category": "Imaging",
+      "name": "Full Abdomen MRI",
+      "description": "Complete abdominal and pelvic MRI imaging",
+      "price": 12000,
+      "duration_minutes": 60,
+      "prep_instructions": "Light breakfast is acceptable. No fasting strictly required.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "synonyms": ["abdomen scan", "belly scan", "mri abdomen"],
+      "keywords": ["mri", "abdomen", "belly", "imaging"]
+    },
+    {
+      "id": "svc_ct_head",
+      "category": "Imaging",
+      "name": "CT Head Scan",
+      "description": "Computed tomography scan of the head for detailed brain imaging",
+      "price": 4500,
+      "duration_minutes": 20,
+      "prep_instructions": "No special preparation needed. The scan takes 20 minutes.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "synonyms": ["ct brain", "head ct", "ct scan brain"],
+      "keywords": ["ct", "head", "brain", "imaging", "scan"]
+    },
+    {
+      "id": "svc_ct_chest",
+      "category": "Imaging",
+      "name": "CT Chest Scan",
+      "description": "CT scan of the chest for lung and cardiac imaging",
+      "price": 5500,
+      "duration_minutes": 25,
+      "prep_instructions": "No fasting required. Wear comfortable clothes without metal buttons.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "synonyms": ["ct thorax", "chest imaging", "lung scan"],
+      "keywords": ["ct", "chest", "lung", "thorax", "imaging"]
+    },
+    {
+      "id": "svc_ct_abdomen",
+      "category": "Imaging",
+      "name": "CT Abdomen with Contrast",
+      "description": "Abdominal CT scan with IV contrast for detailed imaging",
+      "price": 8000,
+      "duration_minutes": 30,
+      "prep_instructions": "Fasting of 4 hours required. Drink 500ml contrast water 1 hour before scan.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "synonyms": ["ct belly", "abdominal scan", "contrast ct"],
+      "keywords": ["ct", "abdomen", "contrast", "imaging"]
+    },
+    {
+      "id": "svc_thyroid_profile",
+      "category": "Blood Tests",
+      "name": "Thyroid Profile Test",
+      "description": "TSH, T3, T4 levels to assess thyroid function",
+      "price": 750,
+      "duration_minutes": 6,
+      "prep_instructions": "No fasting required. Can be done anytime.",
+      "location": "Lab, Ground Floor, Lab Wing A",
+      "synonyms": ["thyroid test", "tsh test", "thyroid function"],
+      "keywords": ["thyroid", "tsh", "t3", "t4", "test"]
+    },
+    {
+      "id": "svc_cbc",
+      "category": "Blood Tests",
+      "name": "Complete Blood Count (CBC)",
+      "description": "Comprehensive blood test measuring all blood cell types",
+      "price": 400,
+      "duration_minutes": 5,
+      "prep_instructions": "No fasting required.",
+      "location": "Lab, Ground Floor, Lab Wing A",
+      "synonyms": ["cbc test", "complete blood count", "blood test"],
+      "keywords": ["cbc", "blood", "count", "test"]
+    },
+    {
+      "id": "svc_blood_sugar",
+      "category": "Blood Tests",
+      "name": "Fasting Blood Sugar Test",
+      "description": "Blood glucose measurement after 8-10 hours fasting",
+      "price": 300,
+      "duration_minutes": 5,
+      "prep_instructions": "Fasting of 8-10 hours required. Water allowed.",
+      "location": "Lab, Ground Floor, Lab Wing A",
+      "synonyms": ["blood sugar", "glucose test", "fasting sugar"],
+      "keywords": ["blood sugar", "glucose", "fasting", "test"]
+    },
+    {
+      "id": "svc_lipid_profile",
+      "category": "Blood Tests",
+      "name": "Lipid Profile Test",
+      "description": "Cholesterol and triglyceride levels measurement",
+      "price": 600,
+      "duration_minutes": 5,
+      "prep_instructions": "Fasting of 10-12 hours required. No alcohol for 24 hours before test.",
+      "location": "Lab, Ground Floor, Lab Wing A",
+      "synonyms": ["lipid test", "cholesterol test", "lipid panel"],
+      "keywords": ["lipid", "cholesterol", "triglyceride", "test"]
+    },
+    {
+      "id": "svc_liver_function",
+      "category": "Blood Tests",
+      "name": "Liver Function Test (LFT)",
+      "description": "Assessment of liver enzymes and bilirubin levels",
+      "price": 500,
+      "duration_minutes": 5,
+      "prep_instructions": "Fasting of 8-10 hours recommended. Water allowed.",
+      "location": "Lab, Ground Floor, Lab Wing A",
+      "synonyms": ["lft test", "liver test", "sgpt sgot"],
+      "keywords": ["liver", "lft", "enzyme", "test"]
+    }
+  ],
+
+  "health_packages": [
+    {
+      "id": "pkg_silver",
+      "name": "Silver Wellness Package",
+      "price": 2200,
+      "target_age": "18-40 years",
+      "description": "Basic health checkup package for young adults",
+      "includes": "CBC, Blood Sugar (Fasting), Thyroid Profile, Lipid Profile, Urine Routine, KFT, ECG, Chest X-Ray, Doctor Consultation",
+      "prep_instructions": "Fasting of 8 hours required"
+    },
+    {
+      "id": "pkg_gold",
+      "name": "Gold Comprehensive Package",
+      "price": 4500,
+      "target_age": "40-60 years",
+      "description": "Comprehensive health checkup for middle-aged adults",
+      "includes": "Silver Package tests + LFT, Vitamin D, Vitamin B12, HbA1c, Ultrasound Abdomen, Dental Check, Eye Check, Specialist Consultation",
+      "prep_instructions": "Fasting of 8 hours required"
+    },
+    {
+      "id": "pkg_executive",
+      "name": "Executive Full Body Package",
+      "price": 7500,
+      "target_age": "All ages",
+      "description": "Premium full-body health screening for busy professionals",
+      "includes": "Gold Package tests + PFT, Stress Test (TMT), ECHO, Full Body MRI Screening, Bone Density Scan, Ophthalmology Exam, Detailed Report with Counselling",
+      "prep_instructions": "Fasting of 8 hours required"
+    },
+    {
+      "id": "pkg_cardiac",
+      "name": "Cardiac Screening Package",
+      "price": 3200,
+      "target_age": "40+ years or high risk",
+      "description": "Comprehensive cardiac health assessment",
+      "includes": "ECG, Echocardiogram, Lipid Profile, Blood Pressure Monitoring, Blood Sugar, HbA1c, KFT, Cardiologist Consultation",
+      "prep_instructions": "No fasting required"
+    },
+    {
+      "id": "pkg_womens",
+      "name": "Women's Wellness Package",
+      "price": 3800,
+      "target_age": "Adult women",
+      "description": "Comprehensive health screening designed for women",
+      "includes": "Gynecology Consultation, Pap Smear, Mammogram, CBC, Thyroid Profile, Vitamin D, Vitamin B12, Urine Routine, Blood Sugar, Bone Density Check",
+      "prep_instructions": "No fasting required"
+    }
+  ],
+
+  "room_types": [
+    {
+      "id": "room_icu",
+      "name": "ICU",
+      "description": "Intensive Care Unit with 24x7 monitoring and life support",
+      "price_per_day": 12000,
+      "features": ["Continuous monitoring", "Ventilator support", "24x7 nursing care", "Cardiac monitoring"]
+    },
+    {
+      "id": "room_deluxe",
+      "name": "Deluxe Private Room",
+      "description": "Spacious private room with attached bathroom, TV, and sofa",
+      "price_per_day": 5500,
+      "features": ["Private room", "Attached bathroom", "TV", "Sofa", "WiFi", "Telephone"]
+    },
+    {
+      "id": "room_semi_private",
+      "name": "Semi-Private Room",
+      "description": "Room with shared nursing care and basic amenities",
+      "price_per_day": 3000,
+      "features": ["Shared room", "Basic amenities", "Shared bathroom", "TV"]
+    },
+    {
+      "id": "room_general",
+      "name": "General Ward",
+      "description": "Standard ward with basic care facilities",
+      "price_per_day": 1200,
+      "features": ["Standard care", "Basic facilities", "Shared ward"]
+    }
+  ],
+
+  "operating_hours": {
+    "general_opd": "08:00-19:00 (Mon-Fri), 08:00-13:00 (Sat), Closed (Sun)",
+    "specialist_opd": "Varies by department",
+    "emergency": "24/7 Open",
+    "pharmacy": "24/7 Open",
+    "lab": "07:00-20:00 (Mon-Sat), 08:00-14:00 (Sun)",
+    "radiology": "07:00-20:00 (Mon-Sat), 24x7 Emergency"
+  },
+
+  "amenities": {
+    "parking": {
+      "general": "Multi-level parking at Basement B1 & B2, capacity 500 vehicles",
+      "car_rate": "Rs. 30 per hour",
+      "two_wheeler_rate": "Rs. 10 per hour",
+      "free_parking": "First 2 hours free with valid OPD token",
+      "admitted_patient_visitors": "Daily flat rate Rs. 100"
+    },
+    "wifi": "Free WiFi throughout hospital, Network: InDiiServe-Guest, Password: Enter mobile OTP",
+    "cafeteria": "Multi-cuisine food court on 5th Floor, Block B (07:00-22:00)",
+    "pharmacy": "24/7 pharmacy on Ground Floor near exit, home delivery available",
+    "atm": "SBI ATM on Ground Floor near pharmacy (24x7)",
+    "wheelchair_porter": "Free wheelchair and porter services available on request",
+    "prayer_room": "Meditation and prayer room on Ground Floor (24x7)",
+    "play_area": "Supervised children's play area near OPD waiting area (09:00-18:00)"
+  },
+
+  "faq": [
+    {
+      "id": "faq_001",
+      "category": "Hospital Information",
+      "intent": "hospital_address",
+      "question_variants": [
+        "What is the address of InDiiServe Hospital?",
+        "Where is the hospital located?",
+        "Hospital ka address kya hai?",
+        "Hospital kahan hai?"
+      ],
+      "answer": "InDiiServe Multi-Specialty Hospital is located at 12-B, MG Road, Residency Area, Bengaluru - 560025.",
+      "tags": ["location", "address"]
+    },
+    {
+      "id": "faq_002",
+      "category": "Hospital Information",
+      "intent": "hospital_contact",
+      "question_variants": [
+        "What is the hospital contact number?",
+        "How do I reach the hospital?",
+        "Hospital ka phone number kya hai?",
+        "Hospital se contact kaise karen?"
+      ],
+      "answer": "You can reach us at our main reception on +91 80 4000 9000. For emergencies, dial 1066.",
+      "tags": ["contact", "phone"]
+    },
+    {
+      "id": "faq_003",
+      "category": "Departments & Doctors",
+      "intent": "list_departments",
+      "question_variants": [
+        "What departments are available?",
+        "Which departments does the hospital have?",
+        "Hospital mein kaunse departments hain?",
+        "Departments list?"
+      ],
+      "answer": "We have 13 departments: Cardiology & Cardiothoracic Surgery, Neurology & Neurosurgery, Orthopedics & Joint Replacement, Pediatrics & Neonatology, Gynecology & Obstetrics, Endocrinology & Diabetes Clinic, Gastroenterology & Hepatology, Pulmonology & Chest Medicine, Oncology, Ophthalmology, ENT, Dermatology & Aesthetics, and Emergency & Trauma.",
+      "tags": ["departments", "specialties"]
+    },
+    {
+      "id": "faq_004",
+      "category": "Services - Imaging",
+      "intent": "brain_mri_cost",
+      "question_variants": [
+        "How much does Brain MRI cost?",
+        "Brain MRI ka price?",
+        "Brain MRI kitne ka hai?",
+        "Brain scan ka kharcha?"
+      ],
+      "answer": "Brain MRI costs Rs. 8,500 and takes approximately 45 minutes. No fasting required. It is located in the Radiology department on the Ground Floor, Lab Wing B.",
+      "tags": ["imaging", "mri", "pricing", "brain"]
+    },
+    {
+      "id": "faq_005",
+      "category": "Services - Imaging",
+      "intent": "spine_mri_cost",
+      "question_variants": [
+        "Spine MRI ka kharcha kitna hai?",
+        "How much does Spine MRI cost?",
+        "Spine scan price?",
+        "Back MRI cost?"
+      ],
+      "answer": "Spine MRI costs Rs. 9,000. It takes approximately 50 minutes. No special fasting is required. Located in the Radiology department.",
+      "tags": ["imaging", "mri", "pricing", "spine"]
+    },
+    {
+      "id": "faq_006",
+      "category": "Services - Imaging",
+      "intent": "ct_head_cost",
+      "question_variants": [
+        "How much does a CT Head scan cost?",
+        "CT Head ka price?",
+        "Head CT scan kharcha?",
+        "Brain CT cost?"
+      ],
+      "answer": "A CT Head scan costs Rs. 4,500 and takes about 20 minutes. No special preparation is required.",
+      "tags": ["imaging", "ct", "pricing", "head"]
+    },
+    {
+      "id": "faq_007",
+      "category": "Services - Imaging",
+      "intent": "ct_chest_cost",
+      "question_variants": [
+        "CT Chest ka price kya hai?",
+        "How much does CT Chest cost?",
+        "Chest CT scan price?",
+        "Lung scan cost?"
+      ],
+      "answer": "CT Chest costs Rs. 5,500 and takes approximately 25 minutes. Wear comfortable clothes without metal buttons.",
+      "tags": ["imaging", "ct", "pricing", "chest"]
+    },
+    {
+      "id": "faq_008",
+      "category": "Services - Imaging",
+      "intent": "ct_abdomen_contrast_cost",
+      "question_variants": [
+        "How much does CT Abdomen with contrast cost?",
+        "CT Abdomen contrast ka price?",
+        "Belly CT scan with contrast cost?",
+        "Abdominal CT price?"
+      ],
+      "answer": "CT Abdomen with contrast costs Rs. 8,000 and takes about 30 minutes. Fasting of 4 hours is required. You'll need to drink 500ml of contrast water 1 hour before the scan.",
+      "tags": ["imaging", "ct", "pricing", "abdomen", "contrast"]
+    },
+    {
+      "id": "faq_009",
+      "category": "Parking",
+      "intent": "parking_charges",
+      "question_variants": [
+        "What are the parking charges?",
+        "Parking ka rate kya hai?",
+        "How much is parking?",
+        "Parking charges here?"
+      ],
+      "answer": "Parking rates: Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. Multi-level parking is available in Basement B1 and B2 with capacity for 500 vehicles.",
+      "tags": ["parking", "facilities", "cost"]
+    },
+    {
+      "id": "faq_010",
+      "category": "Visiting Hours",
+      "intent": "icu_visiting_hours",
+      "question_variants": [
+        "What are ICU visiting hours?",
+        "ICU mein milne ka time kya hai?",
+        "When can I visit ICU?",
+        "ICU visiting time?"
+      ],
+      "answer": "ICU visiting hours are strictly from 11:00 AM to 12:00 PM and 5:00 PM to 6:00 PM daily. Only one visitor is allowed at a time, and a valid ICU visitor pass is required which can be obtained from the ICU Reception on the 4th Floor.",
+      "tags": ["visiting hours", "icu"]
+    },
+    {
+      "id": "faq_011",
+      "category": "Visiting Hours",
+      "intent": "general_ward_visiting",
+      "question_variants": [
+        "What are general ward visiting hours?",
+        "Ward mein milne ka time?",
+        "When can I visit patients?",
+        "Visiting hours for patients?"
+      ],
+      "answer": "General ward visiting hours are from 4:00 PM to 7:00 PM daily. Maximum two visitors are allowed per patient at a time. Children below 12 years are not permitted inside the ward.",
+      "tags": ["visiting hours", "ward"]
+    },
+    {
+      "id": "faq_012",
+      "category": "Insurance & Billing",
+      "intent": "insurance_accepted",
+      "question_variants": [
+        "Does the hospital accept insurance?",
+        "Insurance accepted here?",
+        "Mediclaim accepted?",
+        "Aap insurance accept karte ho?"
+      ],
+      "answer": "Yes, we are empanelled with over 30 TPA and insurance companies including Star Health, HDFC Ergo, ICICI Lombard, Bajaj Allianz, New India Assurance, and Max Bupa. Our cashless desk is on the Ground Floor near the main billing counter.",
+      "tags": ["insurance", "billing", "payment"]
+    },
+    {
+      "id": "faq_013",
+      "category": "Emergency",
+      "intent": "emergency_contact",
+      "question_variants": [
+        "What is the emergency number?",
+        "Emergency helpline?",
+        "Emergency number kya hai?",
+        "Urgent help kaise loon?"
+      ],
+      "answer": "Our 24x7 hospital emergency helpline is +91 80 4000 9000. For national medical emergencies, dial 1066. Our Emergency and Trauma Centre is always open at Ground Floor, Block A main gate entrance.",
+      "tags": ["emergency", "contact"]
+    },
+    {
+      "id": "faq_014",
+      "category": "Services - Tests",
+      "intent": "blood_test_fasting",
+      "question_variants": [
+        "Do I need to fast before a blood test?",
+        "Blood test se pehle kuchh khana chahiye?",
+        "Fasting required for blood test?",
+        "Food before blood test?"
+      ],
+      "answer": "It depends on the test. For fasting blood sugar: 8-10 hours fasting required. For lipid profile: 10-12 hours fasting required. For most routine tests like CBC and thyroid: no fasting required. Please consult the lab staff for specific tests.",
+      "tags": ["tests", "fasting", "blood"]
+    },
+    {
+      "id": "faq_015",
+      "category": "Payment",
+      "intent": "payment_modes",
+      "question_variants": [
+        "What payment methods are accepted?",
+        "Kya payment UPI se ho sakti hai?",
+        "Do you accept cards?",
+        "Payment options?"
+      ],
+      "answer": "We accept all major payment modes including UPI, debit and credit cards, net banking, cash, and insurance cashless billing. Our billing counter is on the Ground Floor near the main entrance. We also have EMI options for bills above Rs. 50,000.",
+      "tags": ["payment", "billing"]
+    },
+    {
+      "id": "faq_016",
+      "category": "Doctor Information",
+      "intent": "cardiology_doctor_cost",
+      "question_variants": [
+        "What is the consultation fee for a cardiologist?",
+        "Cardiologist ka fee kitna hai?",
+        "Heart doctor fee?",
+        "Cardiology consultation cost?"
+      ],
+      "answer": "The consultation fee for our senior cardiologists is Rs. 1,200 to Rs. 1,500 per visit. For follow-up consultations within 7 days, a discounted fee of Rs. 600-750 applies.",
+      "tags": ["doctor", "fee", "cardiology"]
+    },
+    {
+      "id": "faq_017",
+      "category": "Facilities",
+      "intent": "wifi_available",
+      "question_variants": [
+        "Is WiFi available?",
+        "Do you have free WiFi?",
+        "WiFi milega hospital mein?",
+        "Internet available?"
+      ],
+      "answer": "Yes, free WiFi is available throughout the hospital. Connect to the network named InDiiServe-Guest and enter your mobile number to receive the OTP for access.",
+      "tags": ["wifi", "internet", "facilities"]
+    },
+    {
+      "id": "faq_018",
+      "category": "Facilities",
+      "intent": "pharmacy_hours",
+      "question_variants": [
+        "Is the pharmacy open at night?",
+        "Pharmacy kab tak khuli rehti hai?",
+        "Pharmacy hours?",
+        "When is pharmacy open?"
+      ],
+      "answer": "Yes, our main pharmacy is open 24 hours a day, 7 days a week. It is located on the Ground Floor near the main exit. We also have an in-patient pharmacy on the 3rd Floor for admitted patients. Home delivery of medicines is also available.",
+      "tags": ["pharmacy", "hours", "services"]
+    },
+    {
+      "id": "faq_019",
+      "category": "Departments & Doctors",
+      "intent": "doctor_availability_tomorrow",
+      "question_variants": [
+        "Which doctors are available tomorrow?",
+        "Doctor availability kal?",
+        "Can I see a doctor tomorrow?",
+        "Doctor milega kal?"
+      ],
+      "answer": "Doctor availability varies by department and day. For tomorrow's availability, please call our reception at +91 80 4000 9000 or you can tell me the department or doctor name you're interested in, and I can check specific availability for you.",
+      "tags": ["doctor", "availability", "appointment"]
+    },
+    {
+      "id": "faq_020",
+      "category": "Accreditation",
+      "intent": "hospital_accreditation",
+      "question_variants": [
+        "Is the hospital NABH accredited?",
+        "Hospital certified?",
+        "Kya hospital accredited hai?",
+        "Hospital ka certification?"
+      ],
+      "answer": "Yes, InDiiServe Multi-Specialty Hospital is NABH accredited, which means we meet the highest standards of patient care, safety, and quality as per the National Accreditation Board for Hospitals standards.",
+      "tags": ["accreditation", "quality", "certification"]
+    }
+  ],
+
+  "insurance_tpa": [
+    {
+      "provider": "Star Health",
+      "status": "empanelled",
+      "discount": "20%",
+      "desk_location": "Ground Floor near billing counter"
+    },
+    {
+      "provider": "HDFC Ergo",
+      "status": "empanelled",
+      "discount": "15%",
+      "desk_location": "Ground Floor near billing counter"
+    },
+    {
+      "provider": "ICICI Lombard",
+      "status": "empanelled",
+      "discount": "18%",
+      "desk_location": "Ground Floor near billing counter"
+    },
+    {
+      "provider": "Bajaj Allianz",
+      "status": "empanelled",
+      "discount": "15%",
+      "desk_location": "Ground Floor near billing counter"
+    },
+    {
+      "provider": "New India Assurance",
+      "status": "empanelled",
+      "discount": "12%",
+      "desk_location": "Ground Floor near billing counter"
+    },
+    {
+      "provider": "Max Bupa",
+      "status": "empanelled",
+      "discount": "20%",
+      "desk_location": "Ground Floor near billing counter"
+    }
+  ],
+
+  "appointment_booking": {
+    "online_available": true,
+    "phone_available": true,
+    "walk_in_available": true,
+    "cancellation_policy": "4 hours notice required for cancellation",
+    "rescheduling_policy": "Free rescheduling up to 24 hours before appointment"
+  },
+
+  "emergency_departments": {
+    "24x7_available": true,
+    "location": "Ground Floor, Block A, Main Gate Entrance",
+    "ambulance_service": "Available 24x7",
+    "als_equipped": true,
+    "trauma_center": true
+  },
+
+  "information_keywords": {
+    "mri_synonyms": ["mri scan", "magnetic resonance", "mri imaging", "mri test"],
+    "ct_synonyms": ["ct scan", "computed tomography", "cat scan", "ct imaging"],
+    "doctor_synonyms": ["physician", "specialist", "consultant", "medico", "daktar"],
+    "appointment_synonyms": ["booking", "slot", "timing", "schedule", "meeting"],
+    "emergency_synonyms": ["urgent", "critical", "emergency", "sos", "help", "accident", "injury"],
+    "cost_synonyms": ["price", "fee", "rate", "charge", "cost", "kharcha", "rate"]
+  }
+}

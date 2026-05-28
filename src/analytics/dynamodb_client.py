@@ -127,20 +127,41 @@ class DynamoDBAnalyticsClient:
             
             items = []
             last_evaluated_key = None
-            while True:
-                kwargs = {
-                    "FilterExpression": "hospital_id = :h_id AND #ts >= :cutoff",
-                    "ExpressionAttributeNames": {"#ts": "timestamp"},
-                    "ExpressionAttributeValues": {":h_id": hospital_id, ":cutoff": cutoff}
-                }
-                if last_evaluated_key:
-                    kwargs["ExclusiveStartKey"] = last_evaluated_key
-                
-                response = table.scan(**kwargs)
-                items.extend(response.get("Items", []))
-                last_evaluated_key = response.get("LastEvaluatedKey")
-                if not last_evaluated_key:
-                    break
+            try:
+                # Attempt to query on global secondary index
+                while True:
+                    kwargs = {
+                        "IndexName": "HospitalTimestampIndex",
+                        "KeyConditionExpression": "hospital_id = :h_id AND #ts >= :cutoff",
+                        "ExpressionAttributeNames": {"#ts": "timestamp"},
+                        "ExpressionAttributeValues": {":h_id": hospital_id, ":cutoff": cutoff}
+                    }
+                    if last_evaluated_key:
+                        kwargs["ExclusiveStartKey"] = last_evaluated_key
+                    
+                    response = table.query(**kwargs)
+                    items.extend(response.get("Items", []))
+                    last_evaluated_key = response.get("LastEvaluatedKey")
+                    if not last_evaluated_key:
+                        break
+            except Exception as e:
+                logger.warning(f"[DYNAMODB] HospitalTimestampIndex query failed, falling back to Scan: {e}")
+                items = []
+                last_evaluated_key = None
+                while True:
+                    kwargs = {
+                        "FilterExpression": "hospital_id = :h_id AND #ts >= :cutoff",
+                        "ExpressionAttributeNames": {"#ts": "timestamp"},
+                        "ExpressionAttributeValues": {":h_id": hospital_id, ":cutoff": cutoff}
+                    }
+                    if last_evaluated_key:
+                        kwargs["ExclusiveStartKey"] = last_evaluated_key
+                    
+                    response = table.scan(**kwargs)
+                    items.extend(response.get("Items", []))
+                    last_evaluated_key = response.get("LastEvaluatedKey")
+                    if not last_evaluated_key:
+                        break
             
             # Convert decimal type issues and decrypt phone number
             converted_items = []
@@ -153,7 +174,7 @@ class DynamoDBAnalyticsClient:
                 
             return converted_items
         except Exception:
-            logger.exception(f"Failed to scan analytics from DynamoDB for hospital {hospital_id}")
+            logger.exception(f"Failed to load analytics from DynamoDB for hospital {hospital_id}")
             return []
 
     # --- Tenants Table CRUD ---
