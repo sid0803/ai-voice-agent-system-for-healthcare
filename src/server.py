@@ -83,9 +83,14 @@ _session_lock = asyncio.Lock()
 _EXOTEL_WS_SECRET = os.environ.get("EXOTEL_WS_SECRET", "")
 
 # Known Exotel IP ranges (CIDR blocks from Exotel docs - update if Exotel changes)
+# We also include all AWS Mumbai (ap-south-1) IP ranges since Exotel dialers run on them
 _EXOTEL_IP_PREFIXES = (
     "52.66.", "13.234.", "15.207.", "3.7.", "3.108.",
     "43.204.", "65.0.", "54.169.",
+    "13.202.", "13.201.", "13.233.", "13.235.", "43.205.", "15.206.",
+    "3.6.", "35.154.", "13.126.", "13.204.", "13.232.", "65.1.",
+    "3.109.", "3.110.", "3.111.", "3.8.", "3.9.", "43.206.", "43.207.",
+    "13.235.209.", "13.204.230."
 )
 
 def _is_exotel_ip(client_ip: str) -> bool:
@@ -1017,8 +1022,16 @@ async def exotel_stream(websocket: WebSocket):
         await websocket.close(code=1008)
         return
 
-    if not ws_token or not _verify_exotel_ws_token(ws_token):
-        logger.warning("[AUTH] WebSocket rejected — invalid or missing token from IP: %s", client_ip)
+    # Allow connection if client provides correct token OR comes from a verified Exotel/AWS IP
+    is_valid_token = ws_token and _verify_exotel_ws_token(ws_token)
+    is_verified_exotel = client_ip and _is_exotel_ip(client_ip)
+
+    if not is_valid_token and not is_verified_exotel:
+        logger.warning(
+            "[AUTH] WebSocket rejected — invalid token and non-Exotel IP: %s (token: %s)",
+            client_ip,
+            ws_token
+        )
         await websocket.close(code=1008)
         return
 

@@ -1,0 +1,24 @@
+2026-05-29 15:39:48,855 src.integrations.sheets_client WARNING [SHEETS] GOOGLE_SHEET_ID not set. Sheets integration disabled.
+2026-05-29 15:39:48,858 src.kb_config INFO [CONFIG] Knowledge Base System Configuration:
+2026-05-29 15:39:48,858 src.kb_config INFO   KB_SYSTEM: unified
+2026-05-29 15:39:48,858 src.kb_config INFO   DISABLE_FAISS_FOR_UNIFIED: True
+2026-05-29 15:39:48,858 src.kb_config INFO   ENABLE_MULTI_INTENT: True
+2026-05-29 15:39:48,858 src.kb_config INFO   ENABLE_CONTEXT_AWARENESS: False
+2026-05-29 15:39:48,858 src.kb_config INFO   TARGET_RESPONSE_LATENCY_MS: 600
+2026-05-29 15:39:48,872 botocore.credentials INFO Found credentials in environment variables.
+2026-05-29 15:39:49,011 src.tools INFO [FAISS] Skipped because unified KB mode is active
+2026-05-29 15:39:50,565 src.cache.response_cache INFO Warmed cache with asset: hello.pcm
+2026-05-29 15:39:50,580 src.cache.response_cache INFO Warmed cache with asset: transfer.pcm
+2026-05-29 15:39:50,594 src.cache.response_cache INFO Warmed cache with asset: emergency.pcm
+2026-05-29 15:39:51,281 src.credential_validation INFO Exotel credentials validated: EXOTEL_API_KEY, EXOTEL_API_TOKEN, EXOTEL_SID, EXOTEL_SUBDOMAIN
+2026-05-29 15:39:51,600 __main__ WARNING [MEMORY] No MEMORY_ID configured - memory features disabled
+INFO:     Started server process [22424]
+INFO:     Waiting for application startup.
+2026-05-29 15:39:51,880 __main__ INFO [STARTUP] InDiiServe Asha Voice Agent starting...
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50668 - "GET /health HTTP/1.1" 200 OK
+2026-05-29 15:39:53,074 __main__ WARNING [AUTH] WebSocket rejected — invalid token and non-Exotel IP: 127.0.0.1 (token: )
+INFO:     ('127.0.0.1', 50670) - "WebSocket /exotel-stream?hospital_id=apollo_metro&CallSid=19f05b5e-d2e3-4d52-8bde-100d0a9931bc" 403
+INFO:     connection rejected (403 Forbidden)
+INFO:     connection closed
