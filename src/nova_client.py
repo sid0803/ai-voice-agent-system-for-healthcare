@@ -111,6 +111,10 @@ class SessionData:
     _stream_ready: asyncio.Event = field(default_factory=asyncio.Event)
     write_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     tool_call_pending: bool = False
+    assistant_speaking: bool = False
+    active_tool_calls: set[str] = field(default_factory=set)
+    pending_tools: dict[str, dict] = field(default_factory=dict)
+    current_content_id: str = ""
 
 
 class StreamSession:
@@ -289,6 +293,10 @@ class S2SBidirectionalStreamClient:
             is_audio_content_start_sent=False,
             audio_content_id=str(uuid4()),
             tool_call_pending=False,
+            assistant_speaking=False,
+            active_tool_calls=set(),
+            pending_tools={},
+            current_content_id="",
             # [D-11] hospital_id injected later via session.hospital_id = ...
             # SessionData.hospital_id default is fine; StreamSession.hospital_id is the live field
         )
@@ -319,6 +327,10 @@ class S2SBidirectionalStreamClient:
     def is_audio_paused(self, session_id: str) -> bool:
         session = self._active_sessions.get(session_id)
         return session is not None and session.audio_paused
+
+    def is_assistant_speaking(self, session_id: str) -> bool:
+        session = self._active_sessions.get(session_id)
+        return session is not None and session.assistant_speaking
 
     # ------------------------------------------------------------------
     # Event handler registration
@@ -477,21 +489,31 @@ class S2SBidirectionalStreamClient:
 
                     self._update_session_activity(session_id)
                     text_response = value.bytes_.decode("utf-8")
-                    logger.debug("[BEDROCK_RECV] %s", text_response)
+                    logger.info("[BEDROCK_RECV] %s", text_response)
                     try:
                         json_response = json.loads(text_response)
                         evt = json_response.get("event", {})
 
                         if evt.get("contentStart"):
                             self._dispatch_event(session_id, "contentStart", evt["contentStart"])
+                            session.current_content_id = evt["contentStart"].get("contentId", "")
                         elif evt.get("completionStart"):
                             self._dispatch_event(session_id, "completionStart", evt["completionStart"])
-                            # Reset tool use state for the new turn
-                            session.tool_call_pending = False
+                            # Track that assistant is speaking
+                            session.assistant_speaking = True
+                            # NOTE: Do NOT clear active_tool_calls here — background tool tasks are still
+                            # running and reference their tool IDs. They will clear themselves in their
+                            # finally blocks. Only reset tool_call_pending if no tools are in flight.
+                            if not session.active_tool_calls:
+                                session.tool_call_pending = False
                             # Gracefully close the active audio input block of the user turn that just ended
                             if session.is_audio_content_start_sent:
                                 old_id = session.audio_content_id
                                 logger.info("completionStart: closing user audio block %s", old_id[:8])
+                                # Set to False immediately BEFORE launching background task to avoid duplicate closes
+                                session.is_audio_content_start_sent = False
+                                session.is_audio_data_sent = False
+                                session.open_content_ids.discard(old_id)
                                 async def close_audio(target_id):
                                     async with session.write_lock:
                                         await self._send_event(session_id, {
@@ -503,14 +525,13 @@ class S2SBidirectionalStreamClient:
                                             }
                                         })
                                 asyncio.create_task(close_audio(old_id))
-                                session.open_content_ids.discard(old_id)
                             # Reset user audio block state for the next turn
                             session.is_audio_content_start_sent = False
                             session.is_audio_data_sent = False
                             session.audio_content_id = str(uuid4())
-                            # Keep audio paused during speech generation
+                            # Keep audio paused during speech generation (tool responses will unpause when done)
                             session.audio_paused = True
-                            logger.info("Reset user audio block state and paused audio on completionStart for session %s", session_id[:8])
+                            logger.info("completionStart: paused audio for session %s (tools_in_flight=%d)", session_id[:8], len(session.active_tool_calls))
                         elif evt.get("textOutput"):
                             self._dispatch_event(session_id, "textOutput", evt["textOutput"])
                         elif evt.get("audioOutput"):
@@ -521,25 +542,70 @@ class S2SBidirectionalStreamClient:
                             session.tool_use_content = evt["toolUse"]
                             session.tool_use_id = evt["toolUse"].get("toolUseId", "")
                             session.tool_name = evt["toolUse"].get("name") or evt["toolUse"].get("toolName", "")
+                            
+                            # Track tool call mapping by content block ID and add to active set
+                            tool_id = evt["toolUse"].get("toolUseId", "")
+                            if tool_id:
+                                session.active_tool_calls.add(tool_id)
+                            content_id = evt["toolUse"].get("contentId", "")
+                            if content_id:
+                                session.pending_tools[content_id] = evt["toolUse"]
                         elif (
                             evt.get("contentEnd")
                             and evt["contentEnd"].get("type") == "TOOL"
                         ):
+                            logger.info("DEBUG: contentEnd event: %s", json.dumps(evt))
+                            content_id = evt["contentEnd"].get("contentId", "")
+                            tool_use = session.pending_tools.pop(content_id, None)
+                            
+                            # Dispatch toolEnd using the retrieved/matched tool call structure
+                            t_use_content = tool_use if tool_use is not None else session.tool_use_content
+                            t_use_id = t_use_content.get("toolUseId", "") if t_use_content else session.tool_use_id
+                            t_name = (t_use_content.get("name") or t_use_content.get("toolName", "")) if t_use_content else session.tool_name
+                            
                             self._dispatch_event(session_id, "toolEnd", {
-                                "toolUseContent": session.tool_use_content,
-                                "toolUseId": session.tool_use_id,
-                                "toolName": session.tool_name,
+                                "toolUseContent": t_use_content,
+                                "toolUseId": t_use_id,
+                                "toolName": t_name,
                             })
-                            external_result = await tool_processor(
-                                session.tool_name.lower(),
-                                session.tool_use_content.get("content", "{}"),
-                                hospital_id=session.hospital_id,
-                            )
-                            await self._send_tool_result(session_id, session.tool_use_id, external_result)
-                            self._dispatch_event(session_id, "toolResult", {
-                                "toolUseId": session.tool_use_id,
-                                "result": external_result,
-                            })
+                            
+                            # Asynchronously run tool execution and response logic to keep read loop non-blocking
+                            async def run_tool_task(t_n, t_c, t_i):
+                                try:
+                                    external_result = await tool_processor(
+                                        t_n.lower(),
+                                        t_c.get("content", "{}") if isinstance(t_c, dict) else t_c,
+                                        hospital_id=session.hospital_id,
+                                    )
+                                    await self._send_tool_result(session_id, t_i, external_result)
+                                    self._dispatch_event(session_id, "toolResult", {
+                                        "toolUseId": t_i,
+                                        "result": external_result,
+                                    })
+                                except Exception:
+                                    logger.exception("Error executing tool %s in background", t_n)
+                                finally:
+                                    # Discard from active calls; when ALL parallel tools are done, clean up state
+                                    session.active_tool_calls.discard(t_i)
+                                    remaining = len(session.active_tool_calls)
+                                    logger.info("Tool %s finished. Remaining in-flight tools: %d", t_i[:8], remaining)
+                                    if not session.active_tool_calls:
+                                        # All parallel tools done — prepare a fresh audio block for the next user turn
+                                        # and un-pause only after Nova's completionEnd has been received.
+                                        # (completionEnd handler will check active_tool_calls and unpause.)
+                                        session.tool_call_pending = False
+                                        session.audio_content_id = str(uuid4())
+                                        # If Nova already sent completionEnd while we were running tools,
+                                        # audio_paused is still True (completionEnd saw tools in flight).
+                                        # Unpause now so the user can speak again.
+                                        if not session.assistant_speaking:
+                                            session.audio_paused = False
+                                            logger.info("All parallel tool calls finished. Unpaused audio for session %s", session_id[:8])
+                                        else:
+                                            logger.info("All parallel tool calls finished but assistant still speaking — will unpause at completionEnd for session %s", session_id[:8])
+                            
+                            # Start background execution task
+                            asyncio.create_task(run_tool_task(t_name, t_use_content, t_use_id))
                         elif evt.get("usageEvent"):
                             ue = evt["usageEvent"]
                             details = ue.get("details", {})
@@ -558,11 +624,13 @@ class S2SBidirectionalStreamClient:
                             self._dispatch_event(session_id, "usageEvent", ue)
                         elif evt.get("completionEnd"):
                             self._dispatch_event(session_id, "completionEnd", evt["completionEnd"])
-                            if session.tool_call_pending:
-                                logger.info("completionEnd: tool call pending, keeping audio paused for session %s", session_id[:8])
+                            # Assistant has finished speaking
+                            session.assistant_speaking = False
+                            if session.tool_call_pending or session.active_tool_calls:
+                                logger.info("completionEnd: tool call still in-flight (pending=%s, active=%d), keeping audio paused for session %s", session.tool_call_pending, len(session.active_tool_calls), session_id[:8])
                             else:
                                 session.audio_paused = False
-                                logger.info("completionEnd: unpaused audio for session %s", session_id[:8])
+                                logger.info("completionEnd: no tools in flight — unpaused audio for session %s", session_id[:8])
                         else:
                             event_keys = list(evt.keys())
                             if event_keys:
@@ -604,19 +672,27 @@ class S2SBidirectionalStreamClient:
     # ------------------------------------------------------------------
 
     async def _send_tool_result(self, session_id: str, tool_use_id: str, result: Any) -> None:
-        """Send a tool result back to Bedrock."""
+        """Send a tool result back to Bedrock.
+        
+        For parallel tool calls, multiple background tasks may call this concurrently.
+        The write_lock serializes them. Only the FIRST caller closes the audio block;
+        subsequent ones skip the close (is_audio_content_start_sent is already False).
+        We do NOT touch audio_content_id here — that is managed by the caller
+        (run_tool_task's finally block) after ALL tools finish, to avoid stomping.
+        """
         session = self._active_sessions.get(session_id)
         if session is None or not session.is_active:
             return
 
-        # 1. Pause audio ingestion immediately to prevent any incoming audio events
+        # Pause audio ingestion so no new audio events race with tool result submission
         session.audio_paused = True
 
         async with session.write_lock:
             # AWS Nova Sonic: Close the active audio content block before sending TOOL results.
             # Bidirectional streaming only allows one open content block at a time.
+            # Only the first parallel task will find is_audio_content_start_sent=True.
             if session.is_audio_content_start_sent:
-                logger.info("_send_tool_result: closing open audio content block %s", session.audio_content_id[:8])
+                logger.info("_send_tool_result[%s]: closing open audio block %s", tool_use_id[:8], session.audio_content_id[:8])
                 await self._send_event(session_id, {
                     "event": {
                         "contentEnd": {
@@ -628,13 +704,12 @@ class S2SBidirectionalStreamClient:
                 session.is_audio_content_start_sent = False
                 session.is_audio_data_sent = False
                 session.open_content_ids.discard(session.audio_content_id)
-                # Brief sleep to let Bedrock process contentEnd
+                # Brief pause to let Bedrock process the contentEnd before the TOOL block
                 await asyncio.sleep(0.2)
 
-            # Ensure we generate a fresh audio ID for the next turn, so no delayed task uses the old ID
-            session.audio_content_id = str(uuid4())
-
+            # Each tool result gets its own isolated content block ID
             content_id = str(uuid4())
+            logger.info("_send_tool_result[%s]: sending tool result in content block %s", tool_use_id[:8], content_id[:8])
 
             await self._send_event(session_id, {
                 "event": {
@@ -672,6 +747,7 @@ class S2SBidirectionalStreamClient:
                     }
                 }
             })
+            logger.info("_send_tool_result[%s]: tool result block %s sent successfully", tool_use_id[:8], content_id[:8])
 
     # ------------------------------------------------------------------
     # Session setup events (now async — send directly to stream)

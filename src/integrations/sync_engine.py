@@ -86,10 +86,10 @@ class SyncEngine:
             except Exception:
                 logger.exception("[SYNC] Background worker iteration failed")
             
-            # 2. Run Automatic Learning (Knowledge Distillation)
+            # 2. Run Automatic Learning (Knowledge Distillation) in a background thread
             try:
-                if learning_distiller.run_learning_cycle():
-                    sync_community_knowledge()
+                if await asyncio.to_thread(learning_distiller.run_learning_cycle):
+                    await asyncio.to_thread(sync_community_knowledge)
             except Exception:
                 logger.exception("[LEARNING] Automatic distillation cycle failed")
 

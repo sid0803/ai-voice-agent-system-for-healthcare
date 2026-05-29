@@ -4,12 +4,11 @@
     "hospital_name": "InDiiServe Multi-Specialty Hospital",
     "version": "2.0.0",
     "creation_date": "2026-05-28T00:00:00Z",
-    "last_updated": "2026-05-28T14:35:00Z",
+    "last_updated": "2026-05-29T11:57:10.373320+00:00",
     "data_freshness_guarantee": "updated_daily",
     "schema_version": "2.0",
     "note": "Unified Knowledge Base - Single source of truth for all hospital data"
   },
-
   "core_info": {
     "id": "apollo_metro",
     "name": "InDiiServe Multi-Specialty Hospital",
@@ -20,9 +19,11 @@
     "website": "https://voice.indiiserve.ai",
     "pharmacy_hours": "24/7 (Ground Floor, near main exit)",
     "nabh_accredited": true,
-    "accreditations": ["NABH", "ISO 9001:2015"]
+    "accreditations": [
+      "NABH",
+      "ISO 9001:2015"
+    ]
   },
-
   "departments": [
     {
       "id": "dept_001",
@@ -30,7 +31,10 @@
       "description": "Comprehensive cardiac care including interventional procedures",
       "floor": "1st Floor",
       "block": "Block A",
-      "specialists": ["Dr. Sameer Kulkarni", "Dr. Rajesh Nair"]
+      "specialists": [
+        "Dr. Sameer Kulkarni",
+        "Dr. Rajesh Nair"
+      ]
     },
     {
       "id": "dept_002",
@@ -38,7 +42,10 @@
       "description": "Neurological and neurosurgical care",
       "floor": "4th Floor",
       "block": "Neuro Wing",
-      "specialists": ["Dr. Megha Rao", "Dr. Arjun Sood"]
+      "specialists": [
+        "Dr. Megha Rao",
+        "Dr. Arjun Sood"
+      ]
     },
     {
       "id": "dept_003",
@@ -46,7 +53,9 @@
       "description": "Orthopedic care including joint replacement surgeries",
       "floor": "2nd Floor",
       "block": "Block B",
-      "specialists": ["Dr. Vikram Shetty"]
+      "specialists": [
+        "Dr. Vikram Shetty"
+      ]
     },
     {
       "id": "dept_004",
@@ -54,7 +63,9 @@
       "description": "Child and newborn care",
       "floor": "3rd Floor",
       "block": "Block C",
-      "specialists": ["Dr. Sunita Pillai"]
+      "specialists": [
+        "Dr. Sunita Pillai"
+      ]
     },
     {
       "id": "dept_005",
@@ -62,7 +73,10 @@
       "description": "Women's health and maternity services",
       "floor": "4th Floor",
       "block": "Block C",
-      "specialists": ["Dr. Ananya Reddy", "Dr. Priya Sharma"]
+      "specialists": [
+        "Dr. Ananya Reddy",
+        "Dr. Priya Sharma"
+      ]
     },
     {
       "id": "dept_006",
@@ -70,7 +84,9 @@
       "description": "Endocrine and metabolic disorders",
       "floor": "Ground Floor",
       "block": "Block A",
-      "specialists": ["Dr. Prateek Jain"]
+      "specialists": [
+        "Dr. Prateek Jain"
+      ]
     },
     {
       "id": "dept_007",
@@ -78,7 +94,9 @@
       "description": "Digestive system and liver disease care",
       "floor": "3rd Floor",
       "block": "Block B",
-      "specialists": ["Dr. Suresh Balaji"]
+      "specialists": [
+        "Dr. Suresh Balaji"
+      ]
     },
     {
       "id": "dept_008",
@@ -86,7 +104,9 @@
       "description": "Lung and respiratory care",
       "floor": "2nd Floor",
       "block": "Block A",
-      "specialists": ["Dr. Neeraj Kapoor"]
+      "specialists": [
+        "Dr. Neeraj Kapoor"
+      ]
     },
     {
       "id": "dept_009",
@@ -94,7 +114,9 @@
       "description": "Cancer treatment and management",
       "floor": "5th Floor",
       "block": "Block D",
-      "specialists": ["Dr. Kavitha Menon"]
+      "specialists": [
+        "Dr. Kavitha Menon"
+      ]
     },
     {
       "id": "dept_010",
@@ -102,7 +124,9 @@
       "description": "Eye care and vision services",
       "floor": "2nd Floor",
       "block": "Block B",
-      "specialists": ["Dr. Rajini Kumar"]
+      "specialists": [
+        "Dr. Rajini Kumar"
+      ]
     },
     {
       "id": "dept_011",
@@ -110,7 +134,9 @@
       "description": "ENT and hearing care",
       "floor": "2nd Floor",
       "block": "Block B",
-      "specialists": ["Dr. Anil Sharma"]
+      "specialists": [
+        "Dr. Anil Sharma"
+      ]
     },
     {
       "id": "dept_012",
@@ -118,7 +144,9 @@
       "description": "Skin and cosmetic services",
       "floor": "Ground Floor",
       "block": "Block A",
-      "specialists": ["Dr. Meera Singh"]
+      "specialists": [
+        "Dr. Meera Singh"
+      ]
     },
     {
       "id": "dept_013",
@@ -126,10 +154,11 @@
       "description": "24x7 emergency and trauma care",
       "floor": "Ground Floor",
       "block": "Block A",
-      "specialists": ["On-call team available 24/7"]
+      "specialists": [
+        "On-call team available 24/7"
+      ]
     }
   ],
-
   "doctors": [
     {
       "id": "doc_001",
@@ -137,18 +166,84 @@
       "department": "Cardiology",
       "designation": "Director - Cardiology",
       "experience": "18 years",
-      "specializations": ["Interventional Cardiology", "Coronary Angioplasty", "Heart Failure Management"],
-      "languages": ["English", "Hindi", "Kannada"],
-      "consultation_type": ["OPD", "Follow-up", "Post-procedure"],
+      "specializations": [
+        "Interventional Cardiology",
+        "Coronary Angioplasty",
+        "Heart Failure Management"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Kannada"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Follow-up",
+        "Post-procedure"
+      ],
       "fee": 1200,
       "location": "Block A, 1st Floor, Room 102",
       "availability": {
-        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Saturday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Tuesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Wednesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Thursday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Friday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Saturday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
         "Sunday": []
       },
       "biography": "Director of Cardiology with 18 years of experience in interventional procedures and complex cardiac cases."
@@ -159,17 +254,53 @@
       "department": "Cardiology",
       "designation": "Senior Consultant - Interventional Cardiology",
       "experience": "12 years",
-      "specializations": ["Interventional Cardiology", "Angiography", "Angioplasty"],
-      "languages": ["English", "Hindi", "Malayalam"],
-      "consultation_type": ["OPD", "Angiography", "Angioplasty"],
+      "specializations": [
+        "Interventional Cardiology",
+        "Angiography",
+        "Angioplasty"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Malayalam"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Angiography",
+        "Angioplasty"
+      ],
       "fee": 1500,
       "location": "Block A, 1st Floor, Room 104",
       "availability": {
-        "Monday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Monday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00"
+        ],
         "Tuesday": [],
-        "Wednesday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Wednesday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00"
+        ],
         "Thursday": [],
-        "Friday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Friday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00"
+        ],
         "Saturday": [],
         "Sunday": []
       },
@@ -181,17 +312,50 @@
       "department": "Neurology",
       "designation": "HOD - Neurology",
       "experience": "14 years",
-      "specializations": ["Neurology", "Stroke Care", "Epilepsy Management", "Movement Disorders"],
-      "languages": ["English", "Kannada"],
-      "consultation_type": ["OPD", "Stroke Care", "Epilepsy"],
+      "specializations": [
+        "Neurology",
+        "Stroke Care",
+        "Epilepsy Management",
+        "Movement Disorders"
+      ],
+      "languages": [
+        "English",
+        "Kannada"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Stroke Care",
+        "Epilepsy"
+      ],
       "fee": 1500,
       "location": "Neuro Wing, 4th Floor, Room 401",
       "availability": {
-        "Monday": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
+        "Monday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
         "Tuesday": [],
-        "Wednesday": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
+        "Wednesday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
         "Thursday": [],
-        "Friday": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
+        "Friday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
         "Saturday": [],
         "Sunday": []
       },
@@ -203,18 +367,47 @@
       "department": "Neurosurgery",
       "designation": "Senior Consultant - Neurosurgery",
       "experience": "16 years",
-      "specializations": ["Neurosurgery", "Spine Surgery", "Brain Tumor Surgery"],
-      "languages": ["English", "Hindi"],
-      "consultation_type": ["OPD", "Pre-surgical", "Post-surgical"],
+      "specializations": [
+        "Neurosurgery",
+        "Spine Surgery",
+        "Brain Tumor Surgery"
+      ],
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Pre-surgical",
+        "Post-surgical"
+      ],
       "fee": 1800,
       "location": "Neuro Wing, 4th Floor, Room 403",
       "availability": {
         "Monday": [],
-        "Tuesday": ["10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Tuesday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
         "Wednesday": [],
-        "Thursday": ["10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Thursday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
         "Friday": [],
-        "Saturday": ["10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Saturday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
         "Sunday": []
       },
       "biography": "Senior Neurosurgeon with extensive experience in complex brain and spine surgeries."
@@ -225,17 +418,66 @@
       "department": "Orthopedics",
       "designation": "Director - Orthopedics & Joint Replacement",
       "experience": "20 years",
-      "specializations": ["Orthopedics", "Joint Replacement", "Sports Medicine", "Spine Surgery"],
-      "languages": ["English", "Hindi", "Kannada"],
-      "consultation_type": ["OPD", "Joint Replacement", "Sports Injury", "Spine"],
+      "specializations": [
+        "Orthopedics",
+        "Joint Replacement",
+        "Sports Medicine",
+        "Spine Surgery"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Kannada"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Joint Replacement",
+        "Sports Injury",
+        "Spine"
+      ],
       "fee": 1300,
       "location": "Block B, 2nd Floor, Room 205",
       "availability": {
-        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Tuesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Wednesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Thursday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Friday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
         "Saturday": [],
         "Sunday": []
       },
@@ -247,18 +489,86 @@
       "department": "Pediatrics",
       "designation": "Senior Consultant - Pediatrics & Neonatology",
       "experience": "15 years",
-      "specializations": ["Pediatrics", "Neonatology", "Vaccination", "Newborn Care"],
-      "languages": ["English", "Hindi", "Malayalam"],
-      "consultation_type": ["OPD", "Vaccination", "Newborn Care", "NICU"],
+      "specializations": [
+        "Pediatrics",
+        "Neonatology",
+        "Vaccination",
+        "Newborn Care"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Malayalam"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Vaccination",
+        "Newborn Care",
+        "NICU"
+      ],
       "fee": 900,
       "location": "Block C, 3rd Floor, Room 301",
       "availability": {
-        "Monday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Tuesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Wednesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Thursday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Friday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Saturday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Monday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Tuesday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Wednesday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Thursday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Friday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Saturday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
         "Sunday": []
       },
       "biography": "Senior Pediatrician and Neonatologist with special expertise in newborn care."
@@ -269,18 +579,72 @@
       "department": "Gynecology",
       "designation": "Senior Consultant - Gynecology & Obstetrics",
       "experience": "15 years",
-      "specializations": ["Gynecology", "Obstetrics", "High-Risk Pregnancy", "Laparoscopy"],
-      "languages": ["English", "Hindi", "Telugu"],
-      "consultation_type": ["OPD", "Prenatal", "High-Risk Pregnancy", "Laparoscopy"],
+      "specializations": [
+        "Gynecology",
+        "Obstetrics",
+        "High-Risk Pregnancy",
+        "Laparoscopy"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Telugu"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Prenatal",
+        "High-Risk Pregnancy",
+        "Laparoscopy"
+      ],
       "fee": 1400,
       "location": "Block C, 4th Floor, Room 402",
       "availability": {
-        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
-        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
-        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
-        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
+        "Tuesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
+        "Wednesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
+        "Thursday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
         "Friday": [],
-        "Saturday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"],
+        "Saturday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00"
+        ],
         "Sunday": []
       },
       "biography": "Senior Obstetric specialist with expertise in managing high-risk pregnancies."
@@ -291,18 +655,59 @@
       "department": "Gynecology",
       "designation": "Consultant - Gynecology & Reproductive Medicine",
       "experience": "10 years",
-      "specializations": ["Gynecology", "Infertility", "PCOS", "Prenatal Care"],
-      "languages": ["English", "Hindi"],
-      "consultation_type": ["OPD", "Infertility", "PCOS", "Prenatal"],
+      "specializations": [
+        "Gynecology",
+        "Infertility",
+        "PCOS",
+        "Prenatal Care"
+      ],
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Infertility",
+        "PCOS",
+        "Prenatal"
+      ],
       "fee": 1200,
       "location": "Block C, 4th Floor, Room 404",
       "availability": {
-        "Monday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Monday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30"
+        ],
         "Tuesday": [],
-        "Wednesday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Wednesday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30"
+        ],
         "Thursday": [],
-        "Friday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
-        "Saturday": ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+        "Friday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30"
+        ],
+        "Saturday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30"
+        ],
         "Sunday": []
       },
       "biography": "Reproductive medicine specialist focusing on infertility and PCOS management."
@@ -313,20 +718,101 @@
       "department": "Endocrinology",
       "designation": "HOD - Endocrinology & Diabetes",
       "experience": "12 years",
-      "specializations": ["Endocrinology", "Diabetes Management", "Thyroid Disorders", "Obesity"],
-      "keywords": ["diabetologist", "diabetes", "diabetic", "sugar", "thyroid", "endocrinologist", "hormone"],
-      "languages": ["English", "Hindi"],
-      "consultation_type": ["OPD", "Diabetes Management", "Thyroid", "Obesity"],
+      "specializations": [
+        "Endocrinology",
+        "Diabetes Management",
+        "Thyroid Disorders",
+        "Obesity"
+      ],
+      "keywords": [
+        "diabetologist",
+        "diabetes",
+        "diabetic",
+        "sugar",
+        "thyroid",
+        "endocrinologist",
+        "hormone"
+      ],
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Diabetes Management",
+        "Thyroid",
+        "Obesity"
+      ],
       "fee": 1000,
       "location": "Block A, Ground Floor, Room 008",
       "availability": {
-        "Monday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Tuesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Wednesday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Thursday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Friday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Saturday": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Sunday": ["08:00", "08:30", "09:00", "09:30", "10:00"]
+        "Monday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Tuesday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Wednesday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Thursday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Friday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Saturday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Sunday": [
+          "08:00",
+          "08:30",
+          "09:00",
+          "09:30",
+          "10:00"
+        ]
       },
       "biography": "Head of Endocrinology with special focus on diabetes management and thyroid disorders."
     },
@@ -336,17 +822,66 @@
       "department": "Gastroenterology",
       "designation": "Senior Consultant - Gastroenterology & Hepatology",
       "experience": "17 years",
-      "specializations": ["Gastroenterology", "Hepatology", "Endoscopy", "Colonoscopy"],
-      "languages": ["English", "Tamil", "Hindi"],
-      "consultation_type": ["OPD", "Endoscopy", "Colonoscopy", "Liver Disease"],
+      "specializations": [
+        "Gastroenterology",
+        "Hepatology",
+        "Endoscopy",
+        "Colonoscopy"
+      ],
+      "languages": [
+        "English",
+        "Tamil",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Endoscopy",
+        "Colonoscopy",
+        "Liver Disease"
+      ],
       "fee": 1400,
       "location": "Block B, 3rd Floor, Room 305",
       "availability": {
-        "Monday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Tuesday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Wednesday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Thursday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
-        "Friday": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30"],
+        "Monday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Tuesday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Wednesday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Thursday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Friday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
         "Saturday": [],
         "Sunday": []
       },
@@ -358,19 +893,70 @@
       "department": "Pulmonology",
       "designation": "Consultant - Pulmonology & Sleep Medicine",
       "experience": "13 years",
-      "specializations": ["Pulmonology", "Sleep Medicine", "Asthma", "COPD"],
-      "keywords": ["pulmonologist", "lung", "lungs", "chest", "breathing", "asthma", "copd", "respiratory", "phephde"],
-      "languages": ["English", "Hindi"],
-      "consultation_type": ["OPD", "Asthma", "COPD", "Sleep Apnea"],
+      "specializations": [
+        "Pulmonology",
+        "Sleep Medicine",
+        "Asthma",
+        "COPD"
+      ],
+      "keywords": [
+        "pulmonologist",
+        "lung",
+        "lungs",
+        "chest",
+        "breathing",
+        "asthma",
+        "copd",
+        "respiratory",
+        "phephde"
+      ],
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Asthma",
+        "COPD",
+        "Sleep Apnea"
+      ],
       "fee": 1100,
       "location": "Block A, 2nd Floor, Room 210",
       "availability": {
-        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
         "Tuesday": [],
-        "Wednesday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Wednesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
         "Thursday": [],
-        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
-        "Saturday": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
+        "Friday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Saturday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
         "Sunday": []
       },
       "biography": "Pulmonologist specializing in sleep disorders and chronic respiratory diseases."
@@ -381,18 +967,57 @@
       "department": "Oncology",
       "designation": "Senior Consultant - Oncology",
       "experience": "18 years",
-      "specializations": ["Oncology", "Medical Oncology", "Chemotherapy", "Cancer Management"],
-      "languages": ["English", "Malayalam", "Hindi"],
-      "consultation_type": ["OPD", "Chemotherapy", "Cancer Consultation"],
+      "specializations": [
+        "Oncology",
+        "Medical Oncology",
+        "Chemotherapy",
+        "Cancer Management"
+      ],
+      "languages": [
+        "English",
+        "Malayalam",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Chemotherapy",
+        "Cancer Consultation"
+      ],
       "fee": 1600,
       "location": "Block D, 5th Floor, Room 502",
       "availability": {
-        "Monday": ["11:00", "11:30", "12:00", "12:30", "14:00", "14:30"],
-        "Tuesday": ["11:00", "11:30", "12:00", "12:30", "14:00", "14:30"],
+        "Monday": [
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "14:00",
+          "14:30"
+        ],
+        "Tuesday": [
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "14:00",
+          "14:30"
+        ],
         "Wednesday": [],
-        "Thursday": ["11:00", "11:30", "12:00", "12:30", "14:00", "14:30"],
+        "Thursday": [
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "14:00",
+          "14:30"
+        ],
         "Friday": [],
-        "Saturday": ["11:00", "11:30", "12:00", "12:30"],
+        "Saturday": [
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
         "Sunday": []
       },
       "biography": "Senior Oncologist with 18 years of experience in comprehensive cancer management."
@@ -403,18 +1028,60 @@
       "department": "Ophthalmology",
       "designation": "Senior Consultant - Ophthalmology",
       "experience": "14 years",
-      "specializations": ["Ophthalmology", "Cataract Surgery", "Glaucoma", "Retina"],
-      "languages": ["English", "Hindi", "Tamil"],
-      "consultation_type": ["OPD", "Cataract", "Glaucoma", "Retina"],
+      "specializations": [
+        "Ophthalmology",
+        "Cataract Surgery",
+        "Glaucoma",
+        "Retina"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Tamil"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Cataract",
+        "Glaucoma",
+        "Retina"
+      ],
       "fee": 1000,
       "location": "Block B, 2nd Floor, Room 215",
       "availability": {
-        "Monday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
-        "Tuesday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00"
+        ],
+        "Tuesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00"
+        ],
         "Wednesday": [],
-        "Thursday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
-        "Friday": ["09:00", "09:30", "10:00", "10:30", "11:00"],
-        "Saturday": ["10:00", "10:30", "11:00"],
+        "Thursday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00"
+        ],
+        "Friday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00"
+        ],
+        "Saturday": [
+          "10:00",
+          "10:30",
+          "11:00"
+        ],
         "Sunday": []
       },
       "biography": "Ophthalmologist with expertise in cataract surgery and retinal diseases."
@@ -425,17 +1092,58 @@
       "department": "ENT",
       "designation": "Consultant - ENT",
       "experience": "11 years",
-      "specializations": ["ENT", "Hearing Care", "Sinusitis", "Vertigo"],
-      "languages": ["English", "Hindi", "Punjabi"],
-      "consultation_type": ["OPD", "Hearing Test", "Sinus Treatment"],
+      "specializations": [
+        "ENT",
+        "Hearing Care",
+        "Sinusitis",
+        "Vertigo"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Punjabi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Hearing Test",
+        "Sinus Treatment"
+      ],
       "fee": 1000,
       "location": "Block B, 2nd Floor, Room 220",
       "availability": {
-        "Monday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
-        "Tuesday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
+        "Monday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "14:00",
+          "14:30"
+        ],
+        "Tuesday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "14:00",
+          "14:30"
+        ],
         "Wednesday": [],
-        "Thursday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
-        "Friday": ["10:00", "10:30", "11:00", "11:30", "14:00", "14:30"],
+        "Thursday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "14:00",
+          "14:30"
+        ],
+        "Friday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "14:00",
+          "14:30"
+        ],
         "Saturday": [],
         "Sunday": []
       },
@@ -447,24 +1155,58 @@
       "department": "Dermatology",
       "designation": "Consultant - Dermatology & Aesthetics",
       "experience": "9 years",
-      "specializations": ["Dermatology", "Aesthetics", "Skin Disorders", "Hair Loss"],
-      "languages": ["English", "Hindi"],
-      "consultation_type": ["OPD", "Skin Treatment", "Cosmetic"],
+      "specializations": [
+        "Dermatology",
+        "Aesthetics",
+        "Skin Disorders",
+        "Hair Loss"
+      ],
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Skin Treatment",
+        "Cosmetic"
+      ],
       "fee": 900,
       "location": "Block A, Ground Floor, Room 012",
       "availability": {
-        "Monday": ["15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Monday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00"
+        ],
         "Tuesday": [],
-        "Wednesday": ["15:00", "15:30", "16:00", "16:30", "17:00"],
-        "Thursday": ["15:00", "15:30", "16:00", "16:30", "17:00"],
+        "Wednesday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00"
+        ],
+        "Thursday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00"
+        ],
         "Friday": [],
-        "Saturday": ["15:00", "15:30", "16:00", "16:30"],
+        "Saturday": [
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30"
+        ],
         "Sunday": []
       },
       "biography": "Dermatologist with expertise in cosmetic dermatology and hair loss management."
     }
   ],
-
   "services": [
     {
       "id": "svc_mri_brain",
@@ -475,8 +1217,19 @@
       "duration_minutes": 45,
       "prep_instructions": "Remove all metal objects. No special fasting required. Wear comfortable clothes without metal.",
       "location": "Radiology, Ground Floor, Lab Wing B",
-      "synonyms": ["brain scan", "mri brain", "cerebral mri", "brain imaging"],
-      "keywords": ["mri", "brain", "imaging", "neuro", "neuroimaging"]
+      "synonyms": [
+        "brain scan",
+        "mri brain",
+        "cerebral mri",
+        "brain imaging"
+      ],
+      "keywords": [
+        "mri",
+        "brain",
+        "imaging",
+        "neuro",
+        "neuroimaging"
+      ]
     },
     {
       "id": "svc_mri_spine",
@@ -487,8 +1240,17 @@
       "duration_minutes": 50,
       "prep_instructions": "Remove all metal jewelry and objects. No special fasting required.",
       "location": "Radiology, Ground Floor, Lab Wing B",
-      "synonyms": ["spine scan", "mri spine", "back imaging"],
-      "keywords": ["mri", "spine", "back", "imaging"]
+      "synonyms": [
+        "spine scan",
+        "mri spine",
+        "back imaging"
+      ],
+      "keywords": [
+        "mri",
+        "spine",
+        "back",
+        "imaging"
+      ]
     },
     {
       "id": "svc_mri_abdomen",
@@ -499,8 +1261,17 @@
       "duration_minutes": 60,
       "prep_instructions": "Light breakfast is acceptable. No fasting strictly required.",
       "location": "Radiology, Ground Floor, Lab Wing B",
-      "synonyms": ["abdomen scan", "belly scan", "mri abdomen"],
-      "keywords": ["mri", "abdomen", "belly", "imaging"]
+      "synonyms": [
+        "abdomen scan",
+        "belly scan",
+        "mri abdomen"
+      ],
+      "keywords": [
+        "mri",
+        "abdomen",
+        "belly",
+        "imaging"
+      ]
     },
     {
       "id": "svc_ct_head",
@@ -511,8 +1282,18 @@
       "duration_minutes": 20,
       "prep_instructions": "No special preparation needed. The scan takes 20 minutes.",
       "location": "Radiology, Ground Floor, Lab Wing B",
-      "synonyms": ["ct brain", "head ct", "ct scan brain"],
-      "keywords": ["ct", "head", "brain", "imaging", "scan"]
+      "synonyms": [
+        "ct brain",
+        "head ct",
+        "ct scan brain"
+      ],
+      "keywords": [
+        "ct",
+        "head",
+        "brain",
+        "imaging",
+        "scan"
+      ]
     },
     {
       "id": "svc_ct_chest",
@@ -523,8 +1304,18 @@
       "duration_minutes": 25,
       "prep_instructions": "No fasting required. Wear comfortable clothes without metal buttons.",
       "location": "Radiology, Ground Floor, Lab Wing B",
-      "synonyms": ["ct thorax", "chest imaging", "lung scan"],
-      "keywords": ["ct", "chest", "lung", "thorax", "imaging"]
+      "synonyms": [
+        "ct thorax",
+        "chest imaging",
+        "lung scan"
+      ],
+      "keywords": [
+        "ct",
+        "chest",
+        "lung",
+        "thorax",
+        "imaging"
+      ]
     },
     {
       "id": "svc_ct_abdomen",
@@ -535,8 +1326,17 @@
       "duration_minutes": 30,
       "prep_instructions": "Fasting of 4 hours required. Drink 500ml contrast water 1 hour before scan.",
       "location": "Radiology, Ground Floor, Lab Wing B",
-      "synonyms": ["ct belly", "abdominal scan", "contrast ct"],
-      "keywords": ["ct", "abdomen", "contrast", "imaging"]
+      "synonyms": [
+        "ct belly",
+        "abdominal scan",
+        "contrast ct"
+      ],
+      "keywords": [
+        "ct",
+        "abdomen",
+        "contrast",
+        "imaging"
+      ]
     },
     {
       "id": "svc_thyroid_profile",
@@ -547,8 +1347,18 @@
       "duration_minutes": 6,
       "prep_instructions": "No fasting required. Can be done anytime.",
       "location": "Lab, Ground Floor, Lab Wing A",
-      "synonyms": ["thyroid test", "tsh test", "thyroid function"],
-      "keywords": ["thyroid", "tsh", "t3", "t4", "test"]
+      "synonyms": [
+        "thyroid test",
+        "tsh test",
+        "thyroid function"
+      ],
+      "keywords": [
+        "thyroid",
+        "tsh",
+        "t3",
+        "t4",
+        "test"
+      ]
     },
     {
       "id": "svc_cbc",
@@ -559,8 +1369,17 @@
       "duration_minutes": 5,
       "prep_instructions": "No fasting required.",
       "location": "Lab, Ground Floor, Lab Wing A",
-      "synonyms": ["cbc test", "complete blood count", "blood test"],
-      "keywords": ["cbc", "blood", "count", "test"]
+      "synonyms": [
+        "cbc test",
+        "complete blood count",
+        "blood test"
+      ],
+      "keywords": [
+        "cbc",
+        "blood",
+        "count",
+        "test"
+      ]
     },
     {
       "id": "svc_blood_sugar",
@@ -571,8 +1390,17 @@
       "duration_minutes": 5,
       "prep_instructions": "Fasting of 8-10 hours required. Water allowed.",
       "location": "Lab, Ground Floor, Lab Wing A",
-      "synonyms": ["blood sugar", "glucose test", "fasting sugar"],
-      "keywords": ["blood sugar", "glucose", "fasting", "test"]
+      "synonyms": [
+        "blood sugar",
+        "glucose test",
+        "fasting sugar"
+      ],
+      "keywords": [
+        "blood sugar",
+        "glucose",
+        "fasting",
+        "test"
+      ]
     },
     {
       "id": "svc_lipid_profile",
@@ -583,8 +1411,17 @@
       "duration_minutes": 5,
       "prep_instructions": "Fasting of 10-12 hours required. No alcohol for 24 hours before test.",
       "location": "Lab, Ground Floor, Lab Wing A",
-      "synonyms": ["lipid test", "cholesterol test", "lipid panel"],
-      "keywords": ["lipid", "cholesterol", "triglyceride", "test"]
+      "synonyms": [
+        "lipid test",
+        "cholesterol test",
+        "lipid panel"
+      ],
+      "keywords": [
+        "lipid",
+        "cholesterol",
+        "triglyceride",
+        "test"
+      ]
     },
     {
       "id": "svc_liver_function",
@@ -595,11 +1432,19 @@
       "duration_minutes": 5,
       "prep_instructions": "Fasting of 8-10 hours recommended. Water allowed.",
       "location": "Lab, Ground Floor, Lab Wing A",
-      "synonyms": ["lft test", "liver test", "sgpt sgot"],
-      "keywords": ["liver", "lft", "enzyme", "test"]
+      "synonyms": [
+        "lft test",
+        "liver test",
+        "sgpt sgot"
+      ],
+      "keywords": [
+        "liver",
+        "lft",
+        "enzyme",
+        "test"
+      ]
     }
   ],
-
   "health_packages": [
     {
       "id": "pkg_silver",
@@ -647,38 +1492,57 @@
       "prep_instructions": "No fasting required"
     }
   ],
-
   "room_types": [
     {
       "id": "room_icu",
       "name": "ICU",
       "description": "Intensive Care Unit with 24x7 monitoring and life support",
       "price_per_day": 12000,
-      "features": ["Continuous monitoring", "Ventilator support", "24x7 nursing care", "Cardiac monitoring"]
+      "features": [
+        "Continuous monitoring",
+        "Ventilator support",
+        "24x7 nursing care",
+        "Cardiac monitoring"
+      ]
     },
     {
       "id": "room_deluxe",
       "name": "Deluxe Private Room",
       "description": "Spacious private room with attached bathroom, TV, and sofa",
       "price_per_day": 5500,
-      "features": ["Private room", "Attached bathroom", "TV", "Sofa", "WiFi", "Telephone"]
+      "features": [
+        "Private room",
+        "Attached bathroom",
+        "TV",
+        "Sofa",
+        "WiFi",
+        "Telephone"
+      ]
     },
     {
       "id": "room_semi_private",
       "name": "Semi-Private Room",
       "description": "Room with shared nursing care and basic amenities",
       "price_per_day": 3000,
-      "features": ["Shared room", "Basic amenities", "Shared bathroom", "TV"]
+      "features": [
+        "Shared room",
+        "Basic amenities",
+        "Shared bathroom",
+        "TV"
+      ]
     },
     {
       "id": "room_general",
       "name": "General Ward",
       "description": "Standard ward with basic care facilities",
       "price_per_day": 1200,
-      "features": ["Standard care", "Basic facilities", "Shared ward"]
+      "features": [
+        "Standard care",
+        "Basic facilities",
+        "Shared ward"
+      ]
     }
   ],
-
   "operating_hours": {
     "general_opd": "08:00-19:00 (Mon-Fri), 08:00-13:00 (Sat), Closed (Sun)",
     "specialist_opd": "Varies by department",
@@ -687,7 +1551,6 @@
     "lab": "07:00-20:00 (Mon-Sat), 08:00-14:00 (Sun)",
     "radiology": "07:00-20:00 (Mon-Sat), 24x7 Emergency"
   },
-
   "amenities": {
     "parking": {
       "general": "Multi-level parking at Basement B1 & B2, capacity 500 vehicles",
@@ -704,7 +1567,6 @@
     "prayer_room": "Meditation and prayer room on Ground Floor (24x7)",
     "play_area": "Supervised children's play area near OPD waiting area (09:00-18:00)"
   },
-
   "faq": [
     {
       "id": "faq_001",
@@ -717,7 +1579,10 @@
         "Hospital kahan hai?"
       ],
       "answer": "InDiiServe Multi-Specialty Hospital is located at 12-B, MG Road, Residency Area, Bengaluru - 560025.",
-      "tags": ["location", "address"]
+      "tags": [
+        "location",
+        "address"
+      ]
     },
     {
       "id": "faq_002",
@@ -730,7 +1595,10 @@
         "Hospital se contact kaise karen?"
       ],
       "answer": "You can reach us at our main reception on +91 80 4000 9000. For emergencies, dial 1066.",
-      "tags": ["contact", "phone"]
+      "tags": [
+        "contact",
+        "phone"
+      ]
     },
     {
       "id": "faq_003",
@@ -743,7 +1611,10 @@
         "Departments list?"
       ],
       "answer": "We have 13 departments: Cardiology & Cardiothoracic Surgery, Neurology & Neurosurgery, Orthopedics & Joint Replacement, Pediatrics & Neonatology, Gynecology & Obstetrics, Endocrinology & Diabetes Clinic, Gastroenterology & Hepatology, Pulmonology & Chest Medicine, Oncology, Ophthalmology, ENT, Dermatology & Aesthetics, and Emergency & Trauma.",
-      "tags": ["departments", "specialties"]
+      "tags": [
+        "departments",
+        "specialties"
+      ]
     },
     {
       "id": "faq_004",
@@ -756,7 +1627,12 @@
         "Brain scan ka kharcha?"
       ],
       "answer": "Brain MRI costs Rs. 8,500 and takes approximately 45 minutes. No fasting required. It is located in the Radiology department on the Ground Floor, Lab Wing B.",
-      "tags": ["imaging", "mri", "pricing", "brain"]
+      "tags": [
+        "imaging",
+        "mri",
+        "pricing",
+        "brain"
+      ]
     },
     {
       "id": "faq_005",
@@ -769,7 +1645,12 @@
         "Back MRI cost?"
       ],
       "answer": "Spine MRI costs Rs. 9,000. It takes approximately 50 minutes. No special fasting is required. Located in the Radiology department.",
-      "tags": ["imaging", "mri", "pricing", "spine"]
+      "tags": [
+        "imaging",
+        "mri",
+        "pricing",
+        "spine"
+      ]
     },
     {
       "id": "faq_006",
@@ -782,7 +1663,12 @@
         "Brain CT cost?"
       ],
       "answer": "A CT Head scan costs Rs. 4,500 and takes about 20 minutes. No special preparation is required.",
-      "tags": ["imaging", "ct", "pricing", "head"]
+      "tags": [
+        "imaging",
+        "ct",
+        "pricing",
+        "head"
+      ]
     },
     {
       "id": "faq_007",
@@ -795,7 +1681,12 @@
         "Lung scan cost?"
       ],
       "answer": "CT Chest costs Rs. 5,500 and takes approximately 25 minutes. Wear comfortable clothes without metal buttons.",
-      "tags": ["imaging", "ct", "pricing", "chest"]
+      "tags": [
+        "imaging",
+        "ct",
+        "pricing",
+        "chest"
+      ]
     },
     {
       "id": "faq_008",
@@ -808,7 +1699,13 @@
         "Abdominal CT price?"
       ],
       "answer": "CT Abdomen with contrast costs Rs. 8,000 and takes about 30 minutes. Fasting of 4 hours is required. You'll need to drink 500ml of contrast water 1 hour before the scan.",
-      "tags": ["imaging", "ct", "pricing", "abdomen", "contrast"]
+      "tags": [
+        "imaging",
+        "ct",
+        "pricing",
+        "abdomen",
+        "contrast"
+      ]
     },
     {
       "id": "faq_009",
@@ -821,7 +1718,11 @@
         "Parking charges here?"
       ],
       "answer": "Parking rates: Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. Multi-level parking is available in Basement B1 and B2 with capacity for 500 vehicles.",
-      "tags": ["parking", "facilities", "cost"]
+      "tags": [
+        "parking",
+        "facilities",
+        "cost"
+      ]
     },
     {
       "id": "faq_010",
@@ -834,7 +1735,10 @@
         "ICU visiting time?"
       ],
       "answer": "ICU visiting hours are strictly from 11:00 AM to 12:00 PM and 5:00 PM to 6:00 PM daily. Only one visitor is allowed at a time, and a valid ICU visitor pass is required which can be obtained from the ICU Reception on the 4th Floor.",
-      "tags": ["visiting hours", "icu"]
+      "tags": [
+        "visiting hours",
+        "icu"
+      ]
     },
     {
       "id": "faq_011",
@@ -847,7 +1751,10 @@
         "Visiting hours for patients?"
       ],
       "answer": "General ward visiting hours are from 4:00 PM to 7:00 PM daily. Maximum two visitors are allowed per patient at a time. Children below 12 years are not permitted inside the ward.",
-      "tags": ["visiting hours", "ward"]
+      "tags": [
+        "visiting hours",
+        "ward"
+      ]
     },
     {
       "id": "faq_012",
@@ -860,7 +1767,11 @@
         "Aap insurance accept karte ho?"
       ],
       "answer": "Yes, we are empanelled with over 30 TPA and insurance companies including Star Health, HDFC Ergo, ICICI Lombard, Bajaj Allianz, New India Assurance, and Max Bupa. Our cashless desk is on the Ground Floor near the main billing counter.",
-      "tags": ["insurance", "billing", "payment"]
+      "tags": [
+        "insurance",
+        "billing",
+        "payment"
+      ]
     },
     {
       "id": "faq_013",
@@ -873,7 +1784,10 @@
         "Urgent help kaise loon?"
       ],
       "answer": "Our 24x7 hospital emergency helpline is +91 80 4000 9000. For national medical emergencies, dial 1066. Our Emergency and Trauma Centre is always open at Ground Floor, Block A main gate entrance.",
-      "tags": ["emergency", "contact"]
+      "tags": [
+        "emergency",
+        "contact"
+      ]
     },
     {
       "id": "faq_014",
@@ -886,7 +1800,11 @@
         "Food before blood test?"
       ],
       "answer": "It depends on the test. For fasting blood sugar: 8-10 hours fasting required. For lipid profile: 10-12 hours fasting required. For most routine tests like CBC and thyroid: no fasting required. Please consult the lab staff for specific tests.",
-      "tags": ["tests", "fasting", "blood"]
+      "tags": [
+        "tests",
+        "fasting",
+        "blood"
+      ]
     },
     {
       "id": "faq_015",
@@ -899,7 +1817,10 @@
         "Payment options?"
       ],
       "answer": "We accept all major payment modes including UPI, debit and credit cards, net banking, cash, and insurance cashless billing. Our billing counter is on the Ground Floor near the main entrance. We also have EMI options for bills above Rs. 50,000.",
-      "tags": ["payment", "billing"]
+      "tags": [
+        "payment",
+        "billing"
+      ]
     },
     {
       "id": "faq_016",
@@ -912,7 +1833,11 @@
         "Cardiology consultation cost?"
       ],
       "answer": "The consultation fee for our senior cardiologists is Rs. 1,200 to Rs. 1,500 per visit. For follow-up consultations within 7 days, a discounted fee of Rs. 600-750 applies.",
-      "tags": ["doctor", "fee", "cardiology"]
+      "tags": [
+        "doctor",
+        "fee",
+        "cardiology"
+      ]
     },
     {
       "id": "faq_017",
@@ -925,7 +1850,11 @@
         "Internet available?"
       ],
       "answer": "Yes, free WiFi is available throughout the hospital. Connect to the network named InDiiServe-Guest and enter your mobile number to receive the OTP for access.",
-      "tags": ["wifi", "internet", "facilities"]
+      "tags": [
+        "wifi",
+        "internet",
+        "facilities"
+      ]
     },
     {
       "id": "faq_018",
@@ -938,7 +1867,11 @@
         "When is pharmacy open?"
       ],
       "answer": "Yes, our main pharmacy is open 24 hours a day, 7 days a week. It is located on the Ground Floor near the main exit. We also have an in-patient pharmacy on the 3rd Floor for admitted patients. Home delivery of medicines is also available.",
-      "tags": ["pharmacy", "hours", "services"]
+      "tags": [
+        "pharmacy",
+        "hours",
+        "services"
+      ]
     },
     {
       "id": "faq_019",
@@ -951,7 +1884,11 @@
         "Doctor milega kal?"
       ],
       "answer": "Doctor availability varies by department and day. For tomorrow's availability, please call our reception at +91 80 4000 9000 or you can tell me the department or doctor name you're interested in, and I can check specific availability for you.",
-      "tags": ["doctor", "availability", "appointment"]
+      "tags": [
+        "doctor",
+        "availability",
+        "appointment"
+      ]
     },
     {
       "id": "faq_020",
@@ -964,10 +1901,721 @@
         "Hospital ka certification?"
       ],
       "answer": "Yes, InDiiServe Multi-Specialty Hospital is NABH accredited, which means we meet the highest standards of patient care, safety, and quality as per the National Accreditation Board for Hospitals standards.",
-      "tags": ["accreditation", "quality", "certification"]
+      "tags": [
+        "accreditation",
+        "quality",
+        "certification"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051815_8056",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051815_8056",
+      "question_variants": [
+        "Is Dr. Sen's clinic on the 3rd floor now?"
+      ],
+      "answer": "Yes, Dr. Sen's clinic is on the 3rd floor.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051815_2720",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051815_2720",
+      "question_variants": [
+        "What are the parking rates at InDiiServe Healthcare?"
+      ],
+      "answer": "The parking rate is 20 rupees for an hour.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051815_2947",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051815_2947",
+      "question_variants": [
+        "What are the availability hours of Dr. Sen in the Cardiology department?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051815_9535",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051815_9535",
+      "question_variants": [
+        "What is the consultation fee for Dr. Sen in the Cardiology department?"
+      ],
+      "answer": "Rs. 500.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051815_7197",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051815_7197",
+      "question_variants": [
+        "Is Dr. Sen's clinic on the 3rd floor?"
+      ],
+      "answer": "Yes, Dr. Sen's clinic is now on the 3rd floor.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051938_3730",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051938_3730",
+      "question_variants": [
+        "Is there a new location for Dr. Sen's clinic?"
+      ],
+      "answer": "No new information provided",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051938_8531",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051938_8531",
+      "question_variants": [
+        "What is the parking rate at InDiiServe Healthcare?"
+      ],
+      "answer": "No new information provided",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051938_2498",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051938_2498",
+      "question_variants": [
+        "What are the billing details for the patient?"
+      ],
+      "answer": "Requires patient ID or full name",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051938_5958",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051938_5958",
+      "question_variants": [
+        "Dr. Sen from the Cardiology department is available from Monday to Friday, from 10:00 AM to 02:00 PM."
+      ],
+      "answer": "Dr. Sen from the Cardiology department is available Monday to Friday, from 10:00 AM to 02:00 PM.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051938_4534",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051938_4534",
+      "question_variants": [
+        "What is the new location of Dr. Sen's clinic?"
+      ],
+      "answer": "3rd floor",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780051938_9019",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780051938_9019",
+      "question_variants": [
+        "Where is Dr. Sen's clinic located now?"
+      ],
+      "answer": "3rd floor",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_9481",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_9481",
+      "question_variants": [
+        "What should I do if I have a fever and headache?"
+      ],
+      "answer": "See a doctor today, it sounds urgent.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_1170",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_1170",
+      "question_variants": [
+        "How can I check my current bill?"
+      ],
+      "answer": "Provide your patient ID or full name to retrieve your billing details.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_4860",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_4860",
+      "question_variants": [
+        "Which department or doctor's name is the user looking for?"
+      ],
+      "answer": "Cardiology department",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_9170",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_9170",
+      "question_variants": [
+        "Who is the doctor in the Cardiology department?"
+      ],
+      "answer": "Dr. Sen",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_8068",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_8068",
+      "question_variants": [
+        "What are Dr. Sen's available hours in the Cardiology department?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_3203",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_3203",
+      "question_variants": [
+        "Is there any parking available?"
+      ],
+      "answer": "Yes, multi-level parking is available at Basement B1 and B2.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_5568",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_5568",
+      "question_variants": [
+        "Is there any cafeteria?"
+      ],
+      "answer": "Yes, the multi-cuisine food court is on the 5th Floor, Block B, open from 7 AM to 10 PM.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_9501",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_9501",
+      "question_variants": [
+        "What is the parking rate for an hour?"
+      ],
+      "answer": "The parking rate is 20 rupees for an hour.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053171_8822",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053171_8822",
+      "question_variants": [
+        "What is the new floor for Dr. Sen's clinic?"
+      ],
+      "answer": "3rd floor",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_6621",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_6621",
+      "question_variants": [
+        "Which department or doctor's name is the patient looking for?"
+      ],
+      "answer": "Cardiology department",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_9197",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_9197",
+      "question_variants": [
+        "Who is available in the Cardiology department?"
+      ],
+      "answer": "Dr. Sen",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_9330",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_9330",
+      "question_variants": [
+        "What are Dr. Sen's available days and hours in the Cardiology department?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_8222",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_8222",
+      "question_variants": [
+        "What is the consultation fee for Dr. Sen?"
+      ],
+      "answer": "Rs. 500",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_4437",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_4437",
+      "question_variants": [
+        "What are the departments available at InDiiServe Healthcare?"
+      ],
+      "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_1963",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_1963",
+      "question_variants": [
+        "Who are the available cardiologists at InDiiServe Healthcare?"
+      ],
+      "answer": "Dr. Sameer Kulkarni and Dr. Rajesh Nair",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_2407",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_2407",
+      "question_variants": [
+        "Who is the available neurologist at InDiiServe Healthcare?"
+      ],
+      "answer": "Dr. Megha Rao",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_7579",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_7579",
+      "question_variants": [
+        "What are the available orthopedics doctors at InDiiServe Healthcare?"
+      ],
+      "answer": "Dr. Vikram Shetty and Dr. Manish Tiwari",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053230_3790",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053230_3790",
+      "question_variants": [
+        "Where is the cafeteria located at InDiiServe Healthcare?"
+      ],
+      "answer": "On the 5th Floor, Block B, open from 7 AM to 10 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053314_1887",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053314_1887",
+      "question_variants": [
+        "Where is Dr. Sen from the Cardiology department available?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053314_7233",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053314_7233",
+      "question_variants": [
+        "What is the parking rate?"
+      ],
+      "answer": "The parking rate is 20 rupees for an hour.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053888_3632",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053888_3632",
+      "question_variants": [
+        "Where is Dr. Sen's clinic located?"
+      ],
+      "answer": "The location of Dr. Sen's clinic was not provided in the transcript.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053888_8083",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053888_8083",
+      "question_variants": [
+        "Where is the Cardiology department located?"
+      ],
+      "answer": "Not specified in the conversation",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053888_9615",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053888_9615",
+      "question_variants": [
+        "Who is the available doctor in the Cardiology department?"
+      ],
+      "answer": "Dr. Sen",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053990_3012",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053990_3012",
+      "question_variants": [
+        "Which doctor is available in the Cardiology department?"
+      ],
+      "answer": "Dr. Sen",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053990_8962",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053990_8962",
+      "question_variants": [
+        "What are the working hours of Dr. Sen in the Cardiology department?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053990_1845",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053990_1845",
+      "question_variants": [
+        "Is there any parking available at InDiiServe Healthcare?"
+      ],
+      "answer": "Yes, there is multi-level parking at Basement B1 and B2. Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780053990_3393",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780053990_3393",
+      "question_variants": [
+        "What is the parking rate at the hospital?"
+      ],
+      "answer": "20 rupees for an hour",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_1067",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_1067",
+      "question_variants": [
+        "What is the severity of the patient's condition?"
+      ],
+      "answer": "Severe, indicated by fever and headache.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_6378",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_6378",
+      "question_variants": [
+        "What is recommended for the patient's condition?"
+      ],
+      "answer": "Seeing a doctor today.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_4530",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_4530",
+      "question_variants": [
+        "How can the patient retrieve their billing details?"
+      ],
+      "answer": "By providing either their patient ID or full name.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_8463",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_8463",
+      "question_variants": [
+        "Which department is Dr. Sen associated with?"
+      ],
+      "answer": "Cardiology",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_5182",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_5182",
+      "question_variants": [
+        "What are Dr. Sen's availability hours in the Cardiology department?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_4411",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_4411",
+      "question_variants": [
+        "What are the available departments for tomorrow?"
+      ],
+      "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054115_2742",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054115_2742",
+      "question_variants": [
+        "What are the parking rates?"
+      ],
+      "answer": "Car parking is Rs. 30 per hour, two-wheelers are Rs. 10 per hour, and the first 2 hours are free with a valid OPD token.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_7354",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_7354",
+      "question_variants": [
+        "Is there any doctor available in the Cardiology department for tomorrow?"
+      ],
+      "answer": "Yes, Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_7768",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_7768",
+      "question_variants": [
+        "Is there any doctor available in the Neurology department for tomorrow?"
+      ],
+      "answer": "Yes, Dr. Megha Rao is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_9235",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_9235",
+      "question_variants": [
+        "Is there any doctor available in the Orthopedics department for tomorrow?"
+      ],
+      "answer": "Yes, Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_3268",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_3268",
+      "question_variants": [
+        "Is there parking available at InDiiServe Healthcare?"
+      ],
+      "answer": "Yes, multi-level parking is available at Basement B1 and B2.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_3635",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_3635",
+      "question_variants": [
+        "What are the parking charges at InDiiServe Healthcare?"
+      ],
+      "answer": "Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_8423",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_8423",
+      "question_variants": [
+        "Is there a cafeteria at InDiiServe Healthcare?"
+      ],
+      "answer": "Yes, a multi-cuisine food court is available on the 5th Floor, Block B, open from 7 AM to 10 PM.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_5461",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_5461",
+      "question_variants": [
+        "Is Dr. Sen's clinic still on the same floor?"
+      ],
+      "answer": "No, Dr. Sen's clinic is now on the 3rd floor.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054636_4684",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054636_4684",
+      "question_variants": [
+        "What are the parking rates at the hospital?"
+      ],
+      "answer": "20 rupees for an hour",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054780_9735",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054780_9735",
+      "question_variants": [
+        "What are Dr. Sen's available days and hours?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054780_5792",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054780_5792",
+      "question_variants": [
+        "Which departments are available at InDiiServe Healthcare?"
+      ],
+      "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, Emergency.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054780_5547",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054780_5547",
+      "question_variants": [
+        "What is the consultation fee for Neurology?"
+      ],
+      "answer": "Rs. 1500.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780054780_4686",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780054780_4686",
+      "question_variants": [
+        "Which doctors are available in Orthopedics for tomorrow?"
+      ],
+      "answer": "Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780055830_3659",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780055830_3659",
+      "question_variants": [
+        "What is the current bill for the patient?"
+      ],
+      "answer": "The current bill for the patient has not been specified in the transcript.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780055830_3341",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780055830_3341",
+      "question_variants": [
+        "What are the available hours for Dr. Sen in the Cardiology department?"
+      ],
+      "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
     }
   ],
-
   "insurance_tpa": [
     {
       "provider": "Star Health",
@@ -1006,7 +2654,6 @@
       "desk_location": "Ground Floor near billing counter"
     }
   ],
-
   "appointment_booking": {
     "online_available": true,
     "phone_available": true,
@@ -1014,7 +2661,6 @@
     "cancellation_policy": "4 hours notice required for cancellation",
     "rescheduling_policy": "Free rescheduling up to 24 hours before appointment"
   },
-
   "emergency_departments": {
     "24x7_available": true,
     "location": "Ground Floor, Block A, Main Gate Entrance",
@@ -1022,13 +2668,50 @@
     "als_equipped": true,
     "trauma_center": true
   },
-
   "information_keywords": {
-    "mri_synonyms": ["mri scan", "magnetic resonance", "mri imaging", "mri test"],
-    "ct_synonyms": ["ct scan", "computed tomography", "cat scan", "ct imaging"],
-    "doctor_synonyms": ["physician", "specialist", "consultant", "medico", "daktar"],
-    "appointment_synonyms": ["booking", "slot", "timing", "schedule", "meeting"],
-    "emergency_synonyms": ["urgent", "critical", "emergency", "sos", "help", "accident", "injury"],
-    "cost_synonyms": ["price", "fee", "rate", "charge", "cost", "kharcha", "rate"]
+    "mri_synonyms": [
+      "mri scan",
+      "magnetic resonance",
+      "mri imaging",
+      "mri test"
+    ],
+    "ct_synonyms": [
+      "ct scan",
+      "computed tomography",
+      "cat scan",
+      "ct imaging"
+    ],
+    "doctor_synonyms": [
+      "physician",
+      "specialist",
+      "consultant",
+      "medico",
+      "daktar"
+    ],
+    "appointment_synonyms": [
+      "booking",
+      "slot",
+      "timing",
+      "schedule",
+      "meeting"
+    ],
+    "emergency_synonyms": [
+      "urgent",
+      "critical",
+      "emergency",
+      "sos",
+      "help",
+      "accident",
+      "injury"
+    ],
+    "cost_synonyms": [
+      "price",
+      "fee",
+      "rate",
+      "charge",
+      "cost",
+      "kharcha",
+      "rate"
+    ]
   }
 }

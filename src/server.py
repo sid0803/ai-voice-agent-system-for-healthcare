@@ -1240,7 +1240,8 @@ async def exotel_stream(websocket: WebSocket):
         nonlocal tool_in_progress
         tool_in_progress = True
         tool_name = data.get("name") or data.get("toolName", "unknown")
-        logger.info("Tool called: %s", tool_name)
+        tool_args = data.get("content") or data.get("input") or "{}"
+        logger.info("Tool called: %s with args: %s", tool_name, tool_args)
         if DEMO_MODE:
             asyncio.ensure_future(websocket.send_text(json.dumps({"event": "tool", "name": tool_name})))
 
@@ -1350,6 +1351,27 @@ async def exotel_stream(websocket: WebSocket):
     session.on_event("toolResult", _handle_tool_result)
     session.on_event("completionEnd", _handle_completion_end)
     session.on_event("streamComplete", _handle_stream_complete)
+
+    # Helper to process incoming audio with interruption detection
+    async def process_incoming_audio(pcm_samples: bytes):
+        try:
+            assistant_speaking = bedrock_client.is_assistant_speaking(session_id)
+            if assistant_speaking:
+                import numpy as np
+                samples = np.frombuffer(pcm_samples, dtype=np.int16).astype(np.float32)
+                raw_rms = np.sqrt(np.mean(samples**2)) if len(samples) > 0 else 0.0
+                
+                if raw_rms > 1200:
+                    session_data = bedrock_client._active_sessions.get(session_id)
+                    if session_data:
+                        session_data.audio_paused = False
+                        logger.info("[INTERRUPT] Loud user speech detected (RMS=%.1f). Unpausing stream to trigger interruption.", raw_rms)
+            
+            # Apply Noise Gate & Auto-Gain before AI ingestion
+            hardened_pcm = hardener.process_chunk(pcm_samples)
+            await session.stream_audio(hardened_pcm)
+        except Exception:
+            logger.exception("Error processing incoming audio chunk")
 
     # -----------------------------------------------------------------------
     # Receive loop - process Exotel WebSocket messages
@@ -1503,9 +1525,7 @@ async def exotel_stream(websocket: WebSocket):
                             try:
                                 raw_bytes = base64.b64decode(payload)
                                 pcm_samples = exotel_to_pcm(raw_bytes)
-                                # Apply Noise Gate & Auto-Gain before AI ingestion
-                                hardened_pcm = hardener.process_chunk(pcm_samples)
-                                await session.stream_audio(hardened_pcm)
+                                await process_incoming_audio(pcm_samples)
                             except Exception:
                                 logger.exception("Error processing Exotel media payload")
 
@@ -1533,8 +1553,7 @@ async def exotel_stream(websocket: WebSocket):
             elif "bytes" in msg and msg["bytes"]:
                 try:
                     pcm_samples = exotel_to_pcm(msg["bytes"])
-                    hardened_pcm = hardener.process_chunk(pcm_samples)
-                    await session.stream_audio(hardened_pcm)
+                    await process_incoming_audio(pcm_samples)
                 except Exception:
                     logger.exception("Error processing Exotel audio frame")
 
