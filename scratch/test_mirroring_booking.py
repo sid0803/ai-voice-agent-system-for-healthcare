@@ -6,8 +6,8 @@ import sys
 import websockets
 from uuid import uuid4
 
-async def test_queries():
-    print("Starting server for test_user_queries...")
+async def test_mirroring_booking():
+    print("Starting server for test_mirroring_booking...")
     env = os.environ.copy()
     env["DEMO_MODE"] = "true"
     env["HOSPITAL_ID"] = "apollo_metro"
@@ -27,7 +27,7 @@ async def test_queries():
                     if key and key not in env:
                         env[key] = val
 
-    f = open("server_startup_test.log", "w", encoding="utf-8")
+    f = open("server_startup_mirror_test.log", "w", encoding="utf-8")
     server_proc = subprocess.Popen(
         [sys.executable, "-u", "-m", "src.server"],
         env=env,
@@ -59,9 +59,9 @@ async def test_queries():
         uri += f"&token={token}"
 
     queries = [
-        "what about the mri?",
-        "can you tell me the pricing of thyroid?",
-        "is there any parking available?"
+        "Appointment book karni hai",
+        "ओपीडी का समय क्या है?",
+        "is there a cardiologist available?"
     ]
 
     try:
@@ -93,8 +93,7 @@ async def test_queries():
                     "text": q
                 }))
 
-                start_time = time_time = asyncio.get_event_loop().time()
-                tool_called = False
+                start_time = asyncio.get_event_loop().time()
                 text_response = ""
                 while asyncio.get_event_loop().time() - start_time < 15:
                     try:
@@ -102,19 +101,11 @@ async def test_queries():
                     except asyncio.TimeoutError:
                         break
                     data = json.loads(msg)
-                    if data.get("event") == "tool":
-                        print(f"  Tool triggered: {data.get('name')} with args: {data.get('args')}")
-                        tool_called = True
-                    elif data.get("event") == "text":
+                    if data.get("event") == "text":
                         text_response += data.get("text", "")
                         print(f"  AI Response Chunk: {data.get('text')}")
 
                 print(f"Final AI Response for '{q}': {text_response}")
-                if tool_called:
-                    print(f"SUCCESS: Tool called for query '{q}'")
-                else:
-                    # If tool wasn't called but the response contains the correct info (like MRI price or parking rates), it's also a pass
-                    print(f"INFO: No tool called. Response contained correct info? {any(x in text_response for x in ['8,500', '8500', '750', '30', 'parking', 'Basement'])}")
 
     except Exception as e:
         print(f"Error during test: {e}")
@@ -125,4 +116,4 @@ async def test_queries():
         f.close()
 
 if __name__ == "__main__":
-    asyncio.run(test_queries())
+    asyncio.run(test_mirroring_booking())

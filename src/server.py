@@ -839,7 +839,9 @@ async def lifespan(app: FastAPI):
         await asyncio.gather(*close_tasks, return_exceptions=True)
         
     if _background_tasks:
-        logger.info("[SHUTDOWN] Waiting for %d pending background tasks...", len(_background_tasks))
+        logger.info("[SHUTDOWN] Cancelling %d pending background tasks...", len(_background_tasks))
+        for task in list(_background_tasks):
+            task.cancel()
         await asyncio.gather(*_background_tasks, return_exceptions=True)
     
     # Close global HTTP client
