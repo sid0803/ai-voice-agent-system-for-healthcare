@@ -4,7 +4,7 @@
     "hospital_name": "InDiiServe Multi-Specialty Hospital",
     "version": "2.0.0",
     "creation_date": "2026-05-28T00:00:00Z",
-    "last_updated": "2026-05-29T11:57:10.373320+00:00",
+    "last_updated": "2026-05-29T14:14:52.327185+00:00",
     "data_freshness_guarantee": "updated_daily",
     "schema_version": "2.0",
     "note": "Unified Knowledge Base - Single source of truth for all hospital data"
@@ -1883,7 +1883,7 @@
         "Can I see a doctor tomorrow?",
         "Doctor milega kal?"
       ],
-      "answer": "Doctor availability varies by department and day. For tomorrow's availability, please call our reception at +91 80 4000 9000 or you can tell me the department or doctor name you're interested in, and I can check specific availability for you.",
+      "answer": "Doctor availability varies by department and day. For tomorrow's availability, you can tell me the department or doctor name you're interested in, and I can check specific availability and book it for you right now.",
       "tags": [
         "doctor",
         "availability",
@@ -1905,6 +1905,1656 @@
         "accreditation",
         "quality",
         "certification"
+      ]
+    },
+    {
+      "id": "faq_021",
+      "category": "OPD & Appointments",
+      "intent": "walkin_vs_appointment",
+      "question_variants": [
+        "Do I need an appointment or can I walk in?",
+        "Can I come directly without booking?",
+        "Kya appointment lena zaroori hai?",
+        "Direct aa sakte hain ya pehle appointment leni padegi?",
+        "Walk in hota hai kya?",
+        "Bina appointment ke doctor se mil sakte hain?"
+      ],
+      "answer": "For most OPD consultations, walk-in is welcome during OPD hours from 8 AM to 7 PM Monday to Friday and 8 AM to 1 PM on Saturday. However, booking an appointment in advance ensures minimal waiting time. Would you like me to book this appointment for you right now?",
+      "tags": [
+        "opd",
+        "walk-in",
+        "appointment",
+        "booking"
+      ]
+    },
+    {
+      "id": "faq_022",
+      "category": "OPD & Appointments",
+      "intent": "opd_timings",
+      "question_variants": [
+        "What are the OPD hours?",
+        "When is OPD open?",
+        "OPD timings kya hain?",
+        "OPD kab se kab tak hai?",
+        "OPD kab khulta hai?",
+        "OPD ka time kya hai?",
+        "Outpatient department timings?"
+      ],
+      "answer": "General OPD is open from 8:00 AM to 7:00 PM on Monday to Friday, and 8:00 AM to 1:00 PM on Saturday. It is closed on Sundays. Emergency services are open 24 hours a day, 7 days a week.",
+      "tags": [
+        "opd",
+        "timing",
+        "hours",
+        "outpatient"
+      ]
+    },
+    {
+      "id": "faq_023",
+      "category": "OPD & Appointments",
+      "intent": "new_patient_registration",
+      "question_variants": [
+        "How do I register as a new patient?",
+        "What documents are needed for registration?",
+        "Naya patient registration kaise hogi?",
+        "Pehli baar aane par kya karna padega?",
+        "New patient registration charge kitna hai?",
+        "First time aane par kya documents chahiye?"
+      ],
+      "answer": "For new patient registration, please bring a valid government photo ID such as Aadhaar or PAN card. Registration is done at the Reception Counter on the Ground Floor. A one-time registration charge of Rs. 200 is applicable, which provides you a unique Medical Record Number for all future visits.",
+      "tags": [
+        "registration",
+        "new patient",
+        "documents",
+        "mrn",
+        "id proof"
+      ]
+    },
+    {
+      "id": "faq_024",
+      "category": "OPD & Appointments",
+      "intent": "followup_consultation_validity",
+      "question_variants": [
+        "How long is my OPD consultation valid?",
+        "Do I have to pay again if I come for reports?",
+        "Report dikhane ke liye phir se fees lagegi?",
+        "Follow-up mein phir se ticket lena padega kya?",
+        "Kya follow-up free hota hai?",
+        "Doctor ki fee kitne din tak valid rehti hai?"
+      ],
+      "answer": "Your OPD consultation fee is valid for 7 days from your first visit with the same doctor. Within this period, you can return to show reports or follow up without paying the consultation fee again. After 7 days, a fresh ticket is required.",
+      "tags": [
+        "follow-up",
+        "opd",
+        "validity",
+        "consultation fee",
+        "report"
+      ]
+    },
+    {
+      "id": "faq_025",
+      "category": "OPD & Appointments",
+      "intent": "doctor_delay_wait_time",
+      "question_variants": [
+        "How long will I have to wait?",
+        "Doctor abhi tak nahi aaye, kab aayenge?",
+        "My appointment time has passed, what should I do?",
+        "Kitna wait karna hoga?",
+        "Doctor delayed hain, kab free honge?",
+        "Mera number kab aayega?"
+      ],
+      "answer": "We apologize for the wait. As a trauma center, doctors may sometimes be delayed due to ongoing emergencies. Please check with our reception desk for your current queue status. If you are in a hurry, we can reschedule or help you consult a different available specialist.",
+      "tags": [
+        "wait time",
+        "doctor delay",
+        "queue",
+        "appointment"
+      ]
+    },
+    {
+      "id": "faq_026",
+      "category": "OPD & Appointments",
+      "intent": "cancel_reschedule_appointment",
+      "question_variants": [
+        "How can I cancel my appointment?",
+        "I want to reschedule my booking",
+        "Appointment cancel karna hai",
+        "Appointment change karna hai kaise?",
+        "Booking reschedule karna hai",
+        "Aaj nahi aa sakta, appointment baad mein le sakta hoon?"
+      ],
+      "answer": "You can cancel or reschedule your appointment. Would you like me to reschedule or help you check your booking right now? Please note that rescheduling is free up to 24 hours before.",
+      "tags": [
+        "cancel",
+        "reschedule",
+        "appointment",
+        "booking"
+      ]
+    },
+    {
+      "id": "faq_027",
+      "category": "Diagnostics & Lab",
+      "intent": "usg_fasting_rules",
+      "question_variants": [
+        "Do I need to fast before an ultrasound?",
+        "USG ke liye khali pet aana hai?",
+        "Sonography se pehle kuch khana chahiye?",
+        "USG abdomen ke liye kya preparation hai?",
+        "Ultrasound se pehle paani pi sakte hain?"
+      ],
+      "answer": "For an abdominal ultrasound or USG, 6 hours of fasting is required. You should have a full bladder for pelvic or pregnancy scans, so drink 4 to 5 glasses of water 1 hour before and do not urinate before the scan. For thyroid or neck ultrasound, no fasting is required.",
+      "tags": [
+        "usg",
+        "ultrasound",
+        "fasting",
+        "preparation",
+        "scan"
+      ]
+    },
+    {
+      "id": "faq_028",
+      "category": "Diagnostics & Lab",
+      "intent": "mri_preparation",
+      "question_variants": [
+        "What are the instructions before an MRI?",
+        "MRI se pehle kya karna hai?",
+        "Can I eat before MRI?",
+        "MRI ke liye kya prepare karna padega?",
+        "MRI mein koi metal nahi hona chahiye?"
+      ],
+      "answer": "For most MRI scans, no fasting is required unless it is an abdominal MRI with contrast, for which 4 hours fasting is needed. You must remove all metal objects including jewellery, hairpins, and watches before entering the MRI room. Inform us if you have any metal implants, pacemaker, or are pregnant.",
+      "tags": [
+        "mri",
+        "preparation",
+        "fasting",
+        "metal",
+        "contrast"
+      ]
+    },
+    {
+      "id": "faq_029",
+      "category": "Diagnostics & Lab",
+      "intent": "report_turnaround_time",
+      "question_variants": [
+        "When will I get my blood test reports?",
+        "Blood test report kab milegi?",
+        "Report kab tak taiyar hogi?",
+        "CT scan report kitne time mein milegi?",
+        "Lab results kab aayenge?",
+        "Kitne baje tak report milegi?"
+      ],
+      "answer": "Routine blood tests like CBC, Thyroid, and Sugar are ready within 3 to 4 hours of sample collection. CT and X-Ray reports are typically available within 4 to 6 hours. MRI reports require 12 to 24 hours. Specialized pathology reports may take up to 48 hours. Our lab staff will inform you of the exact timing.",
+      "tags": [
+        "report",
+        "lab",
+        "results",
+        "timing",
+        "turnaround"
+      ]
+    },
+    {
+      "id": "faq_030",
+      "category": "Diagnostics & Lab",
+      "intent": "online_report_download",
+      "question_variants": [
+        "Can I get my reports on WhatsApp?",
+        "Report WhatsApp par milegi kya?",
+        "How to download reports online?",
+        "Online report kaise milegi?",
+        "Report download karne ka link milega?",
+        "SMS se report milti hai kya?"
+      ],
+      "answer": "Yes, once your report is ready, a secure download link is sent via SMS and WhatsApp to your registered mobile number. You can also download all past reports by logging into our patient portal. Please ensure your mobile number is correctly registered at reception.",
+      "tags": [
+        "report",
+        "online",
+        "whatsapp",
+        "download",
+        "sms",
+        "portal"
+      ]
+    },
+    {
+      "id": "faq_031",
+      "category": "Diagnostics & Lab",
+      "intent": "lab_sample_timings",
+      "question_variants": [
+        "What time does the lab open for blood tests?",
+        "Lab ka timing kya hai?",
+        "Sample collection kab hoti hai?",
+        "Blood sample kab dena hoga?",
+        "Pathology lab timings?",
+        "Lab khulne ka time kya hai?"
+      ],
+      "answer": "Our pathology lab accepts samples from 7:00 AM to 8:00 PM Monday to Saturday, and 8:00 AM to 2:00 PM on Sundays. For emergency tests, our 24-hour urgent lab on the Ground Floor, Block A is always available.",
+      "tags": [
+        "lab",
+        "sample",
+        "timing",
+        "pathology",
+        "blood test"
+      ]
+    },
+    {
+      "id": "faq_032",
+      "category": "Diagnostics & Lab",
+      "intent": "contrast_ct_prerequisites",
+      "question_variants": [
+        "Do I need any test before a contrast CT scan?",
+        "Contrast scan ke liye koi aur test karna padega?",
+        "Creatinine test required before MRI?",
+        "Contrast injection ke liye kya documents chahiye?",
+        "Kidney test required before CT with contrast?"
+      ],
+      "answer": "Yes, for any CT or MRI scan with contrast dye injection, a Serum Creatinine blood test report less than 15 days old is mandatory. This ensures your kidneys can safely process the contrast. Please bring this report on the day of your scan or get it done at our lab beforehand.",
+      "tags": [
+        "contrast",
+        "ct",
+        "mri",
+        "creatinine",
+        "kidney",
+        "prerequisite"
+      ]
+    },
+    {
+      "id": "faq_033",
+      "category": "Surgery",
+      "intent": "surgery_documents_required",
+      "question_variants": [
+        "What documents do I need before surgery?",
+        "Surgery se pehle kya kya lana padega?",
+        "Pre-op documents kya hain?",
+        "Operation se pehle kaunse reports chahiye?",
+        "Surgery ke liye kya prepare karna hai?"
+      ],
+      "answer": "Before any planned surgery, please bring your doctor's written advice or prescription, all recent investigation reports, your insurance card if applicable, and a government photo ID. For cashless insurance patients, please visit the TPA desk at least 48 hours before the planned surgery date.",
+      "tags": [
+        "surgery",
+        "documents",
+        "pre-op",
+        "operation",
+        "reports"
+      ]
+    },
+    {
+      "id": "faq_034",
+      "category": "Surgery",
+      "intent": "surgery_fasting_rules",
+      "question_variants": [
+        "How many hours do I need to fast before surgery?",
+        "Operation se pehle kuch nahi khana kya?",
+        "Surgery ke din kha sakte hain?",
+        "Anesthesia ke pehle fasting karna padta hai?",
+        "Surgery se pehle paani pi sakte hain?",
+        "Operation ke din kuch khana chahiye?"
+      ],
+      "answer": "For any surgery requiring general anesthesia, you must not eat or drink anything for at least 8 hours before the procedure. You may take small sips of plain water with your prescribed morning medications only if your anesthesiologist has specifically allowed it. Your surgical team will give you exact instructions based on your procedure.",
+      "tags": [
+        "surgery",
+        "fasting",
+        "anesthesia",
+        "operation",
+        "pre-op",
+        "khana"
+      ]
+    },
+    {
+      "id": "faq_035",
+      "category": "Surgery",
+      "intent": "surgery_hospital_stay_duration",
+      "question_variants": [
+        "How many days will I have to stay after surgery?",
+        "Operation ke baad kitne din hospital mein rehna padega?",
+        "Surgery ke baad kab ghar ja sakta hoon?",
+        "Post-op hospital stay kitna hoga?",
+        "Operation ke baad discharge kab hoga?"
+      ],
+      "answer": "The duration of your hospital stay depends entirely on the type of surgery and your recovery progress. Minor day-care procedures allow same-day discharge. Most major surgeries require 2 to 5 days of hospital stay. Your surgeon will give you a personalized recovery plan and expected discharge date.",
+      "tags": [
+        "surgery",
+        "hospital stay",
+        "discharge",
+        "recovery",
+        "post-op"
+      ]
+    },
+    {
+      "id": "faq_036",
+      "category": "Surgery",
+      "intent": "post_op_pain_management",
+      "question_variants": [
+        "How will my pain be managed after surgery?",
+        "Operation ke baad dard kitna hoga?",
+        "Surgery ke baad dard ki dawai milegi?",
+        "Post-operative pain control kaise hoga?",
+        "Operation ke baad bahut dard hota hai kya?"
+      ],
+      "answer": "Our anesthesia and nursing team will manage your pain carefully after surgery. You will receive appropriate pain medications through intravenous drip or tablets. Our nurses check your pain levels every few hours. Please inform your nurse immediately if the pain is severe so medications can be adjusted.",
+      "tags": [
+        "surgery",
+        "pain",
+        "post-op",
+        "anesthesia",
+        "recovery"
+      ]
+    },
+    {
+      "id": "faq_037",
+      "category": "Surgery",
+      "intent": "icu_after_surgery",
+      "question_variants": [
+        "Will I go to ICU after surgery?",
+        "Operation ke baad ICU mein jaana padega?",
+        "Surgery ke baad ICU shift hoga kya?",
+        "Post-surgery ICU admission hoga?"
+      ],
+      "answer": "Whether you need ICU care after surgery depends on the complexity of your procedure and your overall health condition. For major heart, brain, or abdominal surgeries, a brief ICU stay of 1 to 2 days is standard for close monitoring. Your surgeon will discuss this with you in advance during your pre-operative consultation.",
+      "tags": [
+        "surgery",
+        "icu",
+        "post-op",
+        "critical care",
+        "monitoring"
+      ]
+    },
+    {
+      "id": "faq_038",
+      "category": "IPD Admission",
+      "intent": "admission_process",
+      "question_variants": [
+        "How do I get admitted to the hospital?",
+        "Admit hone ki process kya hai?",
+        "Hospital mein admit kaise hote hain?",
+        "Admission ke liye kahan jaana hai?",
+        "Admission counter kahan hai?"
+      ],
+      "answer": "The admission counter is on the Ground Floor near the main entrance. You will need your doctor's admission advice note, a government photo ID, and your insurance card if applicable. Our admissions team will allocate a bed based on your doctor's recommendation and room preference. For emergencies, directly approach our Emergency gate on Block A.",
+      "tags": [
+        "admission",
+        "ipd",
+        "admit",
+        "counter",
+        "bed"
+      ]
+    },
+    {
+      "id": "faq_039",
+      "category": "IPD Admission",
+      "intent": "admission_deposit_amount",
+      "question_variants": [
+        "How much deposit is required for admission?",
+        "Admission ke time kitna paisa dena hoga?",
+        "Advance deposit kitna lagta hai?",
+        "Admission ke liye kitna advance chahiye?",
+        "Do cashless patients also need to pay a deposit?",
+        "Insurance walo ko bhi advance dena padta hai?"
+      ],
+      "answer": "For cash-paying patients, an initial deposit of Rs. 10,000 is required for General Ward and Rs. 25,000 for Private Rooms. For cashless insurance patients, a security deposit of Rs. 2,000 is collected to cover non-medical expenses. This amount is adjusted in the final bill. Unused portions are fully refunded.",
+      "tags": [
+        "admission",
+        "deposit",
+        "advance",
+        "cashless",
+        "insurance"
+      ]
+    },
+    {
+      "id": "faq_040",
+      "category": "IPD Admission",
+      "intent": "attendant_pass_rules",
+      "question_variants": [
+        "How many attendant passes are given?",
+        "Patient ke sath kitne log ruk sakte hain?",
+        "Can family members stay overnight?",
+        "Attendant pass kahan se milega?",
+        "Raat ko koi reh sakta hai kya patient ke sath?",
+        "Attendant rules kya hain?"
+      ],
+      "answer": "One 24-hour attendant pass is issued per patient at the time of admission. For Private Rooms, up to two passes can be issued on request. For ICU patients, overnight stays are strictly not allowed; attendants must wait in the ICU waiting lounge on the 4th Floor during non-visiting hours.",
+      "tags": [
+        "attendant pass",
+        "overnight",
+        "visitor",
+        "icu",
+        "ipd"
+      ]
+    },
+    {
+      "id": "faq_041",
+      "category": "IPD Admission",
+      "intent": "food_rules_ipd",
+      "question_variants": [
+        "Can we bring home cooked food for the patient?",
+        "Ghar ka khana patient ko de sakte hain?",
+        "Is outside food allowed for patients?",
+        "Swiggy Zomato delivery hospital mein allowed hai?",
+        "Patient ke liye hospital khana milega?",
+        "Attendant ke liye khana kahan milega?"
+      ],
+      "answer": "Outside food is not permitted for admitted patients, as their diet is medically managed by our clinical kitchen according to their treatment plan. The hospital provides three meals daily to the patient. For attendants, meals can be ordered from our cafeteria on the 5th Floor or through our in-house food service. Food delivery executives from Swiggy or Zomato can leave orders at the main reception desk.",
+      "tags": [
+        "food",
+        "outside food",
+        "diet",
+        "patient meals",
+        "attendant",
+        "cafeteria"
+      ]
+    },
+    {
+      "id": "faq_042",
+      "category": "IPD Admission",
+      "intent": "admission_checklist",
+      "question_variants": [
+        "What should I bring when getting admitted?",
+        "Admit hone ke time ghar se kya kya lana hai?",
+        "Admission checklist kya hai?",
+        "Hospital bag mein kya rakhna chahiye?",
+        "Zaruri cheezein kaunsi lani hain admission ke liye?"
+      ],
+      "answer": "Please bring your doctor's admission note, all recent medical reports and scan films, your insurance card and Aadhaar or government ID, all current medications, one change of comfortable clothes for discharge day, personal toiletries like toothbrush and comb, and slippers. The hospital provides gowns, bedding, and towels. Please avoid bringing valuables, large amounts of cash, or jewellery.",
+      "tags": [
+        "admission",
+        "checklist",
+        "belongings",
+        "what to bring",
+        "documents"
+      ]
+    },
+    {
+      "id": "faq_043",
+      "category": "IPD Admission",
+      "intent": "room_types_overview",
+      "question_variants": [
+        "What types of rooms are available?",
+        "Kaunse room available hain?",
+        "Private room aur general ward mein kya difference hai?",
+        "Room categories kya hain?",
+        "Room ke types kya hain?"
+      ],
+      "answer": "We offer four room categories: ICU at Rs. 12,000 per day with continuous monitoring, Deluxe Private Room at Rs. 5,500 per day with attached bathroom and TV, Semi-Private Room at Rs. 3,000 per day, and General Ward at Rs. 1,200 per day. Your doctor will recommend the most suitable room based on your medical condition.",
+      "tags": [
+        "room",
+        "icu",
+        "private room",
+        "ward",
+        "semi-private",
+        "charges"
+      ]
+    },
+    {
+      "id": "faq_044",
+      "category": "Visiting Hours",
+      "intent": "ot_visiting_policy",
+      "question_variants": [
+        "Can I visit my relative in the OT?",
+        "OT mein milne ja sakte hain?",
+        "Operation theatre mein visitors allowed hain?",
+        "Surgery ke time family kahan rahegi?",
+        "OT waiting area kahan hai?"
+      ],
+      "answer": "Visitors are not permitted inside the Operation Theatre as it is a sterile zone. Family members should wait in the OT Waiting Lounge on the 2nd Floor, Block B. Our nursing staff will keep you updated on the progress of the surgery and will call you as soon as it is completed.",
+      "tags": [
+        "ot",
+        "operation theatre",
+        "visiting",
+        "surgery",
+        "waiting",
+        "sterile"
+      ]
+    },
+    {
+      "id": "faq_045",
+      "category": "Visiting Hours",
+      "intent": "nicu_visiting_hours",
+      "question_variants": [
+        "What are NICU visiting hours?",
+        "NICU mein baby se kab mil sakte hain?",
+        "When can parents visit the NICU?",
+        "Neonatal ICU visiting rules kya hain?",
+        "Bacche ko NICU mein kab dekh sakte hain?"
+      ],
+      "answer": "NICU visiting hours are from 10:00 AM to 11:00 AM and 5:00 PM to 6:00 PM daily. Only parents and one designated family member are allowed inside with mandatory hand hygiene. Extended kangaroo care sessions for parents can be arranged by the neonatologist on request.",
+      "tags": [
+        "nicu",
+        "newborn",
+        "baby",
+        "visiting hours",
+        "neonatal"
+      ]
+    },
+    {
+      "id": "faq_046",
+      "category": "Visiting Hours",
+      "intent": "night_visiting_rules",
+      "question_variants": [
+        "Can visitors come at night?",
+        "Raat ko milne aa sakte hain?",
+        "Night visiting allowed hai kya?",
+        "10 baje ke baad milne aa sakte hain?",
+        "After hours visiting rules kya hain?"
+      ],
+      "answer": "Visiting hours are from 4:00 PM to 7:00 PM daily for general wards. No visitors are permitted before 4 PM or after 7 PM except for one authorized overnight attendant per patient. ICU and NICU night visiting is strictly not allowed for infection control reasons.",
+      "tags": [
+        "night visiting",
+        "after hours",
+        "raat",
+        "visitor policy"
+      ]
+    },
+    {
+      "id": "faq_047",
+      "category": "Visiting Hours",
+      "intent": "children_visitor_rules",
+      "question_variants": [
+        "Can children visit patients in the ward?",
+        "Bacche milne aa sakte hain?",
+        "Kids allowed inside the ward?",
+        "Small children allowed in hospital?",
+        "Chote bacche ward mein aa sakte hain kya?"
+      ],
+      "answer": "Children below 12 years of age are not permitted inside patient wards or the ICU for infection control reasons. This rule is strictly enforced for the safety of patients with weakened immune systems. You are welcome to bring children to the main reception or waiting areas.",
+      "tags": [
+        "children",
+        "kids",
+        "visitors",
+        "ward",
+        "age restriction"
+      ]
+    },
+    {
+      "id": "faq_048",
+      "category": "Billing & Insurance",
+      "intent": "cashless_approval_timeline",
+      "question_variants": [
+        "How long does cashless insurance approval take?",
+        "Cashless approval mein kitna time lagta hai?",
+        "Insurance approval delay ho rahi hai kyun?",
+        "TPA approval kab milega?",
+        "Pre-authorization kitne time mein hoti hai?"
+      ],
+      "answer": "Initial cashless pre-authorization typically takes 3 to 4 hours after our TPA desk submits your documents. Final discharge clearance from the insurer can take 4 to 5 hours depending on your insurance company's response time. Our team actively follows up with the insurer to minimize delays.",
+      "tags": [
+        "cashless",
+        "pre-authorization",
+        "tpa",
+        "insurance approval",
+        "time"
+      ]
+    },
+    {
+      "id": "faq_049",
+      "category": "Billing & Insurance",
+      "intent": "non_medical_expenses",
+      "question_variants": [
+        "Why am I paying extra even though I have cashless insurance?",
+        "Cashless hai to bhi extra paisa kyun lag raha hai?",
+        "Non-medical charges kya hote hain?",
+        "Insurance cover nahi kiya charges kyon aaye?",
+        "Hidden charges kya hain?"
+      ],
+      "answer": "Insurance companies exclude certain consumable items from cashless coverage. These include syringes, gloves, surgical dressings, hygiene kits, registration fees, and attendant food. These are called non-medical or non-payable expenses and must be paid directly by the patient before discharge. Our billing team will explain these charges item by item.",
+      "tags": [
+        "non-medical",
+        "hidden charges",
+        "insurance exclusion",
+        "cashless",
+        "consumables"
+      ]
+    },
+    {
+      "id": "faq_050",
+      "category": "Billing & Insurance",
+      "intent": "deposit_refund_process",
+      "question_variants": [
+        "When will I get my advance deposit back?",
+        "Advance refund kab aur kaise milega?",
+        "Deposit refund process kya hai?",
+        "Cash refund milega ya bank mein aayega?",
+        "Kitne din mein refund hoga?"
+      ],
+      "answer": "If your final bill is less than the advance deposit, the balance is refunded on the day of discharge. Cash refunds up to Rs. 10,000 are processed at the discharge counter. For card or online payments, or refunds above Rs. 10,000, the amount is credited back within 7 to 10 working days.",
+      "tags": [
+        "refund",
+        "deposit",
+        "advance",
+        "billing",
+        "discharge"
+      ]
+    },
+    {
+      "id": "faq_051",
+      "category": "Billing & Insurance",
+      "intent": "emi_finance_options",
+      "question_variants": [
+        "Is EMI available for large hospital bills?",
+        "Kya main installment mein payment kar sakta hoon?",
+        "EMI option hai kya?",
+        "Bade bill ke liye koi finance scheme hai?",
+        "Monthly payment option available hai?"
+      ],
+      "answer": "Yes, we offer no-cost EMI options for hospital bills above Rs. 50,000 through our partner banks. Please speak with our billing counselor at the Ground Floor billing counter who will explain the available schemes and help you with the application.",
+      "tags": [
+        "emi",
+        "installment",
+        "finance",
+        "large bill",
+        "payment plan"
+      ]
+    },
+    {
+      "id": "faq_052",
+      "category": "Billing & Insurance",
+      "intent": "tpa_desk_location_process",
+      "question_variants": [
+        "Where is the TPA desk?",
+        "Insurance desk kahan hai?",
+        "Cashless ke liye kahan jaana hoga?",
+        "TPA process kaise hoti hai?",
+        "Insurance mein kya submit karna hoga?"
+      ],
+      "answer": "Our TPA and insurance cashless desk is on the Ground Floor near the main billing counter. Please bring your insurance card, a government ID, and your doctor's admission advice. For planned procedures, visit the desk at least 48 hours in advance. For emergencies, submit documents within 24 hours of admission.",
+      "tags": [
+        "tpa",
+        "cashless desk",
+        "insurance",
+        "location",
+        "documents"
+      ]
+    },
+    {
+      "id": "faq_053",
+      "category": "Billing & Insurance",
+      "intent": "cost_estimate_before_admission",
+      "question_variants": [
+        "Can I get a cost estimate before admission?",
+        "Surgery ka total kharcha kitna hoga?",
+        "Pehle estimate milega kya?",
+        "Treatment cost advance mein pata kar sakte hain?",
+        "Package rate kya hai operation ka?"
+      ],
+      "answer": "Yes, our financial counseling team can provide a detailed cost estimate before any planned procedure or admission. This estimate covers room charges, surgeon fees, anesthesia, investigations, and consumables. Would you like me to schedule a pre-admission financial counseling session for you?",
+      "tags": [
+        "cost estimate",
+        "surgery package",
+        "billing",
+        "counseling",
+        "advance quote"
+      ]
+    },
+    {
+      "id": "faq_054",
+      "category": "Discharge",
+      "intent": "discharge_process_duration",
+      "question_variants": [
+        "Why does discharge take so long?",
+        "Discharge mein itna time kyun lagta hai?",
+        "Discharge process kitne time ki hoti hai?",
+        "Kab tak discharge ho jayenge?",
+        "Ghar kab ja sakte hain?"
+      ],
+      "answer": "Discharge involves several steps: the doctor writes the discharge summary, pharmacy audits unused medicines, billing compiles final charges, and for cashless patients we must wait for insurance final approval. For cash patients, expect 2 to 3 hours. For insurance patients, plan for 4 to 5 hours. Please initiate discharge formalities early in the morning.",
+      "tags": [
+        "discharge",
+        "timeline",
+        "time",
+        "billing",
+        "insurance",
+        "checkout"
+      ]
+    },
+    {
+      "id": "faq_055",
+      "category": "Discharge",
+      "intent": "discharge_summary_collection",
+      "question_variants": [
+        "Where do I collect discharge papers?",
+        "Discharge summary kahan se milegi?",
+        "Discharge documents kahan se leni hain?",
+        "Prescription aur reports kaun dega discharge pe?",
+        "Doctor ka letter kahan milega?"
+      ],
+      "answer": "After billing clearance, collect your clearance receipt and take it to the Nursing Station on your ward floor. The floor nurse or ward secretary will hand over your discharge summary, medication instructions, and any investigation reports. Home medicine returns from the pharmacy will also be coordinated at this stage.",
+      "tags": [
+        "discharge",
+        "summary",
+        "documents",
+        "nursing station",
+        "prescription"
+      ]
+    },
+    {
+      "id": "faq_056",
+      "category": "Discharge",
+      "intent": "followup_after_discharge",
+      "question_variants": [
+        "When should I come for follow-up after discharge?",
+        "Discharge ke baad doctor se kab milna hai?",
+        "Follow-up appointment kab book karni chahiye?",
+        "Stitches hatane ke liye kab aana hai?",
+        "Next check-up kab hai?"
+      ],
+      "answer": "Your discharge summary will include specific instructions for your follow-up appointment. Typically, a first follow-up is scheduled 5 to 7 days after discharge for wound review or stitch removal. Would you like me to confirm or book your follow-up appointment right now?",
+      "tags": [
+        "follow-up",
+        "discharge",
+        "stitch removal",
+        "appointment",
+        "next visit"
+      ]
+    },
+    {
+      "id": "faq_057",
+      "category": "Maternity & Gynecology",
+      "intent": "maternity_packages",
+      "question_variants": [
+        "What are the maternity packages available?",
+        "Delivery package kitne ka hai?",
+        "Normal delivery aur C-section ka kharcha kitna hai?",
+        "Maternity ward package kya hai?",
+        "Delivery ke liye kitna paisa lagega?"
+      ],
+      "answer": "We offer comprehensive maternity packages. Normal delivery packages start from Rs. 35,000 and include room stay, routine investigations, doctor fees, and postnatal care. C-section packages start from Rs. 60,000. Would you like me to help you book a consultation with our maternity team?",
+      "tags": [
+        "maternity",
+        "delivery",
+        "pregnancy",
+        "normal delivery",
+        "c-section",
+        "package"
+      ]
+    },
+    {
+      "id": "faq_058",
+      "category": "Maternity & Gynecology",
+      "intent": "antenatal_checkup_timings",
+      "question_variants": [
+        "When should I come for pregnancy check-up?",
+        "Pregnancy mein kitne hafte pe check-up karna chahiye?",
+        "Antenatal visit kab hoti hai?",
+        "Gynecologist se kab appointment leni chahiye?",
+        "Garbhavastha mein doctor se kab milna chahiye?"
+      ],
+      "answer": "We recommend your first antenatal visit as soon as pregnancy is confirmed, ideally before 12 weeks. Routine checkups are scheduled at 4-weekly intervals up to 28 weeks, then fortnightly until 36 weeks, and weekly thereafter. Our Gynecology department on the 4th Floor, Block C handles all antenatal care.",
+      "tags": [
+        "pregnancy",
+        "antenatal",
+        "checkup",
+        "gynecology",
+        "trimester"
+      ]
+    },
+    {
+      "id": "faq_059",
+      "category": "Maternity & Gynecology",
+      "intent": "lactation_support",
+      "question_variants": [
+        "Do you have lactation support?",
+        "Breastfeeding mein help milegi?",
+        "Kya lactation consultant available hai?",
+        "Newborn ko feed karne mein help milegi?",
+        "Dudh pilane mein doctor help karenge?"
+      ],
+      "answer": "Yes, we have a dedicated lactation counselor who supports new mothers with breastfeeding guidance. You can request a lactation consultation at any time during your maternity stay by informing your floor nurse. Post-discharge lactation support sessions are also available on appointment.",
+      "tags": [
+        "lactation",
+        "breastfeeding",
+        "newborn",
+        "counselor",
+        "maternity"
+      ]
+    },
+    {
+      "id": "faq_060",
+      "category": "Pediatrics & NICU",
+      "intent": "nicu_admission_reasons",
+      "question_variants": [
+        "Why has my newborn been admitted to NICU?",
+        "Mera baccha NICU mein kyun rakh gaya hai?",
+        "NICU mein baby ko kab rakhte hain?",
+        "Navjaat shishu NICU mein kyon jaata hai?",
+        "Baby premature hai to kya NICU mein jaayega?"
+      ],
+      "answer": "Babies are admitted to the NICU for reasons such as premature birth before 37 weeks, low birth weight below 2 kg, breathing difficulties, jaundice requiring phototherapy, infections, or blood sugar problems. Our experienced neonatologists and nurses provide round the clock specialized care.",
+      "tags": [
+        "nicu",
+        "newborn",
+        "premature",
+        "baby",
+        "neonatal",
+        "admission"
+      ]
+    },
+    {
+      "id": "faq_061",
+      "category": "Pediatrics & NICU",
+      "intent": "nicu_discharge_criteria",
+      "question_variants": [
+        "When will my baby be discharged from NICU?",
+        "NICU se baby kab ghar jayega?",
+        "Discharge ke liye baby ka weight kitna hona chahiye?",
+        "NICU se chutti kab milegi?",
+        "Kya conditions mein baby ghar ja sakta hai?"
+      ],
+      "answer": "Your baby will be discharged from NICU when they can breathe independently without support, maintain their own body temperature, feed adequately by mouth either by breast or bottle, and have a stable weight gain. The neonatologist will give you a clear update on your baby's progress daily.",
+      "tags": [
+        "nicu",
+        "baby",
+        "discharge",
+        "newborn",
+        "criteria",
+        "weight"
+      ]
+    },
+    {
+      "id": "faq_062",
+      "category": "Pediatrics & NICU",
+      "intent": "pediatric_opd_info",
+      "question_variants": [
+        "Where is the children's doctor?",
+        "Bacchon ka doctor kahan milega?",
+        "Pediatric department kahan hai?",
+        "Child specialist kab available hain?",
+        "Bachon ke liye OPD kaunsi floor pe hai?"
+      ],
+      "answer": "Our Pediatrics department is on the 3rd Floor, Block C. Dr. Sunita Pillai is our senior pediatrician available Monday to Saturday. For newborn care, our Neonatology team is available round the clock. Would you like me to book a pediatric appointment for you?",
+      "tags": [
+        "pediatrics",
+        "children",
+        "child doctor",
+        "neonatology",
+        "opd",
+        "floor"
+      ]
+    },
+    {
+      "id": "faq_063",
+      "category": "Pediatrics & NICU",
+      "intent": "vaccination_schedule",
+      "question_variants": [
+        "Do you provide vaccination services?",
+        "Bacche ka tikaa kahan lagta hai?",
+        "Immunization schedule kya hai?",
+        "Vaccination kab kab deni chahiye?",
+        "Child vaccination available hai?"
+      ],
+      "answer": "Yes, we provide complete childhood vaccination services as per the Indian Academy of Pediatrics schedule. Vaccines are available at our Pediatrics OPD on the 3rd Floor. We administer vaccines for BCG, Polio, DPT, Hepatitis B, MMR, Varicella, and many others. Would you like me to book a vaccination slot for your child?",
+      "tags": [
+        "vaccination",
+        "immunization",
+        "child",
+        "pediatrics",
+        "tikka",
+        "schedule"
+      ]
+    },
+    {
+      "id": "faq_064",
+      "category": "Blood Bank",
+      "intent": "blood_bank_hours_location",
+      "question_variants": [
+        "Where is the blood bank?",
+        "Blood bank kahan hai?",
+        "Is the blood bank open 24 hours?",
+        "Blood bank ka timing kya hai?",
+        "Raat ko blood available hoga?"
+      ],
+      "answer": "Our 24-hour Blood Bank is located on the 1st Floor, Block A. It is open round the clock including weekends and public holidays. For urgent blood requirements, contact the Blood Bank directly on extension 1050 or approach our Emergency desk.",
+      "tags": [
+        "blood bank",
+        "blood",
+        "location",
+        "timing",
+        "24 hours"
+      ]
+    },
+    {
+      "id": "faq_065",
+      "category": "Blood Bank",
+      "intent": "blood_request_process",
+      "question_variants": [
+        "How do I request blood from the blood bank?",
+        "Blood kaise milega?",
+        "Khoon ki zaroorat hai, kya karna hoga?",
+        "Blood requisition process kya hai?",
+        "Emergency mein blood kaise lein?"
+      ],
+      "answer": "To request blood, submit a blood requisition form signed by your attending doctor along with a 3 ml blood sample of the patient for cross-matching. This process usually takes 30 to 45 minutes. In life-threatening emergencies, O-negative blood can be issued immediately without cross-matching upon doctor's request.",
+      "tags": [
+        "blood",
+        "requisition",
+        "cross-match",
+        "blood bank",
+        "emergency"
+      ]
+    },
+    {
+      "id": "faq_066",
+      "category": "Blood Bank",
+      "intent": "blood_donation",
+      "question_variants": [
+        "Can I donate blood at the hospital?",
+        "Blood donate karna chahta hoon",
+        "Blood bank mein donation kaise karein?",
+        "Voluntary blood donation process?",
+        "Khoon daan kahan kar sakte hain?"
+      ],
+      "answer": "Yes, we welcome voluntary blood donors at our Blood Bank on the 1st Floor, Block A anytime during 8 AM to 8 PM. You must be between 18 and 65 years old, weigh at least 45 kg, and be in good health. You will receive a health check before donation. The process takes about 30 minutes.",
+      "tags": [
+        "blood donation",
+        "donate blood",
+        "voluntary",
+        "blood bank"
+      ]
+    },
+    {
+      "id": "faq_067",
+      "category": "Emergency & Ambulance",
+      "intent": "ambulance_booking",
+      "question_variants": [
+        "How can I book an ambulance?",
+        "Ambulance kaise milegi?",
+        "Ambulance book karna hai",
+        "Emergency ambulance chahiye",
+        "Ambulance ka number kya hai?",
+        "Ghar pe ambulance bhejein please"
+      ],
+      "answer": "For emergency ambulance dispatch, call our 24-hour helpline 1066 immediately. For non-emergency patient transport, would you like me to help you book a transport vehicle right now?",
+      "tags": [
+        "ambulance",
+        "emergency",
+        "1066",
+        "transport",
+        "helpline"
+      ]
+    },
+    {
+      "id": "faq_068",
+      "category": "Navigation & Directions",
+      "intent": "hospital_directions",
+      "question_variants": [
+        "How do I reach the hospital?",
+        "Hospital kaise pahunchen?",
+        "Nearest metro to hospital?",
+        "MG Road se hospital kaise jaayein?",
+        "Driving directions to InDiiServe hospital?",
+        "Hospital se paas metro station kaunsa hai?"
+      ],
+      "answer": "InDiiServe Multi-Specialty Hospital is at 12-B, MG Road, Bengaluru 560025. The nearest metro station is MG Road Metro Station on the Purple Line, just a 2-minute walk from our main gate. From Majestic or KSR Railway Station, take the Purple Line metro to MG Road. By road, we are on Residency Road junction on MG Road.",
+      "tags": [
+        "directions",
+        "how to reach",
+        "metro",
+        "mg road",
+        "location",
+        "navigation"
+      ]
+    },
+    {
+      "id": "faq_069",
+      "category": "Navigation & Directions",
+      "intent": "travel_from_another_city",
+      "question_variants": [
+        "I am coming from Mumbai, how do I reach?",
+        "Main Mumbai se aa raha hoon, kaise pahunchunga?",
+        "How to reach from Delhi?",
+        "Delhi se Bengaluru aana hai",
+        "I live far, how do I get to the hospital?",
+        "Dusre sheher se kaise aayein?"
+      ],
+      "answer": "Our hospital is in Bengaluru at MG Road. If you are travelling from Mumbai or Delhi, the fastest option is to fly to Kempegowda International Airport Bengaluru, then take the Metro or a cab to MG Road which is about 45 minutes from the airport. Trains from Mumbai and Delhi also arrive at KSR Bengaluru station, from where our hospital is just 20 minutes by metro.",
+      "tags": [
+        "travel",
+        "another city",
+        "mumbai",
+        "delhi",
+        "flight",
+        "train",
+        "directions",
+        "bengaluru"
+      ]
+    },
+    {
+      "id": "faq_070",
+      "category": "Amenities",
+      "intent": "wheelchair_porter_assistance",
+      "question_variants": [
+        "How can I get a wheelchair?",
+        "Wheelchair kahan milegi?",
+        "Porter assistance chahiye",
+        "Is wheelchair service free?",
+        "Patient ko carry karne mein help chahiye",
+        "Stretcher service available hai?"
+      ],
+      "answer": "Wheelchair and porter assistance is available free of charge at all hospital entrance gates. Just inform our security staff at the main gate or emergency gate and a porter will assist you immediately. No prior booking is required.",
+      "tags": [
+        "wheelchair",
+        "porter",
+        "stretcher",
+        "assistance",
+        "free",
+        "gate"
+      ]
+    },
+    {
+      "id": "faq_071",
+      "category": "Amenities",
+      "intent": "lost_and_found",
+      "question_variants": [
+        "I lost my phone in the hospital, who do I contact?",
+        "Mera phone kho gaya hai, kahan report karein?",
+        "Lost and found desk kahan hai?",
+        "Meri cheez kho gayi, kya karna chahiye?",
+        "Something was stolen, where do I complain?",
+        "Mera bag waiting area mein bhool gaya"
+      ],
+      "answer": "All lost and found items are deposited at our Security Command Center on the Ground Floor near the Emergency Gate. Please visit with a valid ID and describe your item. You can also report at the main reception. We request all visitors to keep personal belongings secure as the hospital cannot be held responsible for lost valuables.",
+      "tags": [
+        "lost and found",
+        "lost phone",
+        "security",
+        "belongings",
+        "stolen"
+      ]
+    },
+    {
+      "id": "faq_072",
+      "category": "Amenities",
+      "intent": "atm_availability",
+      "question_variants": [
+        "Is there an ATM inside the hospital?",
+        "ATM kahan hai hospital mein?",
+        "Kya ATM available hai?",
+        "Cash withdrawal kahan se karein?",
+        "Nearest ATM to hospital?"
+      ],
+      "answer": "Yes, there is a 24-hour SBI ATM on the Ground Floor near our pharmacy. It accepts all major debit and credit cards.",
+      "tags": [
+        "atm",
+        "cash",
+        "banking",
+        "sbi",
+        "withdrawal"
+      ]
+    },
+    {
+      "id": "faq_073",
+      "category": "Records",
+      "intent": "medical_records_mrd",
+      "question_variants": [
+        "How do I get my medical records?",
+        "Medical records kahan se milenge?",
+        "Discharge summary copy chahiye",
+        "Old reports kaise lein?",
+        "MRD department kahan hai?",
+        "Pehle ke test reports milenge kya?"
+      ],
+      "answer": "Medical records including discharge summaries, investigation reports, and scan films can be requested from the Medical Records Department, MRD, on the Ground Floor, Block A. Please bring a valid government ID of the patient. Records are typically processed within 24 to 48 working hours. Old records may take up to 5 working days.",
+      "tags": [
+        "medical records",
+        "mrd",
+        "discharge summary",
+        "reports",
+        "history",
+        "old records"
+      ]
+    },
+    {
+      "id": "faq_074",
+      "category": "Amenities",
+      "intent": "prayer_room",
+      "question_variants": [
+        "Is there a prayer room in the hospital?",
+        "Mandir ya prayer room hai kya?",
+        "Kahan pray kar sakte hain?",
+        "Meditation room available hai?",
+        "Pooja ke liye koi jagah hai?"
+      ],
+      "answer": "Yes, we have a quiet meditation and prayer room open 24 hours a day on the Ground Floor near the main waiting area. It is a non-denominational space welcoming all faiths.",
+      "tags": [
+        "prayer",
+        "meditation",
+        "temple",
+        "religion",
+        "faith",
+        "quiet room"
+      ]
+    },
+    {
+      "id": "faq_075",
+      "category": "Amenities",
+      "intent": "children_play_area",
+      "question_variants": [
+        "Is there a play area for children?",
+        "Bacchon ke liye koi play area hai?",
+        "Kids corner kahan hai?",
+        "Chhote bacche kahan khelen waiting mein?",
+        "Children activity area hai kya?"
+      ],
+      "answer": "Yes, we have a supervised children's play area near the OPD waiting zone on the Ground Floor. It is open from 9:00 AM to 6:00 PM daily and is designed to keep children comfortable while guardians are consulting doctors.",
+      "tags": [
+        "play area",
+        "children",
+        "kids",
+        "waiting",
+        "activity",
+        "opd"
+      ]
+    },
+    {
+      "id": "faq_076",
+      "category": "Emergency",
+      "intent": "emergency_department_location",
+      "question_variants": [
+        "Where is the emergency department?",
+        "Emergency kahan hai?",
+        "Casualty department kahan hai?",
+        "Emergency gate kahan hai?",
+        "Trauma center kahan hai?",
+        "Emergency entrance kahan se hai?"
+      ],
+      "answer": "Our 24-hour Emergency and Trauma Centre is on the Ground Floor, Block A, at the main gate entrance. There is a dedicated Emergency Gate with direct ambulance access. For life-threatening emergencies, call 1066 immediately and our team will be dispatched.",
+      "tags": [
+        "emergency",
+        "casualty",
+        "trauma",
+        "gate",
+        "location",
+        "24 hours"
+      ]
+    },
+    {
+      "id": "faq_077",
+      "category": "Emergency",
+      "intent": "emergency_consultation_fee",
+      "question_variants": [
+        "What is the fee for emergency consultation?",
+        "Emergency mein doctor fee kitni hai?",
+        "Casualty charges kya hain?",
+        "Emergency OPD ka kharcha kitna hai?",
+        "Emergency mein insurance chalega?"
+      ],
+      "answer": "Emergency registration and initial doctor consultation fee is Rs. 1,500. Patients are triaged by severity: critical red cases are seen immediately, urgent yellow cases within 15 minutes, and non-urgent green cases as soon as a doctor is free. Emergency treatment is eligible for cashless insurance subject to your policy terms.",
+      "tags": [
+        "emergency fee",
+        "casualty",
+        "triage",
+        "charges",
+        "insurance"
+      ]
+    },
+    {
+      "id": "faq_078",
+      "category": "Consultations",
+      "intent": "second_opinion",
+      "question_variants": [
+        "Can I get a second opinion here?",
+        "Main dusre doctor se bhi opnion le sakta hoon?",
+        "Second opinion ke liye kaise book karein?",
+        "Kya same doctor se dobaara milna hoga?",
+        "Dusre specialist se salah le sakte hain?"
+      ],
+      "answer": "Absolutely, we welcome patients seeking a second opinion. Our specialists across all departments are available for consultation. Would you like me to book a second opinion appointment for you right now? Please bring all your current reports, scans, and prescriptions.",
+      "tags": [
+        "second opinion",
+        "specialist",
+        "consultation",
+        "another doctor"
+      ]
+    },
+    {
+      "id": "faq_079",
+      "category": "Home Care",
+      "intent": "home_nursing_physiotherapy",
+      "question_variants": [
+        "Do you provide home nursing services?",
+        "Ghar pe nurse aa sakti hai?",
+        "Home physiotherapy available hai?",
+        "Discharge ke baad ghar pe treatment milegi?",
+        "Post surgery home care service hai?"
+      ],
+      "answer": "Yes, we offer home nursing, wound dressing, injection administration, and physiotherapy services after discharge. Please speak with our patient support desk on the Ground Floor to arrange home care services. Bookings must be made at least 24 hours in advance.",
+      "tags": [
+        "home nursing",
+        "home care",
+        "physiotherapy",
+        "post discharge",
+        "dressing"
+      ]
+    },
+    {
+      "id": "faq_080",
+      "category": "Amenities",
+      "intent": "cafeteria_location_timings",
+      "question_variants": [
+        "Where is the cafeteria?",
+        "Cafeteria kahan hai?",
+        "Khane ke liye kahan jaayein?",
+        "Food court kahan hai?",
+        "Kya hospital mein restaurant hai?",
+        "Canteen ka timing kya hai?"
+      ],
+      "answer": "Our multi-cuisine food court and cafeteria is on the 5th Floor, Block B. It is open from 7:00 AM to 10:00 PM daily. It serves breakfast, lunch, dinner, and snacks at affordable prices. Attendants and visitors are welcome.",
+      "tags": [
+        "cafeteria",
+        "food court",
+        "canteen",
+        "restaurant",
+        "timing",
+        "meals"
+      ]
+    },
+    {
+      "id": "faq_081",
+      "category": "Pharmacy",
+      "intent": "pharmacy_home_delivery",
+      "question_variants": [
+        "Can medicines be delivered to my home?",
+        "Pharmacy home delivery karti hai?",
+        "Dawai ghar pe mil sakti hai?",
+        "Ghar pe medicine delivery available hai?",
+        "Online medicine order ho sakta hai?"
+      ],
+      "answer": "Yes, our pharmacy offers home delivery of prescribed medications. Same-day delivery is available within 10 km of the hospital. Shall I connect you to the pharmacy?",
+      "tags": [
+        "pharmacy",
+        "home delivery",
+        "medicine",
+        "prescription",
+        "delivery"
+      ]
+    },
+    {
+      "id": "faq_082",
+      "category": "Amenities",
+      "intent": "senior_citizen_disability_assistance",
+      "question_variants": [
+        "Do you have special assistance for elderly patients?",
+        "Buzurg patients ke liye special help milti hai?",
+        "Disabled patients ke liye kya facility hai?",
+        "Senior citizen discount hai kya?",
+        "Old age mein help milegi?"
+      ],
+      "answer": "Yes, we have dedicated priority counters for senior citizens above 60 years at our OPD and billing desks. Wheelchair assistance is free of charge at all entrances. Our staff is trained to assist elderly and differently-abled patients with special care. Please inform us in advance for any special assistance requirements.",
+      "tags": [
+        "senior citizen",
+        "elderly",
+        "disability",
+        "priority",
+        "assistance",
+        "buzurg"
+      ]
+    },
+    {
+      "id": "faq_083",
+      "category": "Visiting Hours",
+      "intent": "infection_control_visiting",
+      "question_variants": [
+        "Are there any visitor restrictions currently?",
+        "Kya abhi visitors pe koi restriction hai?",
+        "COVID rules hain kya abhi?",
+        "Mask pehenna zaroori hai?",
+        "Infection ke time visiting allowed hai?"
+      ],
+      "answer": "We follow standard infection control protocols at all times. During any active outbreak or epidemic period, visitor restrictions may be increased as per safety guidelines. Would you like me to check the current visitor rules for you right now?",
+      "tags": [
+        "infection control",
+        "visitor restrictions",
+        "covid",
+        "epidemic",
+        "mask",
+        "safety"
+      ]
+    },
+    {
+      "id": "faq_084",
+      "category": "Billing & Insurance",
+      "intent": "government_health_schemes",
+      "question_variants": [
+        "Do you accept Ayushman Bharat card?",
+        "Aayushman card chalega yahan?",
+        "Government health scheme accepted hai?",
+        "PMJAY yahan available hai?",
+        "CGHS accepted hai?",
+        "Sarkari yojana se ilaaj ho sakta hai?"
+      ],
+      "answer": "We are empanelled with Ayushman Bharat PMJAY and CGHS schemes. Please bring your Ayushman card and a government ID to our TPA desk on the Ground Floor. Our team will verify eligibility and guide you through the cashless treatment process under these schemes.",
+      "tags": [
+        "ayushman bharat",
+        "pmjay",
+        "cghs",
+        "government scheme",
+        "cashless",
+        "sarkari"
+      ]
+    },
+    {
+      "id": "faq_085",
+      "category": "Hospital Information",
+      "intent": "hindi_speaking_staff",
+      "question_variants": [
+        "Do the doctors speak Hindi?",
+        "Kya yahan Hindi mein baat kar sakte hain?",
+        "Hindi bolne wale staff hain?",
+        "Kya doctors Hindi samajhte hain?",
+        "Hindi mein explain kar sakte hain?"
+      ],
+      "answer": "Yes, all our reception and administrative staff speak Hindi, English, and Kannada. Most of our doctors also communicate in Hindi and English. If you need language assistance at any point, please inform our reception and we will ensure a Hindi-speaking staff member is available to assist you.",
+      "tags": [
+        "hindi",
+        "language",
+        "staff",
+        "communication",
+        "kannada"
+      ]
+    },
+    {
+      "id": "faq_086",
+      "category": "Hospital Information",
+      "intent": "holiday_timings",
+      "question_variants": [
+        "Is the hospital open on Sundays?",
+        "Sunday ko hospital khula hai?",
+        "Holiday pe hospital open hai?",
+        "National holiday mein kya services available hain?",
+        "Sunday OPD milega kya?"
+      ],
+      "answer": "Our Emergency department, pharmacy, blood bank, and ICU are open 24 hours every day including Sundays and public holidays. General OPD is open on Sundays from 9:00 AM to 1:00 PM for emergency consultations only. Planned OPD services are not available on Sundays.",
+      "tags": [
+        "sunday",
+        "holiday",
+        "timings",
+        "emergency",
+        "opd",
+        "open"
+      ]
+    },
+    {
+      "id": "faq_087",
+      "category": "Surgery",
+      "intent": "advance_surgery_booking",
+      "question_variants": [
+        "How do I schedule a surgery in advance?",
+        "Surgery kaise book karein?",
+        "Operation book karna hai",
+        "Planned surgery ke liye kya karna hoga?",
+        "Surgery date kaise fix karein?"
+      ],
+      "answer": "To book a planned surgery, first consult with our specialist to confirm the procedure. The surgeon will then coordinate with the Operation Theatre scheduling team. Once a date is fixed, visit our admission desk to complete pre-admission formalities, financial counseling, and insurance pre-authorization.",
+      "tags": [
+        "surgery booking",
+        "planned surgery",
+        "operation",
+        "schedule",
+        "ot"
+      ]
+    },
+    {
+      "id": "faq_088",
+      "category": "Amenities",
+      "intent": "canteen_menu_info",
+      "question_variants": [
+        "What food is available in the cafeteria?",
+        "Cafeteria mein kya milta hai?",
+        "Vegetarian food milega?",
+        "South Indian food available hai?",
+        "Canteen mein kya kha sakte hain?"
+      ],
+      "answer": "Our cafeteria on the 5th Floor offers a wide variety including South Indian breakfast, North Indian dal rice and roti, sandwiches, soups, juices, and snacks. Both vegetarian and non-vegetarian options are available. Vending machines for tea, coffee, and snacks are also on every floor.",
+      "tags": [
+        "cafeteria",
+        "menu",
+        "food",
+        "vegetarian",
+        "south indian",
+        "vending machine"
+      ]
+    },
+    {
+      "id": "faq_089",
+      "category": "Billing & Insurance",
+      "intent": "corporate_health_tieup",
+      "question_variants": [
+        "Does your hospital have corporate tie-ups?",
+        "Hamari company ka tie-up hai aapke saath?",
+        "Corporate discount milega?",
+        "Company card accepted hai?",
+        "Employee health benefit yahan chalega?"
+      ],
+      "answer": "Yes, we have corporate health tie-ups with over 200 companies. Employees can avail cashless treatment by showing their company health card at our TPA desk. Would you like me to verify if your company is empanelled with us?",
+      "tags": [
+        "corporate",
+        "company",
+        "tie-up",
+        "employee",
+        "health card",
+        "discount"
+      ]
+    },
+    {
+      "id": "faq_090",
+      "category": "Departments & Doctors",
+      "intent": "physiotherapy_department",
+      "question_variants": [
+        "Do you have physiotherapy?",
+        "Physiotherapy kahan hoti hai?",
+        "Rehab department hai kya?",
+        "Physiotherapist se milna hai",
+        "Back pain ke liye physiotherapy milegi?"
+      ],
+      "answer": "Yes, our Physiotherapy and Rehabilitation department is on the Ground Floor, Block B. We offer physiotherapy for post-surgery recovery, sports injuries, back and neck pain, stroke rehabilitation, and neurological conditions. Sessions are available by appointment from 8 AM to 6 PM Monday to Saturday.",
+      "tags": [
+        "physiotherapy",
+        "rehabilitation",
+        "rehab",
+        "back pain",
+        "recovery",
+        "sports injury"
+      ]
+    },
+    {
+      "id": "faq_091",
+      "category": "Services",
+      "intent": "dialysis_services",
+      "question_variants": [
+        "Do you have dialysis facility?",
+        "Dialysis yahan hoti hai?",
+        "Kidney dialysis available hai?",
+        "Dialysis ka kharcha kitna hai?",
+        "Hemodialysis center kahan hai?"
+      ],
+      "answer": "Yes, we have a dedicated Dialysis Centre on the 1st Floor, Block A offering both hemodialysis and peritoneal dialysis. We have 10 dialysis chairs and perform over 50 sessions daily. Cost per session starts from Rs. 2,500. Insurance including CGHS and Ayushman Bharat is accepted for dialysis treatment.",
+      "tags": [
+        "dialysis",
+        "kidney",
+        "hemodialysis",
+        "nephrology",
+        "renal"
+      ]
+    },
+    {
+      "id": "faq_092",
+      "category": "Departments & Doctors",
+      "intent": "oncology_services",
+      "question_variants": [
+        "Do you treat cancer here?",
+        "Oncology department hai?",
+        "Cancer ka ilaaj hota hai yahan?",
+        "Chemotherapy available hai?",
+        "Cancer specialist se milna hai"
+      ],
+      "answer": "Yes, our Oncology department on the 5th Floor, Block D offers comprehensive cancer care including medical oncology, radiation therapy, and surgical oncology. Dr. Kavitha Menon is our senior oncologist. Chemotherapy, immunotherapy, and targeted therapy are all available. Please call to schedule an initial consultation.",
+      "tags": [
+        "oncology",
+        "cancer",
+        "chemotherapy",
+        "radiation",
+        "tumor"
+      ]
+    },
+    {
+      "id": "faq_093",
+      "category": "Departments & Doctors",
+      "intent": "ophthalmology_services",
+      "question_variants": [
+        "Do you have eye specialist?",
+        "Aankhon ka doctor kahan milega?",
+        "Ophthalmology kahan hai?",
+        "Eye checkup kahan hoga?",
+        "Cataract surgery yahan hoti hai?"
+      ],
+      "answer": "Our Ophthalmology department is on the 2nd Floor, Block B. Dr. Rajini Kumar is our senior eye specialist. We offer complete eye care including cataract surgery, LASIK consultations, glaucoma treatment, retina care, and routine eye examinations. Would you like me to book an appointment with our eye specialist?",
+      "tags": [
+        "ophthalmology",
+        "eye",
+        "cataract",
+        "vision",
+        "lasik",
+        "specialist"
+      ]
+    },
+    {
+      "id": "faq_094",
+      "category": "Departments & Doctors",
+      "intent": "dermatology_services",
+      "question_variants": [
+        "Do you have a skin specialist?",
+        "Chamdi ka doctor kahan milega?",
+        "Dermatology department kahan hai?",
+        "Skin problem ke liye kahan jaayein?",
+        "Hair fall doctor yahan available hai?"
+      ],
+      "answer": "Our Dermatology and Aesthetics department is on the Ground Floor, Block A. Dr. Meera Singh is our senior dermatologist. We offer treatment for acne, psoriasis, eczema, skin allergies, hair loss, and cosmetic procedures. Appointments are available on all weekdays.",
+      "tags": [
+        "dermatology",
+        "skin",
+        "hair loss",
+        "acne",
+        "cosmetic",
+        "specialist"
+      ]
+    },
+    {
+      "id": "faq_095",
+      "category": "Services",
+      "intent": "dental_services",
+      "question_variants": [
+        "Do you have a dental department?",
+        "Daanton ka doctor hai?",
+        "Dental clinic yahan hai kya?",
+        "Daat dard ke liye kahan jaayein?",
+        "Dentist available hai?"
+      ],
+      "answer": "We do not have an in-house dental department, but we can refer you to empanelled dental clinics nearby. For dental emergencies arising from trauma or accidents, our Emergency department handles immediate oral injury care. Would you like me to check and provide the contact details for our empanelled dental referrals?",
+      "tags": [
+        "dental",
+        "dentist",
+        "teeth",
+        "tooth pain",
+        "oral",
+        "referral"
+      ]
+    },
+    {
+      "id": "faq_096",
+      "category": "Health Packages",
+      "intent": "health_checkup_packages_overview",
+      "question_variants": [
+        "What health checkup packages are available?",
+        "Full body checkup ka kharcha kitna hai?",
+        "Annual health checkup package kya hai?",
+        "Preventive health checkup available hai?",
+        "Comprehensive checkup ke liye kya karna hoga?",
+        "Health package ke types kya hain?"
+      ],
+      "answer": "We offer multiple health checkup packages: the Basic Health Checkup at Rs. 1,999 includes 35 tests, the Comprehensive Package at Rs. 3,999 includes 65 tests, the Cardiac Package at Rs. 4,999 includes ECG, Echo, and heart-specific tests, and the Women's Health Package at Rs. 4,499 includes gynecological screening. All packages include a doctor consultation. Which one would you like to know more about?",
+      "tags": [
+        "health checkup",
+        "package",
+        "full body",
+        "preventive",
+        "annual checkup"
+      ]
+    },
+    {
+      "id": "faq_097",
+      "category": "Hospital Information",
+      "intent": "international_nri_patients",
+      "question_variants": [
+        "Do you serve international patients?",
+        "NRI patients ke liye koi service hai?",
+        "Foreign patients treated here?",
+        "Medical visa letter milegi?",
+        "International patient desk kahan hai?"
+      ],
+      "answer": "Yes, we have a dedicated International Patient Services desk on the Ground Floor near main reception. We assist NRI and foreign patients with cost estimates, medical visa invitation letters, airport pickup coordination, translation services, and insurance claim documentation. Would you like me to connect you to our International Patient Services team?",
+      "tags": [
+        "international",
+        "nri",
+        "foreign patient",
+        "medical visa",
+        "overseas"
+      ]
+    },
+    {
+      "id": "faq_098",
+      "category": "OPD & Appointments",
+      "intent": "appointment_confirmation",
+      "question_variants": [
+        "How will I know my appointment is confirmed?",
+        "Appointment confirm hua hai kya?",
+        "Appointment ka reminder milega?",
+        "Booking confirmation kaise milega?",
+        "SMS milega appointment ke baare mein?"
+      ],
+      "answer": "Once your appointment is booked, you will receive a confirmation SMS and WhatsApp message with the date, time, and doctor's name on your registered mobile number. A reminder is also sent one day before your appointment. Would you like me to double-check the booking details in our system for you?",
+      "tags": [
+        "appointment",
+        "confirmation",
+        "sms",
+        "reminder",
+        "whatsapp",
+        "booking"
+      ]
+    },
+    {
+      "id": "faq_099",
+      "category": "Amenities",
+      "intent": "disabled_friendly_facilities",
+      "question_variants": [
+        "Is the hospital accessible for wheelchair users?",
+        "Wheelchair ke liye ramps available hain?",
+        "Disabled friendly hospital hai kya?",
+        "Physically challenged ke liye kya facility hai?",
+        "Lift available hai differently abled ke liye?"
+      ],
+      "answer": "Yes, our hospital is fully accessible. We have wheelchair ramps at all entrances, dedicated lifts with Braille buttons, accessible restrooms on every floor, priority counters for differently-abled patients, and free wheelchair availability at all gates. Please inform our staff on arrival and we will ensure a comfortable experience.",
+      "tags": [
+        "disabled",
+        "wheelchair",
+        "accessible",
+        "ramp",
+        "lift",
+        "differently abled"
+      ]
+    },
+    {
+      "id": "faq_100",
+      "category": "Hospital Information",
+      "intent": "complaint_feedback",
+      "question_variants": [
+        "How can I give feedback or complaint?",
+        "Complaint kahan karein?",
+        "Hospital se shikayat kaise karein?",
+        "Patient satisfaction form kahan milega?",
+        "Feedback dena hai mujhe"
+      ],
+      "answer": "We value your feedback highly. You can fill in our patient feedback form available at all nursing stations and the main reception. You can also speak with our Patient Relations Officer at the Ground Floor, Room 102, or email your feedback to care@indiiserve.ai. All complaints are reviewed within 48 hours.",
+      "tags": [
+        "feedback",
+        "complaint",
+        "patient satisfaction",
+        "review",
+        "opinion"
       ]
     },
     {
@@ -2611,6 +4261,78 @@
         "What are the available hours for Dr. Sen in the Cardiology department?"
       ],
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780064092_6678",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780064092_6678",
+      "question_variants": [
+        "Is there a change in the location of Dr. Sen's clinic?"
+      ],
+      "answer": "No information provided",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780064092_8551",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780064092_8551",
+      "question_variants": [
+        "Does the patient need to see a doctor immediately due to fever and headache?"
+      ],
+      "answer": "Yes",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780064092_7131",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780064092_7131",
+      "question_variants": [
+        "Can the AI connect the patient to the emergency desk or schedule an urgent appointment?"
+      ],
+      "answer": "Yes",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780064092_5310",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780064092_5310",
+      "question_variants": [
+        "What information is needed to check the patient's current bill?"
+      ],
+      "answer": "Patient ID or full name",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780064092_5130",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780064092_5130",
+      "question_variants": [
+        "Is there a 'soil' department?"
+      ],
+      "answer": "No, there is no 'soil' department.",
+      "tags": [
+        "learned"
+      ]
+    },
+    {
+      "id": "faq_learned_1780064092_7459",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780064092_7459",
+      "question_variants": [
+        "What is the parking rate for the hospital?"
+      ],
+      "answer": "20 rupees for an hour",
       "tags": [
         "learned"
       ]

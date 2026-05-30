@@ -416,8 +416,12 @@ def _doctor_search_text(doc: dict) -> str:
 
 
 def _match_services(query: str, services: list[dict]) -> list[dict]:
-    price_words = ["cost", "price", "charge", "charges", "rate", "kitna", "kharcha"]
-    service_words = ["mri", "ct", "scan", "xray", "x-ray", "ultrasound", "usg", "blood", "thyroid", "cbc", "test", "lab", "echo", "ecg", "tmt", "dialysis", "physiotherapy"]
+    price_words = ["cost", "price", "charge", "charges", "rate", "kitna", "kharcha", "fees", "daam"]
+    service_words = [
+        "mri", "ct", "scan", "xray", "x-ray", "ultrasound", "usg", "blood", "thyroid", "cbc", "test", "lab", "echo",
+        "ecg", "tmt", "dialysis", "physiotherapy", "report", "result", "jaanch", "operation", "ot", "surgery", "urine",
+        "kidney", "liver", "lipid", "sugar", "glucose"
+    ]
     if not (_contains_any(query, price_words) or _contains_any(query, service_words)):
         return []
     scored = []
@@ -489,7 +493,7 @@ def _format_departments(loader) -> str:
 
 
 def _match_rooms(query: str, rooms: list[dict]) -> list[dict]:
-    if not _contains_any(query, ["room", "rent", "tariff", "ward", "icu", "deluxe", "private"]):
+    if not _contains_any(query, ["room", "rent", "tariff", "ward", "icu", "deluxe", "private", "general", "kharcha", "rate", "daam", "admit", "daakhil", "admitted"]):
         return []
     specific = {
         "icu": ["icu"],
@@ -524,13 +528,26 @@ def _format_rooms(matches: list[dict]) -> str:
 def _match_amenity(query: str, amenities: dict) -> str | None:
     if not isinstance(amenities, dict):
         return None
+    
+    # Map keywords/synonyms to amenity keys
+    mapping = {
+        "parking": ["parking", "park", "gadi", "vehicle", "car", "bike"],
+        "wifi": ["wifi", "wi-fi", "wi fi", "internet", "net", "password"],
+        "cafeteria": ["cafeteria", "canteen", "food", "eat", "khana", "khaana", "restaurant", "lunch", "dinner", "breakfast"],
+        "pharmacy": ["pharmacy", "medicine", "dawai", "chemist", "medical store"],
+        "atm": ["atm", "cash", "paise", "money", "bank"],
+        "wheelchair_porter": ["wheelchair", "porter", "assist", "help", "kursi", "stretcher"],
+        "prayer_room": ["prayer", "meditation", "mandir", "pray", "pooja", "masjid"],
+        "play_area": ["play", "children", "kids", "khelen", "activity"]
+    }
+    
     for key, value in amenities.items():
-        key_text = key.replace("_", " ").lower()
-        if key_text in query or any(_has_word(query, part) for part in key_text.split()):
+        synonyms = mapping.get(key, [key.replace("_", " ")])
+        if any(syn in query for syn in synonyms) or any(_has_word(query, part) for part in key.replace("_", " ").split()):
             if isinstance(value, dict):
                 details = ", ".join(f"{k.replace('_', ' ').title()}: {v}" for k, v in value.items())
-                return f"{key_text.title()}: {details}."
-            return f"{key_text.title()}: {value}."
+                return f"{key.replace('_', ' ').title()}: {details}."
+            return f"{key.replace('_', ' ').title()}: {value}."
     return None
 
 
@@ -646,6 +663,16 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
     query = _normalize_query(args.get("query", ""))
     core = loader.get_core_info()
 
+    # Early guard to route visiting hours queries before room matching (Fixes routing bug for "ward visiting hours")
+    VISITING_KEYWORDS = [
+        "visit", "visiting", "milne", "milna", "milenge", "mulakat",
+        "timing", "hours", "time", "kab", "baje", "samay"
+    ]
+    if _contains_any(query, VISITING_KEYWORDS):
+        faq = _match_faq(query, loader.get_faq())
+        if faq and faq.get("answer"):
+            return {"answer": faq["answer"]}
+
     if ENABLE_MULTI_INTENT and _contains_any(query, ["department", "departments"]) and _contains_any(query, ["doctor", "doctors", "available", "availability"]):
         dept_answer = _format_departments(loader)
         doc_matches = _match_doctors(query, loader.get_doctors()) or loader.get_doctors()
@@ -678,10 +705,10 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
             return {"answer": f"Pharmacy is {hours.get('pharmacy', core.get('pharmacy_hours', '24/7 open'))}."}
         return {"answer": "Hospital timings: " + ", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in hours.items()) + "."}
 
-    if _contains_any(query, ["address", "location", "where", "kahan"]):
+    if _contains_any(query, ["address", "location", "where", "kahan", "kidhar", "rasta", "pahunchna", "directions", "route"]):
         return {"answer": f"{core.get('name')} is located at {core.get('address', 'our main facility')}."}
 
-    if _contains_any(query, ["contact", "phone", "number", "telephone", "mobile"]):
+    if _contains_any(query, ["contact", "phone", "number", "telephone", "mobile", "call", "baat"]):
         return {"answer": f"{core.get('name')} contact number is {core.get('contact', '+91 80 4000 9000')}."}
 
     return {"answer": f"{core.get('name', 'InDiiServe Hospital')} provides {len(loader.get_departments())} departments and {len(loader.get_services())} listed services. What would you like to check?"}
