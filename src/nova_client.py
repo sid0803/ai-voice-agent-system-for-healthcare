@@ -772,7 +772,7 @@ class S2SBidirectionalStreamClient:
 
         async with session.write_lock:
             audio_out = DEFAULT_AUDIO_OUTPUT_CONFIG
-            voice_id = (audio_out.voice_id or os.environ.get("NOVA_VOICE_ID", "Kiara")).title()
+            voice_id = (audio_out.voice_id or os.environ.get("NOVA_VOICE_ID", "tiffany")).strip().lower()
             await self._send_event(session_id, {
                 "event": {
                     "promptStart": {

@@ -160,7 +160,7 @@ hello_audio_bytes = b'\x00' * 16000  # 1 second of 8kHz 16-bit PCM silence
 
 nova_voice = os.environ.get("NOVA_VOICE_ID", "")
 if not nova_voice:
-    logger.warning("[CONFIG] NOVA_VOICE_ID not set in .env — defaulting to 'Kiara'. Set NOVA_VOICE_ID=Kiara explicitly.")
+    logger.warning("[CONFIG] NOVA_VOICE_ID not set in .env — defaulting to 'tiffany'. Set NOVA_VOICE_ID=tiffany explicitly.")
 
 # ---------------------------------------------------------------------------
 # Environment variables
