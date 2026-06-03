@@ -154,13 +154,62 @@ def _get_websocket_client_ip(websocket: WebSocket) -> str:
         return real_ip.strip()
     return websocket.client.host if websocket.client else ""
 
+def detect_language(text: str) -> str:
+    """
+    Returns 'hindi', 'hinglish', or 'english' based on the caller's text.
+    Called on every user utterance for per-turn language mirroring.
+    """
+    # Check for Devanagari script characters (Unicode range U+0900–U+097F)
+    devanagari_count = sum(1 for ch in text if '\u0900' <= ch <= '\u097F')
+    if devanagari_count >= 1:
+        return "hindi"
+
+    # Hinglish = Roman script but contains Hindi/Urdu words
+    hinglish_keywords = [
+        "hai", "hain", "kya", "kab", "kaise", "kahaan", "kitna", "kitne",
+        "mujhe", "mera", "meri", "aap", "aapka", "aapki", "aapke",
+        "doctor", "karni", "chahiye", "batao", "bataiye", "nahi", "nahin",
+        "theek", "achha", "kal", "aaj", "appointment", "book", "karein",
+        "bhi", "ya", "aur", "lekin", "toh", "ji", "suniye", "please",
+        "OPD", "ka", "ki", "ke", "se", "mein", "par", "ko", "ne",
+        "available", "hai kya", "karo", "karo na", "check", "ho"
+    ]
+    text_lower = text.lower()
+    # Count how many Hinglish keywords appear
+    hinglish_hits = sum(1 for kw in hinglish_keywords if f" {kw} " in f" {text_lower} ")
+    if hinglish_hits >= 1:
+        return "hinglish"
+
+    return "english"
+
+# Language injection messages — injected into Nova Sonic after every user utterance
+LANGUAGE_INSTRUCTIONS = {
+    "hindi": (
+        "[SYSTEM: The caller just spoke in HINDI. "
+        "Your NEXT response MUST be entirely in Hindi using Devanagari script only. "
+        "Example: 'आपका अपॉइंटमेंट बुक हो गया है।' "
+        "Do NOT reply in English or Hinglish.]"
+    ),
+    "hinglish": (
+        "[SYSTEM: The caller just spoke in HINGLISH. "
+        "Your NEXT response MUST be entirely in Hinglish using Roman script only. "
+        "Example: 'Dr. Pillai kal available hain. Kya main book kar doon?' "
+        "Do NOT reply in English or Devanagari.]"
+    ),
+    "english": (
+        "[SYSTEM: The caller just spoke in ENGLISH. "
+        "Your NEXT response MUST be entirely in English. "
+        "Do NOT reply in Hindi or Hinglish.]"
+    ),
+}
+
 # hello_audio_bytes: digital silence — greeting is handled entirely by Nova Sonic dynamically.
 # The hello.pcm file is no longer used. Keeping variable for backward compatibility only.
 hello_audio_bytes = b'\x00' * 16000  # 1 second of 8kHz 16-bit PCM silence
 
 nova_voice = os.environ.get("NOVA_VOICE_ID", "")
 if not nova_voice:
-    logger.warning("[CONFIG] NOVA_VOICE_ID not set in .env — defaulting to 'tiffany'. Set NOVA_VOICE_ID=tiffany explicitly.")
+    logger.warning("[CONFIG] NOVA_VOICE_ID not set in .env — defaulting to 'kiara'. Set NOVA_VOICE_ID=kiara explicitly.")
 
 # ---------------------------------------------------------------------------
 # Environment variables
@@ -229,6 +278,7 @@ You are an AI receptionist named Asha. You exclusively help callers with healthc
 When the conversation FIRST starts or user says hi/hello at the BEGINNING:
 - If you have PREVIOUS CONVERSATION CONTEXT with the caller's name, greet them personally: "Hello [Name], welcome back to InDiiServe Healthcare! This is Asha. How can I assist you today?"
 - If this is a new caller (no context), say: "Hello, welcome to InDiiServe Healthcare! This is Asha. How can I help you today?"
+- If the caller starts by speaking in Hindi or Hinglish, adapt your greeting immediately to Hindi or Hinglish (e.g. "Namaste, InDiiServe Healthcare mein aapka swagat hai. Main Asha hoon. Aaj main aapki kya madad kar sakti hoon?").
 Only greet ONCE at the start.
 
 ---
@@ -254,7 +304,12 @@ In real hospital environments, patients are often hesitant or unclear (e.g., "Do
 
 This is the single most important rule about how you speak.
 
-STEP 1: Detect which language the caller is using in their message:
+STRICT PER-TURN LANGUAGE ADAPTATION:
+- Detect the language of EACH caller message separately on EVERY turn.
+- Zero-tolerance English fallback ban: NEVER reply in English if the caller spoke Hindi or Hinglish.
+- If the user switches languages mid-conversation, you MUST immediately switch to mirror their new language on your next response.
+
+STEP 1: Detect which language the caller is using in their current message:
   - HINDI: Caller uses Devanagari script (e.g., "मुझे अपॉइंटमेंट चाहिए")
   - HINGLISH: Caller uses Roman script with Hindi words mixed with English
     (e.g., "Appointment book karni hai", "Doctor kab available hai?", "OPD ka time kya hai?")
@@ -280,7 +335,7 @@ STRICT SCRIPT RULES (NEVER BREAK THESE):
      RIGHT: "Dr. Pillai mangalwar ko available hain." (Hinglish, all Roman)
      RIGHT: "डॉ. पिल्लई मंगलवार को उपलब्ध हैं।" (Hindi, all Devanagari)
 
-  2. NEVER switch languages mid-conversation unless the caller switches first.
+  2. ALWAYS match the caller's language dynamically. If they switch, you switch.
   
   3. Use polite formal register always: "Aap", "Ji", "aapka" in Hinglish/Hindi.
   
@@ -1306,6 +1361,11 @@ async def exotel_stream(websocket: WebSocket):
         if "interrupted" in content and "true" in content:
             return
             
+        # Filter out injected system commands/instructions
+        if content.strip().startswith("["):
+            logger.info("⚙️ [SYSTEM EVENT] %s", content.strip())
+            return
+            
         # Dedup key - check if this content was already processed in a previous turn
         dedup_key = (role, content)
         is_new = content.strip() and dedup_key not in seen_transcript_entries
@@ -1343,11 +1403,18 @@ async def exotel_stream(websocket: WebSocket):
                         asyncio.ensure_future(stream_cached_audio(cached_audio))
             # --- END OPTIMIZATION ---
 
-            hinglish_keywords = ["hai", "kare", "kaise", "booking", "chahiye", "mera", "mujhe", "aap", "karna", "sunye"]
-            if any("\u0900" <= ch <= "\u097F" for ch in content) or any(kw in content.lower() for kw in hinglish_keywords):
-                detected_language = "hi"
-            else:
-                detected_language = "en"
+            # --- START LANGUAGE MIRRORING ---
+            lang = detect_language(content)
+            detected_language = "hi" if lang in ["hindi", "hinglish"] else "en"
+            
+            logger.info("Real-time language injection: %s (caller content: '%s')", lang, content)
+            asyncio.ensure_future(
+                bedrock_client.send_text_message(
+                    session_id,
+                    LANGUAGE_INSTRUCTIONS[lang]
+                )
+            )
+            # --- END LANGUAGE MIRRORING ---
 
         elif role == "ASSISTANT":
             # Only accumulate NEW content for memory (skip duplicates)
