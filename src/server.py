@@ -211,7 +211,7 @@ LANGUAGE_INSTRUCTIONS = {
 
 # hello_audio_bytes: digital silence — greeting is handled entirely by Nova Sonic dynamically.
 # The hello.pcm file is no longer used. Keeping variable for backward compatibility only.
-hello_audio_bytes = b'\x00' * 16000  # 1 second of 8kHz 16-bit PCM silence
+hello_audio_bytes = b'\x00' * 24000  # 1.5 seconds of 8kHz 16-bit PCM silence
 
 nova_voice = os.environ.get("NOVA_VOICE_ID", "")
 if not nova_voice:
@@ -1586,17 +1586,15 @@ async def exotel_stream(websocket: WebSocket):
 
                         call_start_time = datetime.now(timezone.utc)
 
-                        # [MODIFICATION] Disabled pre-recorded hello.pcm greeting block as requested by user.
-                        # This removes the initial male "hello" sound and lets the model start speaking immediately.
-                        # polished_greeting = polisher.process_chunk(hello_audio_bytes)
-                        # exotel_greeting = pcm_to_exotel(polished_greeting)
-                        # greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
-                        # await websocket.send_text(json.dumps({
-                        #     "event": "media",
-                        #     "stream_sid": session.stream_sid,
-                        #     "media": {"payload": greeting_b64}
-                        # }))
-                        # logger.info("Greeting audio sent to Exotel (%d bytes Exotel, polished)", len(exotel_greeting))
+                        # Send 1.5 seconds of silence to open the audio channel and allow call stabilization
+                        exotel_greeting = pcm_to_exotel(hello_audio_bytes)
+                        greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
+                        await websocket.send_text(json.dumps({
+                            "event": "media",
+                            "stream_sid": session.stream_sid,
+                            "media": {"payload": greeting_b64}
+                        }))
+                        logger.info("Sent 1.5s of initial channel-stabilization silence to Exotel")
 
                         # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
