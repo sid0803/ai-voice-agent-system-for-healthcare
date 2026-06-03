@@ -1475,6 +1475,13 @@ async def exotel_stream(websocket: WebSocket):
     speech_frames = 0
     silence_frames = 0
 
+    # [FIX] Minimum real-speech gate before end-of-turn can fire.
+    # Prevents ghost monologue on silent/dead-air calls: background noise
+    # can increment speech_frames to 4 (user_speaking=True) but never
+    # sustains 10 frames (~200ms) of RMS > 1000 like real speech does.
+    # Also reduces end-of-turn latency: 45 frames (900ms) -> 30 frames (600ms).
+    MIN_SPEECH_FRAMES_TO_COMMIT = 10  # ~200ms of sustained voice required
+
     # Helper to process incoming audio with VAD and interruption detection
     async def process_incoming_audio(pcm_samples: bytes):
         nonlocal user_speaking, speech_frames, silence_frames
@@ -1506,11 +1513,27 @@ async def exotel_stream(websocket: WebSocket):
                         user_speaking = True
                 elif user_speaking:
                     silence_frames += 1
-                    if silence_frames >= 45:  # ~900ms of continuous silence (45 frames of 20ms)
-                        logger.info("[VAD] User finished speaking (900ms silence). Triggering end of turn.")
+                    # [FIX GHOST-MONOLOGUE] Require user to have spoken >=200ms of real voice
+                    # before we fire end_audio_content(). Dead-air/background noise never
+                    # reaches MIN_SPEECH_FRAMES_TO_COMMIT frames of sustained RMS > 1000.
+                    # Silence threshold also reduced: 45 (900ms) -> 30 (600ms) for lower latency.
+                    if silence_frames >= 30 and speech_frames >= MIN_SPEECH_FRAMES_TO_COMMIT:
+                        logger.info(
+                            "[VAD] User finished speaking (600ms silence, %d speech frames). Triggering end of turn.",
+                            speech_frames
+                        )
                         # Send contentEnd to trigger Bedrock completion response
                         await session.end_audio_content()
                         # Reset VAD state
+                        user_speaking = False
+                        speech_frames = 0
+                        silence_frames = 0
+                    elif silence_frames >= 30 and speech_frames < MIN_SPEECH_FRAMES_TO_COMMIT:
+                        # Noise gate: reset without triggering (background noise / dead air)
+                        logger.debug(
+                            "[VAD] Noise gate: only %d speech frames (need %d). Resetting without EOT.",
+                            speech_frames, MIN_SPEECH_FRAMES_TO_COMMIT
+                        )
                         user_speaking = False
                         speech_frames = 0
                         silence_frames = 0

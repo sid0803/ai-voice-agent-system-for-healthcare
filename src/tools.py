@@ -334,11 +334,59 @@ def _has_prefix_word(query: str, prefix: str) -> bool:
     return bool(re.search(pattern, query))
 
 
+# ---------------------------------------------------------------------------
+# Hindi / Devanagari alias map
+# Maps Devanagari and Romanized Hindi medical terms -> English equivalents.
+# Applied in _normalize_query() so all downstream matching is English-first.
+# ---------------------------------------------------------------------------
+HINDI_ALIAS_MAP = {
+    # Sugar / Diabetes
+    "शुगर": "sugar", "शुगर टेस्ट": "sugar test", "मधुमेह": "diabetes",
+    "फास्टिंग ब्लड शुगर": "fasting blood sugar", "फास्टिंग": "fasting",
+    "रैंडम ब्लड शुगर": "random blood sugar",
+    # Blood / CBC
+    "खून": "blood", "रक्त": "blood", "सीबीसी": "cbc",
+    # MRI / Scans
+    "एमआरआई": "mri", "एमरई": "mri", "एमरै": "mri", "एम आर आई": "mri",
+    "सीटी स्कैन": "ct scan", "सीटी": "ct", "स्कैन": "scan",
+    "एक्सरे": "xray", "एक्स रे": "xray",
+    "अल्ट्रासाउंड": "ultrasound", "सोनोग्राफी": "ultrasound",
+    "इको": "echo", "ईसीजी": "ecg",
+    # Thyroid / Liver / Kidney
+    "थायरॉइड": "thyroid", "थायरोइड": "thyroid",
+    "जिगर": "liver", "किडनी": "kidney", "गुर्दा": "kidney",
+    "लिपिड": "lipid",
+    # Price keywords
+    "कीमत": "price", "दाम": "price", "मूल्य": "price",
+    "शुल्क": "charges", "फीस": "fees",
+    "कितना": "cost", "खर्चा": "cost", "खर्च": "cost",
+    "रेट": "rate",
+    # Facility / Amenity
+    "पार्किंग": "parking", "पार्क": "parking",
+    "कैफेटेरिया": "cafeteria", "कैंटीन": "cafeteria",
+    "फार्मेसी": "pharmacy", "दवाई": "pharmacy", "दवा": "pharmacy",
+    "एटीएम": "atm",
+    # Travel / Directions
+    "रास्ता": "directions", "कैसे आएं": "how to reach",
+    "पहुंचना": "reach", "पहुँचना": "reach",
+    # Appointment / Doctor
+    "अपॉइंटमेंट": "appointment", "अपोइंटमेंट": "appointment",
+    "डॉक्टर": "doctor", "डाक्टर": "doctor",
+    # General medical
+    "बुखार": "fever", "दर्द": "pain", "जांच": "test", "जाँच": "test",
+    "ऑपरेशन": "surgery", "आपरेशन": "surgery",
+}
+
+
 def _normalize_query(query: str) -> str:
-    """Cleans up the query string for matching."""
+    """Cleans up the query string for matching. Expands Hindi/Devanagari aliases to English."""
     if not query:
         return ""
-    return query.lower().strip()
+    q = query.strip()
+    # Expand longer phrases first (to avoid partial replacements)
+    for hindi_phrase, english_phrase in sorted(HINDI_ALIAS_MAP.items(), key=lambda x: -len(x[0])):
+        q = q.replace(hindi_phrase, english_phrase)
+    return q.lower()
 
 
 _DAY_ALIASES = {
@@ -381,7 +429,13 @@ STOP_WORDS = {
 
 
 def _tokens(text: str) -> set[str]:
-    return {t for t in re.findall(r"[a-z0-9]+", _normalize_query(text)) if len(t) >= 2 and t not in STOP_WORDS}
+    normalized = _normalize_query(text)
+    # ASCII tokens (after Hindi alias expansion)
+    ascii_tokens = {t for t in re.findall(r"[a-z0-9]+", normalized) if len(t) >= 2 and t not in STOP_WORDS}
+    # Devanagari tokens — safety fallback for any untranslated Devanagari words
+    # (unicode block U+0900–U+097F covers all Devanagari script)
+    devanagari_tokens = {t for t in re.findall(r"[\u0900-\u097F]+", text) if len(t) >= 2}
+    return ascii_tokens | devanagari_tokens
 
 
 def _contains_any(query: str, words: list[str]) -> bool:
@@ -452,7 +506,10 @@ def _match_services(query: str, services: list[dict]) -> list[dict]:
     service_words = [
         "mri", "ct", "scan", "xray", "x-ray", "ultrasound", "usg", "blood", "thyroid", "cbc", "test", "lab", "echo",
         "ecg", "tmt", "dialysis", "physiotherapy", "report", "result", "jaanch", "operation", "ot", "surgery", "urine",
-        "kidney", "liver", "lipid", "sugar", "glucose"
+        "kidney", "liver", "lipid", "sugar", "glucose",
+        # Hindi / Devanagari keywords (post alias-expansion these are already English,
+        # but kept here as safety net for partial expansions or new phrases)
+        "शुगर", "एमआरआई", "सीटी", "खून", "थायरॉइड", "किडनी", "जिगर", "जांच", "जाँच",
     ]
     if not (any(_has_word(query, w) for w in price_words) or any(_has_word(query, w) for w in service_words)):
         return []
@@ -564,15 +621,42 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
     
     # Map keywords/synonyms to amenity keys
     mapping = {
-        "parking": ["parking", "park", "gadi", "vehicle", "car", "bike"],
+        "parking": ["parking", "park", "gadi", "vehicle", "car", "bike",
+                    # Hindi aliases (post-expansion)
+                    "\u092a\u093e\u0930\u094d\u0915\u093f\u0902\u0917", "\u0917\u093e\u0921\u093c\u0940"],
         "wifi": ["wifi", "wi-fi", "wi fi", "internet", "net", "password"],
-        "cafeteria": ["cafeteria", "canteen", "food", "eat", "khana", "khaana", "restaurant", "lunch", "dinner", "breakfast"],
-        "pharmacy": ["pharmacy", "medicine", "dawai", "chemist", "medical store"],
-        "atm": ["atm", "cash", "paise", "money", "bank"],
+        "cafeteria": ["cafeteria", "canteen", "food", "eat", "khana", "khaana", "restaurant",
+                      "lunch", "dinner", "breakfast",
+                      "\u0915\u0948\u092b\u0947\u091f\u0947\u0930\u093f\u092f\u093e", "\u0915\u0948\u0902\u091f\u0940\u0928"],
+        "pharmacy": ["pharmacy", "medicine", "dawai", "chemist", "medical store",
+                     "\u092b\u093e\u0930\u094d\u092e\u0947\u0938\u0940", "\u0926\u0935\u093e\u0908", "\u0926\u0935\u093e"],
+        "atm": ["atm", "cash", "paise", "money", "bank",
+                "\u090f\u091f\u0940\u090f\u092e"],
         "wheelchair_porter": ["wheelchair", "porter", "assist", "help", "kursi", "stretcher"],
         "prayer_room": ["prayer", "meditation", "mandir", "pray", "pooja", "masjid"],
-        "play_area": ["play", "children", "kids", "khelen", "activity"]
+        "play_area": ["play", "children", "kids", "khelen", "activity"],
+        # Travel / Directions — catches queries like "how to reach", "kaise aayein",
+        # "directions", "travel from", preventing KB vector fallback returning test prices
+        "directions": ["travel", "directions", "reach", "route", "how to come", "how to get",
+                       "from west", "from mumbai", "from bengal", "kaise aayein", "kaise aana",
+                       "\u0930\u093e\u0938\u094d\u0924\u093e", "\u092a\u0939\u0941\u0902\u091a\u0928\u093e", "\u0915\u0948\u0938\u0947 \u0906\u090f\u0902"],
     }
+    
+    # [FIX TRAVEL] Handle travel/directions queries early — before the amenity loop.
+    # Without this, "how to travel" falls through to KB vector search which
+    # returns test pricing data instead of the hospital address (seen in session 33cee9fb).
+    direction_keywords = mapping["directions"]
+    if any(syn in query for syn in direction_keywords):
+        address = amenities.get("address") or amenities.get("location", "")
+        if not address:
+            # Fallback: read from the core_info-style fields that may be stored in amenities
+            address = "12-B, MG Road, Residency Area, Bengaluru - 560025"
+        return (
+            f"Our hospital is located at: {address}. "
+            "You can reach us by flight, train, or road. "
+            "From the airport or railway station, take a cab or metro directly to MG Road. "
+            "Our address is on Google Maps — search 'InDiiServe Multi-Specialty Hospital'."
+        )
     
     matched_results = []
     for key, value in amenities.items():
