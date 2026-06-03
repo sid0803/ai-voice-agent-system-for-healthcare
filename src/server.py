@@ -1697,7 +1697,15 @@ async def exotel_stream(websocket: WebSocket):
                         # E2E Test Backdoor
                         text_input = data.get("text", "")
                         logger.info("[DEMO] Received test input: %s", text_input)
-                        asyncio.ensure_future(bedrock_client.send_text_message(session_id, text_input))
+                        
+                        lang = detect_language(text_input)
+                        logger.info("Real-time language injection (chat): %s (caller content: '%s')", lang, text_input)
+                        
+                        async def _send_with_lang():
+                            await bedrock_client.send_text_message(session_id, LANGUAGE_INSTRUCTIONS[lang])
+                            await bedrock_client.send_text_message(session_id, text_input)
+                            
+                        asyncio.ensure_future(_send_with_lang())
 
                 except json.JSONDecodeError:
                     logger.exception("Error parsing Exotel JSON")
