@@ -53,7 +53,7 @@ DEFAULT_INFERENCE_CONFIG = InferenceConfig()
 DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="HIGH")
 
 DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(
-    voice_id=os.getenv("NOVA_VOICE_ID", "Kiara")
+    voice_id=os.getenv("NOVA_VOICE_ID", "tiffany")
 )
 
 DEFAULT_TEXT_CONFIG = TextConfiguration()
