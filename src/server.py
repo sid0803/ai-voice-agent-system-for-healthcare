@@ -1412,14 +1412,7 @@ async def exotel_stream(websocket: WebSocket):
             # --- START LANGUAGE MIRRORING ---
             lang = detect_language(content)
             detected_language = "hi" if lang in ["hindi", "hinglish"] else "en"
-            
-            logger.info("Real-time language injection: %s (caller content: '%s')", lang, content)
-            asyncio.ensure_future(
-                bedrock_client.send_text_message(
-                    session_id,
-                    LANGUAGE_INSTRUCTIONS[lang]
-                )
-            )
+            logger.info("Real-time language detected: %s (caller content: '%s')", lang, content)
             # --- END LANGUAGE MIRRORING ---
 
         elif role == "ASSISTANT":
@@ -1699,13 +1692,11 @@ async def exotel_stream(websocket: WebSocket):
                         logger.info("[DEMO] Received test input: %s", text_input)
                         
                         lang = detect_language(text_input)
-                        logger.info("Real-time language injection (chat): %s (caller content: '%s')", lang, text_input)
+                        instruction = LANGUAGE_INSTRUCTIONS[lang]
+                        combined_text = f"{instruction}\nUser Query: {text_input}"
+                        logger.info("Real-time language injection (chat): %s (combined text: '%s')", lang, combined_text)
                         
-                        async def _send_with_lang():
-                            await bedrock_client.send_text_message(session_id, LANGUAGE_INSTRUCTIONS[lang])
-                            await bedrock_client.send_text_message(session_id, text_input)
-                            
-                        asyncio.ensure_future(_send_with_lang())
+                        asyncio.ensure_future(bedrock_client.send_text_message(session_id, combined_text))
 
                 except json.JSONDecodeError:
                     logger.exception("Error parsing Exotel JSON")
