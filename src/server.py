@@ -165,19 +165,25 @@ def detect_language(text: str) -> str:
         return "hindi"
 
     # Hinglish = Roman script but contains Hindi/Urdu words
-    hinglish_keywords = [
-        "hai", "hain", "kya", "kab", "kaise", "kahaan", "kitna", "kitne",
-        "mujhe", "mera", "meri", "aap", "aapka", "aapki", "aapke",
-        "doctor", "karni", "chahiye", "batao", "bataiye", "nahi", "nahin",
-        "theek", "achha", "kal", "aaj", "appointment", "book", "karein",
-        "bhi", "ya", "aur", "lekin", "toh", "ji", "suniye", "please",
-        "OPD", "ka", "ki", "ke", "se", "mein", "par", "ko", "ne",
-        "available", "hai kya", "karo", "karo na", "check", "ho"
-    ]
-    text_lower = text.lower()
-    # Count how many Hinglish keywords appear
-    hinglish_hits = sum(1 for kw in hinglish_keywords if f" {kw} " in f" {text_lower} ")
-    if hinglish_hits >= 1:
+    # We only match core Hindi function words/verbs to avoid false positives on English.
+    core_hindi_roman_words = {
+        "hai", "hain", "ho", "hoon", "kya", "kab", "kaise", "kahaan", "kidhar", "kyun", "kaun", 
+        "kiska", "kiski", "kiske", "kitna", "kitne", "mujhe", "mera", "meri", "hum", 
+        "humara", "humari", "humare", "aap", "aapka", "aapki", "aapke", "tum", "tumhara", 
+        "tumhari", "tumhare", "apna", "apni", "apne", "ka", "ki", "ke", "se", "ko", "mein", 
+        "par", "ne", "tak", "liye", "saath", "paas", "karna", "karo", "karein", "karni", 
+        "karta", "karti", "karte", "kar", "krna", "kro", "chahiye", "chahie", "chahye", 
+        "batao", "bataiye", "batana", "btao", "btaiye", "nahi", "nahin", "mat", "theek", 
+        "achha", "acha", "thik", "kal", "aaj", "parso", "abhi", "pehle", "baad", 
+        "bhi", "ya", "aur", "lekin", "toh", "suniye", "milna", "mil", "dekhna", 
+        "dikhana", "dikhao", "chalega", "bataye"
+    }
+
+    import re
+    cleaned_text = re.sub(r'[^\w\s]', ' ', text.lower())
+    words = cleaned_text.split()
+
+    if any(word in core_hindi_roman_words for word in words):
         return "hinglish"
 
     return "english"
