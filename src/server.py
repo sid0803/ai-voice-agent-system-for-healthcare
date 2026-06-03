@@ -154,21 +154,13 @@ def _get_websocket_client_ip(websocket: WebSocket) -> str:
         return real_ip.strip()
     return websocket.client.host if websocket.client else ""
 
-# ---------------------------------------------------------------------------
-# Greeting audio (read once at module level) - P0 Guard
-# ---------------------------------------------------------------------------
-try:
-    hello_pcm_path = _PROJECT_ROOT / "assets" / "hello.pcm"
-    if not hello_pcm_path.exists():
-        logger.error("[STARTUP] CRITICAL: hello.pcm asset not found at %s. Using digital silence fallback. Audio will be silent.", hello_pcm_path)
-    hello_audio_bytes = hello_pcm_path.read_bytes()
-except FileNotFoundError:
-    logger.error("[STARTUP] CRITICAL: Failed to read hello.pcm asset. Using 1s of digital silence. Audio greeting will be silent.")
-    # 1 second of 8kHz 16-bit PCM silence = 16000 bytes
-    hello_audio_bytes = b'\x00' * 16000
-except Exception as e:
-    logger.error("[STARTUP] Unexpected error reading hello.pcm: %s. Using digital silence fallback.", e)
-    hello_audio_bytes = b'\x00' * 16000
+# hello_audio_bytes: digital silence — greeting is handled entirely by Nova Sonic dynamically.
+# The hello.pcm file is no longer used. Keeping variable for backward compatibility only.
+hello_audio_bytes = b'\x00' * 16000  # 1 second of 8kHz 16-bit PCM silence
+
+nova_voice = os.environ.get("NOVA_VOICE_ID", "")
+if not nova_voice:
+    logger.warning("[CONFIG] NOVA_VOICE_ID not set in .env — defaulting to 'Kiara'. Set NOVA_VOICE_ID=Kiara explicitly.")
 
 # ---------------------------------------------------------------------------
 # Environment variables
@@ -341,6 +333,8 @@ You recognize returning patients via secure, encrypted identifiers to provide a 
 - NEVER invent, guess, or hallucinate doctor names, schedules, or departments.
 - If the tool says a doctor or department is not available or not found, accept it as truth. Do not make up any availability. State clearly that they are not in our system, and list only the departments we have: Cardiology, Cardiothoracic Surgery, Neurology, Neurosurgery, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, General Medicine, and Emergency.
 - **English Translation for Tools**: Always extract and translate tool arguments (such as query, doctor_name, doctor_dept, symptoms, etc.) into English. Even if the caller speaks in Hindi or Hinglish, the arguments passed to the tools must be in English. E.g. 'हृदय रोग' or 'कार्डियोलॉजी' must be passed as 'cardiology'; 'हड्डी रोग' must be passed as 'orthopedics'; 'डॉक्टर सिंह' must be passed as 'singh'.
+- **CRITICAL TOOL QUERY RULE**: When calling a tool, always rewrite the tool query argument to be a specific, search-friendly English keyword phrase. NEVER pass raw conversational responses (like "yes", "yeah i need that", "please do it") as the tool query. Example: If caller says "yeah I need that" after directions offer → call tool with query="directions" or "hospital address".
+- **NEVER** mention tool execution, database errors, or system limitations to the caller. If a tool output does not contain the answer, speak naturally and offer to connect them to the front desk.
 
 ---
 

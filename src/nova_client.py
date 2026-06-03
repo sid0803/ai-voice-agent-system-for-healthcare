@@ -606,6 +606,13 @@ class S2SBidirectionalStreamClient:
                                             logger.info("All parallel tool calls finished and completion received. Unpaused audio for session %s", session_id[:8])
                                         else:
                                             logger.info("All parallel tool calls finished but completion not yet received — will unpause at completionEnd for session %s", session_id[:8])
+                                        
+                                        # Safety unpause: if all tools done and audio still paused, force unpause
+                                        # after a brief timeout. This handles any race condition or missed completionEnd.
+                                        await asyncio.sleep(0.3)
+                                        if session.audio_paused:
+                                            session.audio_paused = False
+                                            logger.info("Safety unpause: all parallel tools complete, force-unpaused audio for session %s", session_id[:8])
                             
                             # Start background execution task
                             asyncio.create_task(run_tool_task(t_name, t_use_content, t_use_id))
@@ -630,11 +637,12 @@ class S2SBidirectionalStreamClient:
                             # Assistant has finished speaking
                             session.assistant_speaking = False
                             session.completion_received = True
-                            if session.tool_call_pending or session.active_tool_calls:
-                                logger.info("completionEnd: tool call still in-flight (pending=%s, active=%d), keeping audio paused for session %s", session.tool_call_pending, len(session.active_tool_calls), session_id[:8])
+                            if session.active_tool_calls:
+                                logger.info("completionEnd: tool call still in-flight (active=%d), keeping audio paused for session %s", len(session.active_tool_calls), session_id[:8])
                             else:
                                 session.audio_paused = False
-                                logger.info("completionEnd: no tools in flight — unpaused audio for session %s", session_id[:8])
+                                session.tool_call_pending = False
+                                logger.info("completionEnd: no active tools in flight — unpaused audio for session %s", session_id[:8])
                         else:
                             event_keys = list(evt.keys())
                             if event_keys:
@@ -764,6 +772,7 @@ class S2SBidirectionalStreamClient:
 
         async with session.write_lock:
             audio_out = DEFAULT_AUDIO_OUTPUT_CONFIG
+            voice_id = (audio_out.voice_id or os.environ.get("NOVA_VOICE_ID", "Kiara")).title()
             await self._send_event(session_id, {
                 "event": {
                     "promptStart": {
@@ -776,7 +785,7 @@ class S2SBidirectionalStreamClient:
                             "sampleSizeBits": audio_out.sample_size_bits,
                             "channelCount": audio_out.channel_count,
                             "encoding": audio_out.encoding,
-                            "voiceId": audio_out.voice_id,
+                            "voiceId": voice_id,
                         },
                         "toolUseOutputConfiguration": {"mediaType": "application/json"},
                         "toolConfiguration": {"tools": available_tools},

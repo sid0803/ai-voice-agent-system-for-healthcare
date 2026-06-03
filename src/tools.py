@@ -352,12 +352,44 @@ _DAY_ALIASES = {
 }
 
 
+STOP_WORDS = {
+    # English stop words
+    "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", 
+    "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", 
+    "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", 
+    "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", 
+    "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", 
+    "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", 
+    "for", "with", "about", "against", "between", "into", "through", "during", "before", 
+    "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", 
+    "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", 
+    "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", 
+    "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", 
+    "will", "just", "don", "should", "now", "d", "ll", "m", "o", "re", "ve", "y", "ain", 
+    "aren", "couldn", "didn", "doesn", "hadn", "hasn", "haven", "isn", "ma", "mightn", 
+    "mustn", "needn", "shan", "shouldn", "wasn", "weren", "won", "wouldn", "tell", "want", 
+    "know", "please", "would", "like", "actually", "available",
+    
+    # Hinglish/Hindi stop words
+    "hai", "haan", "naam", "ko", "se", "ka", "ki", "ke", "mein", "me", "par", "bhi", "hi", 
+    "toh", "aur", "ya", "kya", "kyun", "kab", "kahan", "kaise", "kon", "kaun", "karke", 
+    "liye", "hona", "hota", "hoti", "hote", "tha", "thi", "the", "kar", "karna", "karta", 
+    "karti", "karte", "sakte", "sakta", "sakti", "milna", "milenge", "baje", "samay", "time", 
+    "timing", "se", "pe", "par", "ek", "do", "teen", "chaar", "paanch", "sheher", "aana", 
+    "jaana", "gaya", "gayi", "gaye", "aa", "ja", "raha", "rahi", "rahe", "huya", "huyi", "huye"
+}
+
+
 def _tokens(text: str) -> set[str]:
-    return {t for t in re.findall(r"[a-z0-9]+", _normalize_query(text)) if len(t) >= 2}
+    return {t for t in re.findall(r"[a-z0-9]+", _normalize_query(text)) if len(t) >= 2 and t not in STOP_WORDS}
 
 
 def _contains_any(query: str, words: list[str]) -> bool:
     return any(word in query for word in words)
+
+
+def _has_any_word(query: str, words: list[str]) -> bool:
+    return any(_has_word(query, w) for w in words)
 
 
 def _get_unified_loader():
@@ -422,7 +454,7 @@ def _match_services(query: str, services: list[dict]) -> list[dict]:
         "ecg", "tmt", "dialysis", "physiotherapy", "report", "result", "jaanch", "operation", "ot", "surgery", "urine",
         "kidney", "liver", "lipid", "sugar", "glucose"
     ]
-    if not (_contains_any(query, price_words) or _contains_any(query, service_words)):
+    if not (any(_has_word(query, w) for w in price_words) or any(_has_word(query, w) for w in service_words)):
         return []
     scored = []
     for service in services:
@@ -479,7 +511,7 @@ def _match_faq(query: str, faq_entries: list[dict]) -> dict | None:
         ]
         score = _score_text_match(query, " ".join(fields).lower())
         intent = item.get("intent", "").replace("_", " ")
-        if intent and intent in query:
+        if intent and _has_word(query, intent):
             score += 5
         if score > best[0]:
             best = (score, item)
@@ -493,7 +525,8 @@ def _format_departments(loader) -> str:
 
 
 def _match_rooms(query: str, rooms: list[dict]) -> list[dict]:
-    if not _contains_any(query, ["room", "rent", "tariff", "ward", "icu", "deluxe", "private", "general", "kharcha", "rate", "daam", "admit", "daakhil", "admitted"]):
+    keywords = ["room", "rent", "tariff", "ward", "icu", "deluxe", "private", "general", "kharcha", "rate", "daam", "admit", "daakhil", "admitted"]
+    if not any(_has_word(query, kw) for kw in keywords):
         return []
     specific = {
         "icu": ["icu"],
@@ -541,13 +574,18 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
         "play_area": ["play", "children", "kids", "khelen", "activity"]
     }
     
+    matched_results = []
     for key, value in amenities.items():
         synonyms = mapping.get(key, [key.replace("_", " ")])
-        if any(syn in query for syn in synonyms) or any(_has_word(query, part) for part in key.replace("_", " ").split()):
+        if any(_has_word(query, syn) for syn in synonyms) or any(_has_word(query, part) for part in key.replace("_", " ").split()):
             if isinstance(value, dict):
                 details = ", ".join(f"{k.replace('_', ' ').title()}: {v}" for k, v in value.items())
-                return f"{key.replace('_', ' ').title()}: {details}."
-            return f"{key.replace('_', ' ').title()}: {value}."
+                matched_results.append(f"{key.replace('_', ' ').title()}: {details}")
+            else:
+                matched_results.append(f"{key.replace('_', ' ').title()}: {value}")
+                
+    if matched_results:
+        return " | ".join(matched_results)
     return None
 
 
@@ -668,12 +706,12 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
         "visit", "visiting", "milne", "milna", "milenge", "mulakat",
         "timing", "hours", "time", "kab", "baje", "samay"
     ]
-    if _contains_any(query, VISITING_KEYWORDS):
+    if _has_any_word(query, VISITING_KEYWORDS):
         faq = _match_faq(query, loader.get_faq())
         if faq and faq.get("answer"):
             return {"answer": faq["answer"]}
 
-    if ENABLE_MULTI_INTENT and _contains_any(query, ["department", "departments"]) and _contains_any(query, ["doctor", "doctors", "available", "availability"]):
+    if ENABLE_MULTI_INTENT and _has_any_word(query, ["department", "departments"]) and _has_any_word(query, ["doctor", "doctors", "available", "availability"]):
         dept_answer = _format_departments(loader)
         doc_matches = _match_doctors(query, loader.get_doctors()) or loader.get_doctors()
         return {"answer": f"{dept_answer} {_format_doctor_answer(doc_matches, query)}"}
@@ -682,7 +720,7 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
     if services:
         return {"answer": _format_service_answer(services)}
 
-    if _contains_any(query, ["department", "departments", "specialties", "speciality"]):
+    if _has_any_word(query, ["department", "departments", "specialties", "speciality"]):
         return {"answer": _format_departments(loader)}
 
     rooms = _match_rooms(query, loader.get_room_types())
@@ -698,17 +736,23 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
         return {"answer": faq["answer"]}
 
     hours = loader.get_operating_hours()
-    if _contains_any(query, ["hour", "time", "timing", "open", "close"]):
-        if "emergency" in query:
+    if _has_any_word(query, ["hour", "time", "timing", "open", "close"]):
+        if _has_word(query, "emergency"):
             return {"answer": f"Emergency is {hours.get('emergency', '24/7 open')}."}
-        if "pharmacy" in query:
+        if _has_word(query, "pharmacy"):
             return {"answer": f"Pharmacy is {hours.get('pharmacy', core.get('pharmacy_hours', '24/7 open'))}."}
         return {"answer": "Hospital timings: " + ", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in hours.items()) + "."}
 
-    if _contains_any(query, ["address", "location", "where", "kahan", "kidhar", "rasta", "pahunchna", "directions", "route"]):
+    TRAVEL_KEYWORDS = [
+        "address", "location", "where", "kahan", "kidhar", "rasta", "pahunchna", 
+        "directions", "route", "travel", "go", "come", "reach", "how to", "way", 
+        "map", "west bengal", "bengal", "kolkata", "delhi", "mumbai", "train", 
+        "flight", "bus", "cab", "distance", "far", "coming"
+    ]
+    if _has_any_word(query, TRAVEL_KEYWORDS):
         return {"answer": f"{core.get('name')} is located at {core.get('address', 'our main facility')}."}
 
-    if _contains_any(query, ["contact", "phone", "number", "telephone", "mobile", "call", "baat"]):
+    if _has_any_word(query, ["contact", "phone", "number", "telephone", "mobile", "call", "baat"]):
         return {"answer": f"{core.get('name')} contact number is {core.get('contact', '+91 80 4000 9000')}."}
 
     return {"answer": f"{core.get('name', 'InDiiServe Hospital')} provides {len(loader.get_departments())} departments and {len(loader.get_services())} listed services. What would you like to check?"}
