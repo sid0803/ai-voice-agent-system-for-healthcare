@@ -1,7 +1,7 @@
 {
   "metadata": {
     "hospital_id": "apollo_metro",
-    "hospital_name": "InDiiServe Multi-Specialty Hospital",
+    "hospital_name": "Indiserve Multi-Specialty Hospital",
     "version": "2.0.0",
     "creation_date": "2026-05-28T00:00:00Z",
     "last_updated": "2026-05-29T14:14:52.327185+00:00",
@@ -11,12 +11,12 @@
   },
   "core_info": {
     "id": "apollo_metro",
-    "name": "InDiiServe Multi-Specialty Hospital",
+    "name": "Indiserve Multi-Specialty Hospital",
     "status": "live",
     "address": "12-B, MG Road, Residency Area, Bengaluru - 560025",
     "contact": "+91 80 4000 9000",
     "emergency_contact": "1066",
-    "website": "https://voice.indiiserve.ai",
+    "website": "https://voice.Indiserve.ai",
     "pharmacy_hours": "24/7 (Ground Floor, near main exit)",
     "nabh_accredited": true,
     "accreditations": [
@@ -1559,7 +1559,7 @@
       "free_parking": "First 2 hours free with valid OPD token",
       "admitted_patient_visitors": "Daily flat rate Rs. 100"
     },
-    "wifi": "Free WiFi throughout hospital, Network: InDiiServe-Guest, Password: Enter mobile OTP",
+    "wifi": "Free WiFi throughout hospital, Network: Indiserve-Guest, Password: Enter mobile OTP",
     "cafeteria": "Multi-cuisine food court on 5th Floor, Block B (07:00-22:00)",
     "pharmacy": "24/7 pharmacy on Ground Floor near exit, home delivery available",
     "atm": "SBI ATM on Ground Floor near pharmacy (24x7)",
@@ -1573,12 +1573,12 @@
       "category": "Hospital Information",
       "intent": "hospital_address",
       "question_variants": [
-        "What is the address of InDiiServe Hospital?",
+        "What is the address of Indiserve Hospital?",
         "Where is the hospital located?",
         "Hospital ka address kya hai?",
         "Hospital kahan hai?"
       ],
-      "answer": "InDiiServe Multi-Specialty Hospital is located at 12-B, MG Road, Residency Area, Bengaluru - 560025.",
+      "answer": "Indiserve Multi-Specialty Hospital is located at 12-B, MG Road, Residency Area, Bengaluru - 560025.",
       "tags": [
         "location",
         "address"
@@ -1849,7 +1849,7 @@
         "WiFi milega hospital mein?",
         "Internet available?"
       ],
-      "answer": "Yes, free WiFi is available throughout the hospital. Connect to the network named InDiiServe-Guest and enter your mobile number to receive the OTP for access.",
+      "answer": "Yes, free WiFi is available throughout the hospital. Connect to the network named Indiserve-Guest and enter your mobile number to receive the OTP for access.",
       "tags": [
         "wifi",
         "internet",
@@ -1900,7 +1900,7 @@
         "Kya hospital accredited hai?",
         "Hospital ka certification?"
       ],
-      "answer": "Yes, InDiiServe Multi-Specialty Hospital is NABH accredited, which means we meet the highest standards of patient care, safety, and quality as per the National Accreditation Board for Hospitals standards.",
+      "answer": "Yes, Indiserve Multi-Specialty Hospital is NABH accredited, which means we meet the highest standards of patient care, safety, and quality as per the National Accreditation Board for Hospitals standards.",
       "tags": [
         "accreditation",
         "quality",
@@ -2876,10 +2876,10 @@
         "Hospital kaise pahunchen?",
         "Nearest metro to hospital?",
         "MG Road se hospital kaise jaayein?",
-        "Driving directions to InDiiServe hospital?",
+        "Driving directions to Indiserve hospital?",
         "Hospital se paas metro station kaunsa hai?"
       ],
-      "answer": "InDiiServe Multi-Specialty Hospital is at 12-B, MG Road, Bengaluru 560025. The nearest metro station is MG Road Metro Station on the Purple Line, just a 2-minute walk from our main gate. From Majestic or KSR Railway Station, take the Purple Line metro to MG Road. By road, we are on Residency Road junction on MG Road.",
+      "answer": "Indiserve Multi-Specialty Hospital is at 12-B, MG Road, Bengaluru 560025. The nearest metro station is MG Road Metro Station on the Purple Line, just a 2-minute walk from our main gate. From Majestic or KSR Railway Station, take the Purple Line metro to MG Road. By road, we are on Residency Road junction on MG Road.",
       "tags": [
         "directions",
         "how to reach",
@@ -3548,7 +3548,7 @@
         "Patient satisfaction form kahan milega?",
         "Feedback dena hai mujhe"
       ],
-      "answer": "We value your feedback highly. You can fill in our patient feedback form available at all nursing stations and the main reception. You can also speak with our Patient Relations Officer at the Ground Floor, Room 102, or email your feedback to care@indiiserve.ai. All complaints are reviewed within 48 hours.",
+      "answer": "We value your feedback highly. You can fill in our patient feedback form available at all nursing stations and the main reception. You can also speak with our Patient Relations Officer at the Ground Floor, Room 102, or email your feedback to care@Indiserve.ai. All complaints are reviewed within 48 hours.",
       "tags": [
         "feedback",
         "complaint",
@@ -3574,7 +3574,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780051815_2720",
       "question_variants": [
-        "What are the parking rates at InDiiServe Healthcare?"
+        "What are the parking rates at Indiserve Healthcare?"
       ],
       "answer": "The parking rate is 20 rupees for an hour.",
       "tags": [
@@ -3634,7 +3634,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780051938_8531",
       "question_variants": [
-        "What is the parking rate at InDiiServe Healthcare?"
+        "What is the parking rate at Indiserve Healthcare?"
       ],
       "answer": "No new information provided",
       "tags": [
@@ -3850,7 +3850,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780053230_4437",
       "question_variants": [
-        "What are the departments available at InDiiServe Healthcare?"
+        "What are the departments available at Indiserve Healthcare?"
       ],
       "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency",
       "tags": [
@@ -3862,7 +3862,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780053230_1963",
       "question_variants": [
-        "Who are the available cardiologists at InDiiServe Healthcare?"
+        "Who are the available cardiologists at Indiserve Healthcare?"
       ],
       "answer": "Dr. Sameer Kulkarni and Dr. Rajesh Nair",
       "tags": [
@@ -3874,7 +3874,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780053230_2407",
       "question_variants": [
-        "Who is the available neurologist at InDiiServe Healthcare?"
+        "Who is the available neurologist at Indiserve Healthcare?"
       ],
       "answer": "Dr. Megha Rao",
       "tags": [
@@ -3886,7 +3886,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780053230_7579",
       "question_variants": [
-        "What are the available orthopedics doctors at InDiiServe Healthcare?"
+        "What are the available orthopedics doctors at Indiserve Healthcare?"
       ],
       "answer": "Dr. Vikram Shetty and Dr. Manish Tiwari",
       "tags": [
@@ -3898,7 +3898,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780053230_3790",
       "question_variants": [
-        "Where is the cafeteria located at InDiiServe Healthcare?"
+        "Where is the cafeteria located at Indiserve Healthcare?"
       ],
       "answer": "On the 5th Floor, Block B, open from 7 AM to 10 PM",
       "tags": [
@@ -3994,7 +3994,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780053990_1845",
       "question_variants": [
-        "Is there any parking available at InDiiServe Healthcare?"
+        "Is there any parking available at Indiserve Healthcare?"
       ],
       "answer": "Yes, there is multi-level parking at Basement B1 and B2. Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token.",
       "tags": [
@@ -4138,7 +4138,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780054636_3268",
       "question_variants": [
-        "Is there parking available at InDiiServe Healthcare?"
+        "Is there parking available at Indiserve Healthcare?"
       ],
       "answer": "Yes, multi-level parking is available at Basement B1 and B2.",
       "tags": [
@@ -4150,7 +4150,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780054636_3635",
       "question_variants": [
-        "What are the parking charges at InDiiServe Healthcare?"
+        "What are the parking charges at Indiserve Healthcare?"
       ],
       "answer": "Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token.",
       "tags": [
@@ -4162,7 +4162,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780054636_8423",
       "question_variants": [
-        "Is there a cafeteria at InDiiServe Healthcare?"
+        "Is there a cafeteria at Indiserve Healthcare?"
       ],
       "answer": "Yes, a multi-cuisine food court is available on the 5th Floor, Block B, open from 7 AM to 10 PM.",
       "tags": [
@@ -4210,7 +4210,7 @@
       "category": "Learned Fact",
       "intent": "learned_fact_1780054780_5792",
       "question_variants": [
-        "Which departments are available at InDiiServe Healthcare?"
+        "Which departments are available at Indiserve Healthcare?"
       ],
       "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, Emergency.",
       "tags": [

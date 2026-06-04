@@ -32,19 +32,19 @@ def check_brand_name_consistency(transcripts: List[str]) -> Tuple[bool, str]:
         # Look for brand name mentions
         lines = transcript.split('\n')
         for line_num, line in enumerate(lines):
-            if 'indiiserve' in line.lower():
-                # Check for correct pronunciation
-                if re.search(r"InDiiServe|inDiiServe", line):
+            # Check for any variation of the name (case-insensitive)
+            brand_match = re.search(r"\bindi\s*(?:i\s*)?serve\b|\bindiserve\b", line, re.IGNORECASE)
+            if brand_match:
+                # Check for correct pronunciation: one word "Indiserve" or "indiserve"
+                if re.search(r"\bIndiserve\b|\bindiserve\b", line, re.IGNORECASE):
                     correct_count += 1
                 # Check for hallucinations
-                elif re.search(r"indi\s+iserve|indi\s+i\s+serve", line, re.IGNORECASE):
-                    hallucinations['indi i serve'].append(f"Transcript {i}, Line {line_num}")
-                elif re.search(r"indi iserve", line, re.IGNORECASE):
-                    hallucinations['indi iserve'].append(f"Transcript {i}, Line {line_num}")
-                elif re.search(r"indiServe", line):
-                    hallucinations['indiServe'].append(f"Transcript {i}, Line {line_num}")
-                elif re.search(r"indiiserve", line, re.IGNORECASE):
-                    hallucinations['indiServe'].append(f"Transcript {i}, Line {line_num}")
+                elif re.search(r"indi\s+i\s+serve", line, re.IGNORECASE):
+                    hallucinations['indi i serve'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
+                elif re.search(r"indi\s+serve|indi\s+iserve", line, re.IGNORECASE):
+                    hallucinations['indi iserve'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
+                else:
+                    hallucinations['indiServe'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
     
     hallucination_count = sum(len(v) for v in hallucinations.values())
     
@@ -52,7 +52,7 @@ def check_brand_name_consistency(transcripts: List[str]) -> Tuple[bool, str]:
 BRAND NAME CONSISTENCY TEST
 ============================
 Total Transcripts: {len(transcripts)}
-Correct "InDiiServe" mentions: {correct_count}
+Correct "Indiserve" mentions: {correct_count}
 Hallucinated pronunciations: {hallucination_count}
 
 Breakdown:
@@ -406,7 +406,7 @@ if __name__ == "__main__":
     # Sample test data (replace with real transcripts)
     sample_transcripts = [
         """
-        Asha: Hello, welcome to InDiiServe Healthcare! This is Asha. How can I help you today?
+        Asha: Hello, welcome to Indiserve Healthcare! This is Asha. How can I help you today?
         Human Caller: I have a headache
         Asha: I'm sorry to hear that. When did this start?
         Human Caller: 2 days ago

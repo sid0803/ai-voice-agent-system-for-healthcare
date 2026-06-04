@@ -655,7 +655,7 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
             f"Our hospital is located at: {address}. "
             "You can reach us by flight, train, or road. "
             "From the airport or railway station, take a cab or metro directly to MG Road. "
-            "Our address is on Google Maps — search 'InDiiServe Multi-Specialty Hospital'."
+            "Our address is on Google Maps — search 'Indiserve Multi-Specialty Hospital'."
         )
     
     matched_results = []
@@ -839,7 +839,7 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
     if _has_any_word(query, ["contact", "phone", "number", "telephone", "mobile", "call", "baat"]):
         return {"answer": f"{core.get('name')} contact number is {core.get('contact', '+91 80 4000 9000')}."}
 
-    return {"answer": f"{core.get('name', 'InDiiServe Hospital')} provides {len(loader.get_departments())} departments and {len(loader.get_services())} listed services. What would you like to check?"}
+    return {"answer": f"{core.get('name', 'Indiserve Hospital')} provides {len(loader.get_departments())} departments and {len(loader.get_services())} listed services. What would you like to check?"}
 
 
 def _unified_doctor_availability(args: dict, hospital_id: str = None) -> dict:
