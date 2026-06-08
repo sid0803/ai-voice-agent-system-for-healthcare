@@ -102,6 +102,7 @@ class SessionData:
     is_audio_content_start_sent: bool = False
     audio_content_id: str = field(default_factory=lambda: str(uuid4()))
     audio_paused: bool = False
+    interrupted_content_id: str = ""
     hospital_id: str = "default_tier2"
     is_audio_data_sent: bool = False
     audio_ever_sent: bool = False

@@ -19,11 +19,10 @@ def check_brand_name_consistency(transcripts: List[str]) -> Tuple[bool, str]:
         (success: bool, report: str)
     """
     hallucinations = {
-        'indiiserve': [],
+        'indiserve': [],
         'indi iserve': [],
         'indi i serve': [],
         'indiServe': [],
-        'indiserve': [],
     }
     
     correct_count = 0
@@ -35,14 +34,16 @@ def check_brand_name_consistency(transcripts: List[str]) -> Tuple[bool, str]:
             # Check for any variation of the name (case-insensitive)
             brand_match = re.search(r"\bindi\s*(?:i\s*)?serve\b|\bindiserve\b", line, re.IGNORECASE)
             if brand_match:
-                # Check for correct pronunciation: one word "Indiserve" or "indiserve"
-                if re.search(r"\bIndiserve\b|\bindiserve\b", line, re.IGNORECASE):
+                # Check for correct pronunciation: one word "Indiiserve" or "indiiserve"
+                if re.search(r"\bIndiiserve\b|\bindiiserve\b", line, re.IGNORECASE):
                     correct_count += 1
                 # Check for hallucinations
                 elif re.search(r"indi\s+i\s+serve", line, re.IGNORECASE):
                     hallucinations['indi i serve'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
                 elif re.search(r"indi\s+serve|indi\s+iserve", line, re.IGNORECASE):
                     hallucinations['indi iserve'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
+                elif re.search(r"\bIndiserve\b|\bindiserve\b", line, re.IGNORECASE):
+                    hallucinations['indiserve'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
                 else:
                     hallucinations['indiServe'].append(f"Transcript {i}, Line {line_num}: {line[:60]}")
     
@@ -406,7 +407,7 @@ if __name__ == "__main__":
     # Sample test data (replace with real transcripts)
     sample_transcripts = [
         """
-        Asha: Hello, welcome to Indiserve Healthcare! This is Asha. How can I help you today?
+        Asha: Hello, welcome to Indiiserve Healthcare! This is Asha. How can I help you today?
         Human Caller: I have a headache
         Asha: I'm sorry to hear that. When did this start?
         Human Caller: 2 days ago
