@@ -931,6 +931,8 @@ class S2SBidirectionalStreamClient:
                 logger.info("send_content_end: skipping empty audio content %s", session.audio_content_id[:8])
                 session.is_audio_content_start_sent = False
                 session.open_content_ids.discard(session.audio_content_id)
+                session.audio_content_id = str(uuid4())
+                session.audio_paused = True
                 return
                 
             await self._send_event(session_id, {
@@ -944,6 +946,8 @@ class S2SBidirectionalStreamClient:
             session.is_audio_content_start_sent = False
             session.is_audio_data_sent = False
             session.open_content_ids.discard(session.audio_content_id)
+            session.audio_content_id = str(uuid4()) # Rotate immediately!
+            session.audio_paused = True # Pause immediately!
             await asyncio.sleep(0.05)
 
         if acquire_lock:
