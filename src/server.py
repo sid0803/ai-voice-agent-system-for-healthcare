@@ -1974,7 +1974,7 @@ async def exotel_stream(websocket: WebSocket):
                         # Trigger Bedrock to listen after the pre-recorded greeting.
                         # send_text_message() opens audio input after the greeting trigger is sent.
                         greeting_trigger = "[The caller has just connected and has already heard the welcome greeting. Now listen attentively and respond to whatever they say next. Do not repeat the greeting.]"
-                        asyncio.create_task(bedrock_client.send_text_message(session_id, greeting_trigger))
+                        asyncio.create_task(bedrock_client.send_text_message(session_id, greeting_trigger, interactive=False))
 
                         idle_monitor_task = asyncio.ensure_future(idle_monitor())
                         _background_tasks.add(idle_monitor_task)

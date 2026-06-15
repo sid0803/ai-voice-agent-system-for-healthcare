@@ -944,7 +944,7 @@ class S2SBidirectionalStreamClient:
             session.is_audio_content_start_sent = False
             session.is_audio_data_sent = False
             session.open_content_ids.discard(session.audio_content_id)
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.05)
 
         if acquire_lock:
             async with session.write_lock:
@@ -952,7 +952,7 @@ class S2SBidirectionalStreamClient:
         else:
             await _send()
 
-    async def send_text_message(self, session_id: str, text: str) -> None:
+    async def send_text_message(self, session_id: str, text: str, interactive: bool = True) -> None:
         """Inject a cross-modal text message into the active session stream.
 
         Per AWS docs, cross-modal text input must use role=USER and interactive=true.
@@ -1012,7 +1012,7 @@ class S2SBidirectionalStreamClient:
                             "promptName": session.prompt_name,
                             "contentName": content_id,
                             "type": "TEXT",
-                            "interactive": True,
+                            "interactive": interactive,
                             "role": "USER",
                             "textInputConfiguration": {
                                 "mediaType": "text/plain",
