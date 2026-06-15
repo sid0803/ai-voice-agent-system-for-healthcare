@@ -1887,15 +1887,21 @@ async def exotel_stream(websocket: WebSocket):
 
                         call_start_time = datetime.now(timezone.utc)
 
-                        # Send 1.5 seconds of silence to open the audio channel and allow call stabilization
-                        exotel_greeting = pcm_to_exotel(hello_audio_bytes)
+                        # Send pre-recorded greeting immediately so caller hears Asha speak first
+                        greeting_pcm = response_cache.get_audio("greeting")
+                        if greeting_pcm:
+                            logger.info("Sending pre-recorded greeting to caller")
+                        else:
+                            logger.warning("greeting.pcm not found in cache/disk - falling back to silence")
+                            greeting_pcm = hello_audio_bytes
+                        exotel_greeting = pcm_to_exotel(greeting_pcm)
                         greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
                         await websocket.send_text(json.dumps({
                             "event": "media",
                             "stream_sid": session.stream_sid,
                             "media": {"payload": greeting_b64}
                         }))
-                        logger.info("Sent 1.5s of initial channel-stabilization silence to Exotel")
+                        logger.info("Sent initial greeting audio to Exotel")
 
                         # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
@@ -1965,9 +1971,9 @@ async def exotel_stream(websocket: WebSocket):
                         # The greeting was already sent to Exotel at line ~1000 (before Nova was ready).
                         # Sending it again via stream_audio() causes a double greeting for the caller.
 
-                        # Trigger Bedrock to generate the greeting dynamically in Asha's persona.
+                        # Trigger Bedrock to listen after the pre-recorded greeting.
                         # send_text_message() opens audio input after the greeting trigger is sent.
-                        greeting_trigger = "[The caller has just connected. Welcome them back warmly if context shows their name, otherwise welcome them as a new caller to Indiiserve Healthcare, introduce yourself as Asha, and ask how you can assist them today.]"
+                        greeting_trigger = "[The caller has just connected and has already heard the welcome greeting. Now listen attentively and respond to whatever they say next. Do not repeat the greeting.]"
                         asyncio.create_task(bedrock_client.send_text_message(session_id, greeting_trigger))
 
                         idle_monitor_task = asyncio.ensure_future(idle_monitor())

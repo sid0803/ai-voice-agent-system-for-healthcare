@@ -21,7 +21,7 @@ class ResponseCache:
 
     def _load_warm_assets(self):
         """Loads critical assets into memory on startup."""
-        critical_assets = ["hello.pcm", "transfer.pcm", "emergency.pcm"]
+        critical_assets = ["hello.pcm", "transfer.pcm", "emergency.pcm", "greeting.pcm"]
         for asset in critical_assets:
             path = self.assets_dir / asset
             if path.exists():

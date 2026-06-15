@@ -133,8 +133,18 @@ class KnowledgeDistiller:
         
         added_count = 0
         for fact in new_facts:
-            q = fact.get("question", "").strip()
-            a = fact.get("answer", "").strip()
+            q = fact.get("question", "")
+            a = fact.get("answer", "")
+            if isinstance(q, dict):
+                q = q.get("text", str(q))
+            elif not isinstance(q, str):
+                q = str(q) if q is not None else ""
+            if isinstance(a, dict):
+                a = a.get("text", str(a))
+            elif not isinstance(a, str):
+                a = str(a) if a is not None else ""
+            q = q.strip()
+            a = a.strip()
             if not q or not a:
                 continue
                 
