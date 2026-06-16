@@ -117,6 +117,12 @@ class SessionData:
     pending_tools: dict[str, dict] = field(default_factory=dict)
     current_content_id: str = ""
     completion_received: bool = False
+    # [COST-01] Cumulative token usage for this session (accumulated from usageEvents)
+    input_audio_tokens: int = 0
+    input_text_tokens: int = 0
+    output_audio_tokens: int = 0
+    output_text_tokens: int = 0
+    total_tokens: int = 0
 
 
 class StreamSession:
@@ -334,6 +340,19 @@ class S2SBidirectionalStreamClient:
     def is_assistant_speaking(self, session_id: str) -> bool:
         session = self._active_sessions.get(session_id)
         return session is not None and session.assistant_speaking
+
+    def get_usage(self, session_id: str) -> dict:
+        """Return cumulative token usage for a session. Called on call end to persist costs."""
+        session = self._active_sessions.get(session_id)
+        if not session:
+            return {}
+        return {
+            "input_audio_tokens":  session.input_audio_tokens,
+            "input_text_tokens":   session.input_text_tokens,
+            "output_audio_tokens": session.output_audio_tokens,
+            "output_text_tokens":  session.output_text_tokens,
+            "total_tokens":        session.total_tokens,
+        }
 
     # ------------------------------------------------------------------
     # Event handler registration
@@ -623,14 +642,22 @@ class S2SBidirectionalStreamClient:
                             total = details.get("total", {})
                             t_in = total.get("input", {})
                             t_out = total.get("output", {})
+                            in_speech  = t_in.get("speechTokens", 0)
+                            in_text    = t_in.get("textTokens", 0)
+                            out_speech = t_out.get("speechTokens", 0)
+                            out_text   = t_out.get("textTokens", 0)
+                            # [COST-01] Accumulate tokens across the full session
+                            session.input_audio_tokens  += in_speech
+                            session.input_text_tokens   += in_text
+                            session.output_audio_tokens += out_speech
+                            session.output_text_tokens  += out_text
+                            session.total_tokens        += ue.get("totalTokens", 0)
                             logger.info(
-                                "[USAGE] session=%s | input: speech=%d text=%d | output: speech=%d text=%d | totalTokens=%d",
+                                "[USAGE] session=%s | input: speech=%d text=%d | output: speech=%d text=%d | totalTokens=%d (cumulative: %d)",
                                 session_id[:8],
-                                t_in.get("speechTokens", 0),
-                                t_in.get("textTokens", 0),
-                                t_out.get("speechTokens", 0),
-                                t_out.get("textTokens", 0),
+                                in_speech, in_text, out_speech, out_text,
                                 ue.get("totalTokens", 0),
+                                session.total_tokens,
                             )
                             self._dispatch_event(session_id, "usageEvent", ue)
                         elif evt.get("completionEnd"):

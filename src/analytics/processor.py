@@ -31,8 +31,8 @@ class AnalyticsProcessor:
         # us.amazon.nova-lite-v1:0 replaces the deprecated Titan Text Express v1
         self.model_id = os.environ.get("ANALYTICS_MODEL_ID", "us.amazon.nova-lite-v1:0")
 
-    async def process_call(self, session_id: str, phone: str, hospital_id: str, transcript: list, duration: int):
-        """Analyze the transcript using AI and save results to RDS."""
+    async def process_call(self, session_id: str, phone: str, hospital_id: str, transcript: list, duration: int, token_usage: dict = None):
+        """Analyze the transcript using AI and save results to DynamoDB."""
         import asyncio
         if not transcript:
             return
@@ -99,16 +99,16 @@ class AnalyticsProcessor:
 
             # Save to DynamoDB in a non-blocking thread
             await asyncio.to_thread(
-                self._save_to_dynamodb, session_id, phone, hospital_id, analytics, duration
+                self._save_to_dynamodb, session_id, phone, hospital_id, analytics, duration, token_usage or {}
             )
-            logger.info(f"[ANALYTICS] Processed call {session_id[:8]} - Outcome: {analytics.get('outcome')}")
+            logger.info(f"[ANALYTICS] Processed call {session_id[:8]} - Outcome: {analytics.get('outcome')} | Tokens: {(token_usage or {}).get('total_tokens', 0)}")
 
         except Exception:
             logger.exception(f"Failed to process analytics for session {session_id}")
 
-    def _save_to_dynamodb(self, session_id, phone, hospital_id, analytics, duration):
+    def _save_to_dynamodb(self, session_id, phone, hospital_id, analytics, duration, token_usage=None):
         """Insert processed metrics into DynamoDB."""
-        dynamodb_analytics.save_analytics(session_id, phone, hospital_id, analytics, duration)
+        dynamodb_analytics.save_analytics(session_id, phone, hospital_id, analytics, duration, token_usage or {})
 
 # Global instance
 analytics_processor = AnalyticsProcessor()

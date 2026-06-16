@@ -91,11 +91,12 @@ class DynamoDBAnalyticsClient:
         except Exception:
             return encrypted_data
 
-    def save_analytics(self, session_id: str, phone: str, hospital_id: str, analytics: dict, duration: int):
+    def save_analytics(self, session_id: str, phone: str, hospital_id: str, analytics: dict, duration: int, token_usage: dict = None):
         """Insert processed metrics into DynamoDB."""
         try:
             encrypted_phone = self.encrypt_data(phone)
             timestamp = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST")
+            tu = token_usage or {}
 
             item = {
                 "session_id": session_id,
@@ -112,12 +113,19 @@ class DynamoDBAnalyticsClient:
                 "urgency_score": analytics.get("urgency_score", 1),
                 "is_emergency": analytics.get("is_emergency", False),
                 "symptoms_list": analytics.get("symptoms_list", ""),
-                "follow_up_priority": analytics.get("follow_up_priority", "Low")
+                "follow_up_priority": analytics.get("follow_up_priority", "Low"),
+                # [COST-01] Real token usage from Bedrock usageEvent (0 if not available)
+                "input_audio_tokens":  tu.get("input_audio_tokens", 0),
+                "input_text_tokens":   tu.get("input_text_tokens", 0),
+                "output_audio_tokens": tu.get("output_audio_tokens", 0),
+                "output_text_tokens":  tu.get("output_text_tokens", 0),
+                "total_tokens":        tu.get("total_tokens", 0),
             }
             
             self._get_table().put_item(Item=item)
         except Exception:
             logger.exception("Failed to insert analytics row into DynamoDB")
+
 
     def load_analytics(self, hospital_id: str, days: int = 30) -> list[dict]:
         """Query historical analytics records from DynamoDB with pagination support."""

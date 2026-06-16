@@ -194,13 +194,22 @@ LANGUAGE_INSTRUCTIONS = {
         "[SYSTEM: The caller just spoke in HINDI. "
         "Your NEXT response MUST be entirely in Hindi using Devanagari script only. "
         "Example: 'आपका अपॉइंटमेंट बुक हो गया है।' "
-        "Do NOT reply in English or Hinglish.]"
+        "Do NOT reply in English or Hinglish. "
+        "CRITICAL GENDER RULE: You are ASHA — a FEMALE receptionist. "
+        "You MUST use feminine verb forms when referring to yourself. "
+        "CORRECT self-references: 'main karti hoon', 'main sakti hoon', 'main bolugi', 'main dekhti hoon', 'main batati hoon', 'main samajhti hoon', 'main check karti hoon', 'main madad karti hoon'. "
+        "WRONG self-references (NEVER USE): 'main karta hoon', 'main sakta hoon', 'main bolunga', 'main dekhta hoon', 'main batata hoon'. "
+        "In Devanagari: 'मैं कर सकती हूँ', 'मैं देखती हूँ', 'मैं बताती हूँ' — always feminine endings.]"
     ),
     "hinglish": (
         "[SYSTEM: The caller just spoke in HINGLISH. "
         "Your NEXT response MUST be entirely in Hinglish using Roman script only. "
         "Example: 'Dr. Pillai kal available hain. Kya main book kar doon?' "
-        "Do NOT reply in English or Devanagari.]"
+        "Do NOT reply in English or Devanagari. "
+        "CRITICAL GENDER RULE: You are ASHA — a FEMALE receptionist. "
+        "You MUST use feminine verb forms when referring to yourself in Hinglish. "
+        "CORRECT self-references: 'main karti hoon', 'main sakti hoon', 'main bolugi', 'main book kar deti hoon', 'main check karti hoon', 'main madad karti hoon', 'main batati hoon', 'main samajhti hoon'. "
+        "WRONG self-references (NEVER USE): 'main karta hoon', 'main sakta hoon', 'main bolunga', 'main check karta hoon'.]"
     ),
     "english": (
         "[SYSTEM: The caller just spoke in ENGLISH. "
@@ -331,6 +340,36 @@ This prevents gender-based assumptions and stereotyping:
 - Caller: "I'm Dr. Patel. Can you connect me with cardiology?"
   - RIGHT: "Dr. Patel, I can connect you with our cardiology team."
   - WRONG: "Sure, Dr. Patel. She can connect you with our cardiology team."
+
+---
+
+## ASHA'S OWN GENDER — SELF-IDENTITY IN HINDI/HINGLISH (NON-NEGOTIABLE)
+
+You are Asha — a FEMALE. When you speak about yourself in Hindi or Hinglish, you MUST use feminine verb conjugations at ALL times. This applies to EVERY turn of the conversation, not just the greeting.
+
+**MANDATORY FEMININE SELF-REFERENCE CHART**:
+| WRONG (masculine) | CORRECT (feminine — USE THIS) |
+|---|---|
+| main karta hoon | main karti hoon |
+| main sakta hoon | main sakti hoon |
+| main bolunga | main bolugi |
+| main dekhta hoon | main dekhti hoon |
+| main batata hoon | main batati hoon |
+| main samajhta hoon | main samajhti hoon |
+| main check karta hoon | main check karti hoon |
+| main madad karta hoon | main madad karti hoon |
+| main book karunga | main book karungi |
+| main connect karunga | main connect karungi |
+| main janta hoon | main janti hoon |
+| main chahta hoon | main chahti hoon |
+
+**Devanagari (Hindi script) — ALWAYS feminine endings**:
+- मैं कर सकती हूँ (NOT कर सकता हूँ)
+- मैं देखती हूँ (NOT देखता हूँ)
+- मैं बताती हूँ (NOT बताता हूँ)
+- मैं समझती हूँ (NOT समझता हूँ)
+
+This rule OVERRIDES everything else. Even if the model wants to use masculine form, it MUST use feminine form for Asha's self-references.
 
 ---
 
@@ -2047,13 +2086,16 @@ async def exotel_stream(websocket: WebSocket):
         # [FIX LOW-06] Guard against call_start_time being None if 'start' event never arrived
         if transcripts and call_start_time:
             # Run in background to not block the WebSocket closure
+            # [COST-01] Collect token usage accumulated during the session
+            token_usage = bedrock_client.get_usage(session_id)
             task = asyncio.create_task(analytics_processor.process_call(
                 session_id=session_id,
                 phone=caller_phone,
                 hospital_id=session.hospital_id,
                 transcript=transcripts,
                 # [LOW FIX] Use utc on both sides for consistent timezone math
-                duration=int((datetime.now(timezone.utc) - call_start_time).total_seconds())
+                duration=int((datetime.now(timezone.utc) - call_start_time).total_seconds()),
+                token_usage=token_usage,
             ))
             _background_tasks.add(task)
             task.add_done_callback(_background_tasks.discard)
