@@ -1532,6 +1532,7 @@ async def exotel_stream(websocket: WebSocket):
     detected_language = "en"
     previous_language = "en"   # [LANG-FIX] Tracks prior turn's language to detect mid-call switches
     tool_in_progress = False
+    call_start_time = datetime.now(timezone.utc)
 
     def reset_idle_timer():
         nonlocal last_activity_time, idle_prompt_sent
@@ -1815,7 +1816,12 @@ async def exotel_stream(websocket: WebSocket):
 
             assistant_speaking = bedrock_client.is_assistant_speaking(session_id)
             
-            if assistant_speaking or tool_in_progress:
+            if (datetime.now(timezone.utc) - call_start_time).total_seconds() < 5.0:
+                # Ignore VAD during initial greeting playback to prevent false EOT
+                user_speaking = False
+                speech_frames = 0
+                silence_frames = 0
+            elif assistant_speaking or tool_in_progress:
                 if assistant_speaking:
                     # Sustained user speech tracking during assistant playback turn
                     if raw_rms > 1100:
