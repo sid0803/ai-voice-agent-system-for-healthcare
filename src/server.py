@@ -2022,6 +2022,10 @@ async def exotel_stream(websocket: WebSocket):
                             except (asyncio.TimeoutError, Exception):
                                 logger.warning("[MEMORY] Context retrieval timed out or failed, using base prompt.")
 
+                        # Trigger Bedrock to listen after the pre-recorded greeting.
+                        greeting_trigger = "\n\n[The caller has just connected and has already heard the welcome greeting. Now listen attentively and respond to whatever they say next. Do not repeat the greeting.]"
+                        system_prompt += greeting_trigger
+
                         # [D-06] CRITICAL: promptStart MUST be sent before contentStart (system prompt).
                         # Nova Sonic protocol requirement — skipping this causes immediate stream closure.
                         await session.setup_prompt_start()
@@ -2029,11 +2033,6 @@ async def exotel_stream(websocket: WebSocket):
                         # [FIX HIGH-01] Do NOT re-send hello_audio_bytes here.
                         # The greeting was already sent to Exotel at line ~1000 (before Nova was ready).
                         # Sending it again via stream_audio() causes a double greeting for the caller.
-
-                        # Trigger Bedrock to listen after the pre-recorded greeting.
-                        # send_text_message() opens audio input after the greeting trigger is sent.
-                        greeting_trigger = "[The caller has just connected and has already heard the welcome greeting. Now listen attentively and respond to whatever they say next. Do not repeat the greeting.]"
-                        asyncio.create_task(bedrock_client.send_text_message(session_id, greeting_trigger, interactive=False))
 
                         idle_monitor_task = asyncio.ensure_future(idle_monitor())
                         _background_tasks.add(idle_monitor_task)
