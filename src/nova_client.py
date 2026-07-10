@@ -686,16 +686,10 @@ class S2SBidirectionalStreamClient:
                 except Exception as e:
                     if not session.is_active:
                         break
-                    
                     err_msg = str(e)
-                    if "403" in err_msg or "UnrecognizedClientException" in err_msg or "401" in err_msg:
-                        logger.error("[BEDROCK] Critical Auth Error: %s. Terminating stream.", err_msg)
-                        session.is_active = False 
-                        raise # Re-raise to trigger Mock Fallback in initiate_session
-                        
-                    logger.exception("Error processing response chunk. Terminating stream to prevent infinite busy loop.")
+                    logger.exception("Error processing Bedrock response stream: %s. Terminating stream and re-raising.", err_msg)
                     session.is_active = False
-                    break
+                    raise e
 
             self._dispatch_event(session_id, "streamComplete", {
                 "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -706,6 +700,7 @@ class S2SBidirectionalStreamClient:
                 "message": "Error processing response stream",
                 "details": str(error),
             })
+            raise error
 
     # ------------------------------------------------------------------
     # Tool result sending

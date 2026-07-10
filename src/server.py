@@ -161,7 +161,7 @@ def detect_language(text: str) -> str:
     """
     # Check for Devanagari script characters (Unicode range U+0900–U+097F)
     devanagari_count = sum(1 for ch in text if '\u0900' <= ch <= '\u097F')
-    if devanagari_count >= 1:
+    if devanagari_count >= 2:  # [LANG-FIX] Raised from 1→2 to avoid false positives on single Devanagari chars
         return "hindi"
 
     # Hinglish = Roman script but contains Hindi/Urdu words
@@ -1530,6 +1530,7 @@ async def exotel_stream(websocket: WebSocket):
     ESCALATION_SEC = 50 if not DEMO_MODE else 60 
     
     detected_language = "en"
+    previous_language = "en"   # [LANG-FIX] Tracks prior turn's language to detect mid-call switches
     tool_in_progress = False
 
     def reset_idle_timer():
@@ -1714,8 +1715,27 @@ async def exotel_stream(websocket: WebSocket):
 
             # --- START LANGUAGE MIRRORING ---
             lang = detect_language(content)
-            detected_language = "hi" if lang in ["hindi", "hinglish"] else "en"
-            logger.info("Real-time language detected: %s (caller content: '%s')", lang, content)
+            new_lang_code = "hi" if lang in ["hindi", "hinglish"] else "en"
+
+            # [LANG-FIX] Inject per-turn language instruction into Bedrock BEFORE it generates reply.
+            # Previously: language was detected but LANGUAGE_INSTRUCTIONS was never sent on real calls
+            # (it was only used in demo/chat mode path at line ~2050). This is the core bug fix.
+            # Inject when: language switches, OR caller is using Hindi/Hinglish (always reinforce to
+            # prevent the model from drifting back to English mid-conversation).
+            if new_lang_code != previous_language or lang in ["hindi", "hinglish"]:
+                if new_lang_code != previous_language:
+                    logger.info("[LANG-SWITCH] %s → %s | Injecting language instruction", previous_language, lang)
+                else:
+                    logger.info("[LANG-REINFORCE] %s | Reinforcing language instruction", lang)
+                instruction = LANGUAGE_INSTRUCTIONS[lang]
+                asyncio.ensure_future(
+                    bedrock_client.send_text_message(session_id, instruction, interactive=False)
+                )
+            else:
+                logger.info("[LANG-STABLE] %s | No injection needed", lang)
+
+            previous_language = detected_language
+            detected_language = new_lang_code
             # --- END LANGUAGE MIRRORING ---
 
         elif role == "ASSISTANT":
