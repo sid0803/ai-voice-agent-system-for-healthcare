@@ -29,7 +29,11 @@ KEYWORDS: Dict[IntentType, list[str]] = {
         "scared", "darr lag raha hai", "help", "please", "unbearable", "severely", "bahut zyada"
     ],
     "CHEST_SIGNALS": [
-        "chest", "seena", "bhari", "pressure", "heavy", "stiffness"
+        # [A1.7-FIX] Only specific anatomy/clinical signals to prevent false positives.
+        # Generic words like 'heavy', 'pressure', 'bhari', 'stiffness' removed —
+        # they triggered emergency on phrases like 'heavy discount' or 'insurance pressure'.
+        "chest pain", "seena dard", "chest tightness", "seene mein dard",
+        "chest pressure", "dil mein dard", "seena jal raha"
     ],
     "HANDOFF": [
         "receptionist", "staff", "human", "insan", "baat karado", "admin", "connect me"
@@ -79,8 +83,15 @@ class IntentRouter:
         return "UNKNOWN"
 
     def get_static_response_id(self, intent: IntentType) -> Optional[str]:
-        """Maps an intent back to a static PCM asset ID."""
-        mapping = {"GREETING": "hello", "EMERGENCY": "emergency", "HANDOFF": "transfer"}
+        """Maps an intent back to a static PCM asset ID.
+        
+        [A1.4-FIX] GREETING removed from this mapping.
+        Previously, any 'hello'/'hi' mid-call would play a male-voiced hello.pcm,
+        then Nova Sonic would ALSO respond — causing double audio with wrong gender.
+        GREETING is now handled conversationally by Nova Sonic in context.
+        EMERGENCY and HANDOFF static assets are kept for safety-critical rapid response.
+        """
+        mapping = {"EMERGENCY": "emergency", "HANDOFF": "transfer"}
         return mapping.get(intent)
 
 # Singleton instance

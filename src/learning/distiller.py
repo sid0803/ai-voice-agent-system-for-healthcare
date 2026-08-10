@@ -11,7 +11,14 @@ class KnowledgeDistiller:
     
     def __init__(self):
         from botocore.config import Config
-        boto_config = Config(connect_timeout=2, read_timeout=2, retries={"max_attempts": 0})
+        # [A1.8-FIX] Raised read_timeout from 2s → 30s. Bedrock Nova Lite calls frequently
+        # take 3–10 seconds under load; 2s caused 30–40% timeout failures with no retry.
+        # max_attempts=2 adds one automatic retry on transient network errors.
+        boto_config = Config(
+            connect_timeout=5,
+            read_timeout=30,
+            retries={"max_attempts": 2, "mode": "standard"}
+        )
         self.bedrock = boto3.client("bedrock-runtime", region_name=os.getenv("BEDROCK_REGION", "us-east-1"), config=boto_config)
         self.dynamo = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION", "ap-south-1"), config=boto_config)
         self.table_name = os.getenv("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
@@ -174,12 +181,30 @@ class KnowledgeDistiller:
             if "metadata" in kb_data:
                 kb_data["metadata"]["last_updated"] = datetime.now(timezone.utc).isoformat()
                 
+            # [A1.9-FIX] Atomic write: write to a temp file first, then rename.
+            # This prevents unified_hospital_kb.json from being corrupted if the process
+            # crashes or a JSON parse error occurs mid-write. os.replace() is atomic on Linux.
+            import tempfile
+            tmp_path = None
             try:
-                with open(self.knowledge_file, "w", encoding="utf-8") as f:
-                    json.dump(kb_data, f, indent=2, ensure_ascii=False)
+                with tempfile.NamedTemporaryFile(
+                    mode='w',
+                    dir=self.knowledge_file.parent,
+                    suffix='.tmp',
+                    delete=False,
+                    encoding='utf-8'
+                ) as tmp:
+                    json.dump(kb_data, tmp, indent=2, ensure_ascii=False)
+                    tmp_path = tmp.name
+                os.replace(tmp_path, self.knowledge_file)  # Atomic rename
                 logger.info(f"[LEARNING] Appended {added_count} learned facts directly to {self.knowledge_file}")
             except Exception as e:
                 logger.error(f"[LEARNING] Failed to write updated unified KB file: {e}")
+                if tmp_path:
+                    try:
+                        os.unlink(tmp_path)
+                    except Exception:
+                        pass
 
 # Global Instance
 learning_distiller = KnowledgeDistiller()

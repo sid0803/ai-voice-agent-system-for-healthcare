@@ -191,23 +191,18 @@ class StreamSession:
         await self._process_audio_queue()
 
     async def _process_audio_queue(self) -> None:
-        """Process buffered audio in batches of up to 5 chunks."""
+        """Process all buffered audio chunks in real-time."""
         if self._is_processing_audio or not self._audio_buffer_queue or not self._is_active or self._client.is_audio_paused(self._session_id):
             return
         self._is_processing_audio = True
         try:
-            processed_chunks = 0
-            # [LOW FIX] Matched to queue size (OPT-09) to ensure consistent drain
-            max_chunks_per_batch = 10
             while (
                 self._audio_buffer_queue
-                and processed_chunks < max_chunks_per_batch
                 and self._is_active
                 and not self._client.is_audio_paused(self._session_id)
             ):
                 audio_chunk = self._audio_buffer_queue.pop(0)
                 await self._client.stream_audio_chunk(self._session_id, audio_chunk)
-                processed_chunks += 1
         finally:
             self._is_processing_audio = False
             if self._audio_buffer_queue and self._is_active and not self._client.is_audio_paused(self._session_id):
@@ -216,6 +211,10 @@ class StreamSession:
     async def end_audio_content(self) -> None:
         if not self._is_active:
             return
+        # Ensure all buffered audio chunks are fully drained and sent to Bedrock before closing turn
+        while self._audio_buffer_queue and self._is_active and not self._client.is_audio_paused(self._session_id):
+            audio_chunk = self._audio_buffer_queue.pop(0)
+            await self._client.stream_audio_chunk(self._session_id, audio_chunk)
         await self._client.send_content_end(self._session_id)
 
     async def end_prompt(self) -> None:

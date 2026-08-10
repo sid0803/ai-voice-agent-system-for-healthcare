@@ -99,7 +99,9 @@ _FAISS_INDEX_PATH = _CACHE_DIR / "kb_faiss.index"
 _FAISS_META_PATH = _CACHE_DIR / "kb_faiss_meta.json"
 
 _EMBED_DIMENSION = 1024  # Titan Embeddings v2 output dimension
-_SIMILARITY_THRESHOLD = 0.85  # cosine similarity threshold for cache hit
+_SIMILARITY_THRESHOLD = 0.93  # [A1.5-FIX] Raised from 0.85 → 0.93 to prevent false cache hits.
+# At 0.85, semantically adjacent but wrong entries were returned (e.g. 'parking' matching 'MRI cost').
+# 0.93 ensures only very high-confidence matches are served from cache.
 # [MED-03] Cap FAISS index size to prevent unbounded RAM growth over time.
 # When exceeded, only the most recent FAISS_KEEP_ENTRIES entries are retained.
 _FAISS_MAX_ENTRIES = int(os.getenv("FAISS_MAX_ENTRIES", "10000"))
@@ -369,12 +371,29 @@ HINDI_ALIAS_MAP = {
     # Travel / Directions
     "रास्ता": "directions", "कैसे आएं": "how to reach",
     "पहुंचना": "reach", "पहुँचना": "reach",
+    # Date & Time terms
+    "कल": "kal", "आज": "aaj", "परसों": "parso",
+    "सुबह": "morning", "दोपहर": "afternoon", "शाम": "evening", "साम": "evening", "रात": "night",
+    "सोमवार": "monday", "मंगलवार": "tuesday", "बुधवार": "wednesday",
+    "गुरुवार": "thursday", "शुक्रवार": "friday", "शनिवार": "saturday", "रविवार": "sunday",
     # Appointment / Doctor
     "अपॉइंटमेंट": "appointment", "अपोइंटमेंट": "appointment",
     "डॉक्टर": "doctor", "डाक्टर": "doctor",
     # General medical
     "बुखार": "fever", "दर्द": "pain", "जांच": "test", "जाँच": "test",
     "ऑपरेशन": "surgery", "आपरेशन": "surgery",
+    # Timings / Hours / 24-7
+    "ट्वेंटी फोर इंटर सेवन": "24/7",
+    "ट्वेंटी फोर सेवन": "24/7",
+    "चौबीस घंटे": "24 hours",
+    "24 घंटे": "24 hours",
+    "ओपन": "open",
+    "खुल": "open",
+    "खुला": "open",
+    "बंद": "close",
+    "समय": "time",
+    "टाइम": "time",
+    "टाइमिंग": "timing",
 }
 
 
@@ -390,13 +409,13 @@ def _normalize_query(query: str) -> str:
 
 
 _DAY_ALIASES = {
-    "mon": "Monday", "monday": "Monday",
-    "tue": "Tuesday", "tues": "Tuesday", "tuesday": "Tuesday",
-    "wed": "Wednesday", "wednesday": "Wednesday",
-    "thu": "Thursday", "thur": "Thursday", "thurs": "Thursday", "thursday": "Thursday",
-    "fri": "Friday", "friday": "Friday",
-    "sat": "Saturday", "saturday": "Saturday",
-    "sun": "Sunday", "sunday": "Sunday",
+    "mon": "Monday", "monday": "Monday", "somvar": "Monday", "सोमवार": "Monday",
+    "tue": "Tuesday", "tues": "Tuesday", "tuesday": "Tuesday", "mangalvar": "Tuesday", "मंगलवार": "Tuesday",
+    "wed": "Wednesday", "wednesday": "Wednesday", "budhvar": "Wednesday", "बुधवार": "Wednesday",
+    "thu": "Thursday", "thur": "Thursday", "thurs": "Thursday", "thursday": "Thursday", "guruvar": "Thursday", "गुरुवार": "Thursday",
+    "fri": "Friday", "friday": "Friday", "shukravar": "Friday", "शुक्रवार": "Friday",
+    "sat": "Saturday", "saturday": "Saturday", "shanivar": "Saturday", "शनिवार": "Saturday",
+    "sun": "Sunday", "sunday": "Sunday", "ravivar": "Sunday", "रविवार": "Sunday",
 }
 
 
@@ -451,8 +470,8 @@ def _get_unified_loader():
 
 
 def _format_price(value: Any) -> str:
-    if value in (None, ""):
-        return ""
+    if value in (None, "", 0):
+        return "Standard charges apply"
     try:
         return f"Rs. {int(value):,}"
     except (TypeError, ValueError):
@@ -529,9 +548,16 @@ def _match_services(query: str, services: list[dict]) -> list[dict]:
     return [service for score, service in scored if score >= max(1, best_score - 1)]
 
 
-def _format_service_answer(matches: list[dict]) -> str:
+def _format_service_answer(matches: list[dict], query: str = "") -> str:
     if len(matches) == 1:
         service = matches[0]
+        # Check Devanagari Hindi or Hinglish query
+        devanagari_count = sum(1 for ch in query if '\u0900' <= ch <= '\u097F')
+        if devanagari_count >= 1 and service.get("answer_hi"):
+            return service["answer_hi"]
+        if any(w in query.lower() for w in ["hai", "hain", "kya", "kitna", "fee", "rate", "kharcha", "ka"]) and service.get("answer_hinglish"):
+            return service["answer_hinglish"]
+            
         price = _format_price(service.get("price"))
         duration = service.get("duration_minutes") or service.get("duration")
         prep = service.get("prep_instructions") or service.get("prep")
@@ -622,12 +648,11 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
     # Map keywords/synonyms to amenity keys
     mapping = {
         "parking": ["parking", "park", "gadi", "vehicle", "car", "bike",
-                    # Hindi aliases (post-expansion)
                     "\u092a\u093e\u0930\u094d\u0915\u093f\u0902\u0917", "\u0917\u093e\u0921\u093c\u0940"],
         "wifi": ["wifi", "wi-fi", "wi fi", "internet", "net", "password"],
-        "cafeteria": ["cafeteria", "canteen", "food", "eat", "khana", "khaana", "restaurant",
-                      "lunch", "dinner", "breakfast",
-                      "\u0915\u0948\u092b\u0947\u091f\u0947\u0930\u093f\u092f\u093e", "\u0915\u0948\u0902\u091f\u0940\u0928"],
+        "cafeteria": ["cafeteria", "canteen", "food", "eat", "khana", "khaana", "khaane", "restaurant",
+                      "lunch", "dinner", "breakfast", "canteen",
+                      "\u0915\u0948\u092b\u0947\u091f\u0947\u0930\u093f\u092f\u093e", "\u0915\u0948\u0902\u091f\u0940\u0928", "\u0916\u093e\u0928\u093e", "\u0916\u093e\u0928\u0947"],
         "pharmacy": ["pharmacy", "medicine", "dawai", "chemist", "medical store",
                      "\u092b\u093e\u0930\u094d\u092e\u0947\u0938\u0940", "\u0926\u0935\u093e\u0908", "\u0926\u0935\u093e"],
         "atm": ["atm", "cash", "paise", "money", "bank",
@@ -635,21 +660,16 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
         "wheelchair_porter": ["wheelchair", "porter", "assist", "help", "kursi", "stretcher"],
         "prayer_room": ["prayer", "meditation", "mandir", "pray", "pooja", "masjid"],
         "play_area": ["play", "children", "kids", "khelen", "activity"],
-        # Travel / Directions — catches queries like "how to reach", "kaise aayein",
-        # "directions", "travel from", preventing KB vector fallback returning test prices
         "directions": ["travel", "directions", "reach", "route", "how to come", "how to get",
                        "from west", "from mumbai", "from bengal", "kaise aayein", "kaise aana",
                        "\u0930\u093e\u0938\u094d\u0924\u093e", "\u092a\u0939\u0941\u0902\u091a\u0928\u093e", "\u0915\u0948\u0938\u0947 \u0906\u090f\u0902"],
     }
     
-    # [FIX TRAVEL] Handle travel/directions queries early — before the amenity loop.
-    # Without this, "how to travel" falls through to KB vector search which
-    # returns test pricing data instead of the hospital address (seen in session 33cee9fb).
+    # Handle travel/directions queries early
     direction_keywords = mapping["directions"]
     if any(syn in query for syn in direction_keywords):
         address = amenities.get("address") or amenities.get("location", "")
         if not address:
-            # Fallback: read from the core_info-style fields that may be stored in amenities
             address = "12-B, MG Road, Residency Area, Bengaluru - 560025"
         return (
             f"Our hospital is located at: {address}. "
@@ -661,7 +681,7 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
     matched_results = []
     for key, value in amenities.items():
         synonyms = mapping.get(key, [key.replace("_", " ")])
-        if any(_has_word(query, syn) for syn in synonyms) or any(_has_word(query, part) for part in key.replace("_", " ").split()):
+        if any(syn in query for syn in synonyms) or any(_has_word(query, syn) for syn in synonyms):
             if isinstance(value, dict):
                 details = ", ".join(f"{k.replace('_', ' ').title()}: {v}" for k, v in value.items())
                 matched_results.append(f"{key.replace('_', ' ').title()}: {details}")
@@ -676,12 +696,15 @@ def _match_amenity(query: str, amenities: dict) -> str | None:
 def _requested_day(query: str) -> str | None:
     import datetime
     ist_now = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
-    if "tomorrow" in query or "kal" in query:
+    q = query.lower()
+    if any(w in q for w in ["tomorrow", "kal", "कल"]):
         return (ist_now + datetime.timedelta(days=1)).strftime("%A")
-    if "today" in query or "aaj" in query:
+    if any(w in q for w in ["today", "aaj", "आज"]):
         return ist_now.strftime("%A")
+    if "parso" in q or "परसों" in q:
+        return (ist_now + datetime.timedelta(days=2)).strftime("%A")
     for alias, day in _DAY_ALIASES.items():
-        if _has_word(query, alias):
+        if _has_word(query, alias) or alias in query:
             return day
     return None
 
@@ -712,20 +735,49 @@ def _doctor_slots_for_day(doc: dict, day: str | None) -> tuple[str, list[str]]:
 
 def _match_doctors(query: str, doctors: list[dict]) -> list[dict]:
     specialty_to_dept = {
-        "cardio": "cardiology", "heart": "cardiology",
-        "neuro": "neurology", "brain": "neurology",
-        "ortho": "orthopedics", "joint": "orthopedics", "bone": "orthopedics", "knee": "orthopedics",
-        "child": "pediatrics", "baby": "pediatrics", "pediatr": "pediatrics",
-        "gyneco": "gynecology", "obstetr": "gynecology", "pregnancy": "gynecology", "women": "gynecology",
-        "diabetes": "endocrinology", "thyroid": "endocrinology",
-        "stomach": "gastroenterology", "gastro": "gastroenterology",
-        "lung": "pulmonology", "chest": "pulmonology", "breathing": "pulmonology",
-        "cancer": "oncology", "eye": "ophthalmology", "ent": "ent", "ear": "ent", "nose": "ent", "throat": "ent",
-        "skin": "dermatology", "physician": "general medicine", "fever": "general medicine",
+        # Cardiology
+        "cardio": "cardiology", "heart": "cardiology", "dil": "cardiology",
+        "कार्डियोलॉजी": "cardiology", "कार्डियो": "cardiology", "दिल": "cardiology", "हृदय": "cardiology",
+        # Neurology
+        "neuro": "neurology", "brain": "neurology", "spine": "neurology", "nas": "neurology",
+        "न्यूरोलॉजी": "neurology", "न्यूरो": "neurology", "दिमाग": "neurology", "नस": "neurology",
+        # Orthopedics
+        "ortho": "orthopedics", "joint": "orthopedics", "bone": "orthopedics", "knee": "orthopedics", "haddi": "orthopedics", "jod": "orthopedics",
+        "ऑर्थोपेडिक्स": "orthopedics", "ऑर्थो": "orthopedics", "हड्डी": "orthopedics", "जोड़": "orthopedics", "घुटने": "orthopedics",
+        # Pediatrics
+        "child": "pediatrics", "baby": "pediatrics", "pediatr": "pediatrics", "bachhe": "pediatrics", "bachon": "pediatrics",
+        "पीडियाट्रिक्स": "pediatrics", "बाल": "pediatrics", "बच्चे": "pediatrics", "बच्चों": "pediatrics",
+        # Gynecology
+        "gyneco": "gynecology", "obstetr": "gynecology", "pregnancy": "gynecology", "women": "gynecology", "mahila": "gynecology", "delivery": "gynecology",
+        "गाइनकोलॉजी": "gynecology", "गाइनो": "gynecology", "महिला": "gynecology", "गर्भावस्था": "gynecology", "प्रसव": "gynecology",
+        # Endocrinology
+        "diabetes": "endocrinology", "thyroid": "endocrinology", "sugar": "endocrinology", "endocrine": "endocrinology",
+        "एंडोक्राइनोलॉजी": "endocrinology", "शुगर": "endocrinology", "थायरॉइड": "endocrinology", "मधुमेह": "endocrinology",
+        # Gastroenterology
+        "stomach": "gastroenterology", "gastro": "gastroenterology", "liver": "gastroenterology", "pet": "gastroenterology", "pachan": "gastroenterology",
+        "गैस्ट्रोएंटरोलॉजी": "gastroenterology", "गैस्ट्रो": "gastroenterology", "पेट": "gastroenterology", "लिवर": "gastroenterology", "पाचन": "gastroenterology",
+        # Pulmonology
+        "lung": "pulmonology", "chest": "pulmonology", "breathing": "pulmonology", "fefde": "pulmonology", "saans": "pulmonology", "asthma": "pulmonology",
+        "पल्मोनोलॉजी": "pulmonology", "फेफड़े": "pulmonology", "सांस": "pulmonology", "छाती": "pulmonology", "अस्थमा": "pulmonology",
+        # Oncology
+        "cancer": "oncology", "onco": "oncology", "tumor": "oncology",
+        "ऑन्कोलॉजी": "oncology", "कैंसर": "oncology", "ट्यूमर": "oncology",
+        # Ophthalmology
+        "eye": "ophthalmology", "ophthal": "ophthalmology", "vision": "ophthalmology", "aankh": "ophthalmology",
+        "ऑप्थल्मोलॉजी": "ophthalmology", "आंख": "ophthalmology", "आंखों": "ophthalmology", "दृष्टि": "ophthalmology",
+        # ENT
+        "ent": "ent", "ear": "ent", "nose": "ent", "throat": "ent", "kaan": "ent", "naak": "ent", "gala": "ent",
+        "ईएनटी": "ent", "कान": "ent", "नाक": "ent", "गला": "ent",
+        # Dermatology
+        "skin": "dermatology", "derma": "dermatology", "hair": "dermatology", "tvacha": "dermatology",
+        "डर्मेटोलॉजी": "dermatology", "त्वचा": "dermatology", "चमड़ी": "dermatology", "बाल": "dermatology",
+        # General Medicine / Emergency
+        "physician": "general medicine", "fever": "general medicine", "general": "general medicine", "bukhar": "general medicine",
+        "जनरल": "general medicine", "सामान्य": "general medicine", "बुखार": "general medicine", "इमरजेंसी": "emergency"
     }
     expanded_query = query
     for token, dept in specialty_to_dept.items():
-        if _has_prefix_word(query, token):
+        if token in query or _has_prefix_word(query, token):
             expanded_query += f" {dept}"
 
     scored = []
@@ -820,7 +872,7 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
         return {"answer": faq["answer"]}
 
     hours = loader.get_operating_hours()
-    if _has_any_word(query, ["hour", "time", "timing", "open", "close"]):
+    if _has_any_word(query, ["hour", "time", "timing", "open", "close", "24/7", "24x7", "24-7", "24 hours", "24 hrs"]):
         if _has_word(query, "emergency"):
             return {"answer": f"Emergency is {hours.get('emergency', '24/7 open')}."}
         if _has_word(query, "pharmacy"):

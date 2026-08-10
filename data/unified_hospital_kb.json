@@ -4,7 +4,7 @@
     "hospital_name": "Indiserve Multi-Specialty Hospital",
     "version": "2.0.0",
     "creation_date": "2026-05-28T00:00:00Z",
-    "last_updated": "2026-05-29T14:14:52.327185+00:00",
+    "last_updated": "2026-06-08T18:04:37.823165+00:00",
     "data_freshness_guarantee": "updated_daily",
     "schema_version": "2.0",
     "note": "Unified Knowledge Base - Single source of truth for all hospital data"
@@ -22,7 +22,11 @@
     "accreditations": [
       "NABH",
       "ISO 9001:2015"
-    ]
+    ],
+    "address_hi": "12-बी, एमजी रोड, रेजीडेंसी क्षेत्र, बेंगलुरु - 560025 (सेंट्रल मेट्रो स्टेशन के पास)",
+    "address_hinglish": "12-B, MG Road, Residency Area, Bengaluru - 560025 (Central Metro Station ke paas)",
+    "pharmacy_hours_hi": "24 घंटे खुला (ग्राउंड फ्लोर, मुख्य निकास द्वार के पास)",
+    "pharmacy_hours_hinglish": "24 ghante khula (Ground Floor, main exit gate ke paas)"
   },
   "departments": [
     {
@@ -34,7 +38,11 @@
       "specialists": [
         "Dr. Sameer Kulkarni",
         "Dr. Rajesh Nair"
-      ]
+      ],
+      "name_hi": "कार्डियोलॉजी एवं हृदय रोग विभाग",
+      "name_hinglish": "Cardiology aur Dil ke Rog Vibhag",
+      "description_hi": "दिल से जुड़ी बीमारियों का संपूर्ण इलाज और एंजियोप्लास्टी/सर्जरी",
+      "description_hinglish": "Dil ki bimariyon ka complete treatment aur surgery"
     },
     {
       "id": "dept_002",
@@ -45,7 +53,11 @@
       "specialists": [
         "Dr. Megha Rao",
         "Dr. Arjun Sood"
-      ]
+      ],
+      "name_hi": "न्यूरोलॉजी एवं न्यूरोसर्जरी विभाग",
+      "name_hinglish": "Neurology aur Brain Speciailist Vibhag",
+      "description_hi": "मस्तिष्क, रीढ़ की हड्डी और नसों के रोगों का इलाज",
+      "description_hinglish": "Brain, spine aur nason ki bimariyon ka ilaj"
     },
     {
       "id": "dept_003",
@@ -55,7 +67,11 @@
       "block": "Block B",
       "specialists": [
         "Dr. Vikram Shetty"
-      ]
+      ],
+      "name_hi": "ऑर्थोपेडिक्स एवं जोड़ प्रत्यारोपण विभाग",
+      "name_hinglish": "Orthopedics aur Haddi/Jod Vibhag",
+      "description_hi": "हड्डियों का इलाज और घुटना/जॉइंट रिप्लेसमेंट सर्जरी",
+      "description_hinglish": "Haddiyon ka ilaj aur knee/joint replacement surgery"
     },
     {
       "id": "dept_004",
@@ -65,7 +81,11 @@
       "block": "Block C",
       "specialists": [
         "Dr. Sunita Pillai"
-      ]
+      ],
+      "name_hi": "पीडियाट्रिक्स एवं बाल रोग विभाग",
+      "name_hinglish": "Pediatrics aur Bachhon ka Vibhag",
+      "description_hi": "बच्चों और नवजात शिशुओं की देखभाल एवं टीकाकरण",
+      "description_hinglish": "Bachhon aur navjaat shishuon ki dekhbhaal"
     },
     {
       "id": "dept_005",
@@ -76,7 +96,11 @@
       "specialists": [
         "Dr. Ananya Reddy",
         "Dr. Priya Sharma"
-      ]
+      ],
+      "name_hi": "गाइनकोलॉजी एवं प्रसूति विभाग",
+      "name_hinglish": "Gynecology aur Mahila Rog Vibhag",
+      "description_hi": "महिला स्वास्थ्य, गर्भावस्था और प्रसव सेवाएं",
+      "description_hinglish": "Women health, pregnancy aur delivery services"
     },
     {
       "id": "dept_006",
@@ -86,7 +110,11 @@
       "block": "Block A",
       "specialists": [
         "Dr. Prateek Jain"
-      ]
+      ],
+      "name_hi": "एंडोक्राइनोलॉजी एवं डायबिटीज क्लिनिक",
+      "name_hinglish": "Endocrinology aur Sugar/Diabetes Clinic",
+      "description_hi": "शुगर, थायरॉइड और हार्मोन से जुड़ी समस्याओं का इलाज",
+      "description_hinglish": "Sugar, thyroid aur hormone bimariyon ka ilaj"
     },
     {
       "id": "dept_007",
@@ -96,7 +124,11 @@
       "block": "Block B",
       "specialists": [
         "Dr. Suresh Balaji"
-      ]
+      ],
+      "name_hi": "गैस्ट्रोएंटरोलॉजी एवं लिवर रोग विभाग",
+      "name_hinglish": "Gastroenterology aur Pet/Liver Vibhag",
+      "description_hi": "पाचन तंत्र, पेट दर्द, एसिडिटी और लिवर की बीमारियों का इलाज",
+      "description_hinglish": "Pachan tantra, pet dard, acidity aur liver ilaj"
     },
     {
       "id": "dept_008",
@@ -106,7 +138,11 @@
       "block": "Block A",
       "specialists": [
         "Dr. Neeraj Kapoor"
-      ]
+      ],
+      "name_hi": "पल्मोनोलॉजी एवं फेफड़ा रोग विभाग",
+      "name_hinglish": "Pulmonology aur Fefde/Saans Vibhag",
+      "description_hi": "फेफड़ों, अस्थामा, खांसी और सांस की समस्याओं का इलाज",
+      "description_hinglish": "Fefdon, asthma, khaansi aur saans bimariyon ka ilaj"
     },
     {
       "id": "dept_009",
@@ -116,7 +152,11 @@
       "block": "Block D",
       "specialists": [
         "Dr. Kavitha Menon"
-      ]
+      ],
+      "name_hi": "ऑन्कोलॉजी एवं कैंसर विभाग",
+      "name_hinglish": "Oncology aur Cancer Vibhag",
+      "description_hi": "कैंसर की जांच, कीमोथेरेपी और संपूर्ण इलाज",
+      "description_hinglish": "Cancer ki jaanch, chemotherapy aur complete ilaj"
     },
     {
       "id": "dept_010",
@@ -126,7 +166,11 @@
       "block": "Block B",
       "specialists": [
         "Dr. Rajini Kumar"
-      ]
+      ],
+      "name_hi": "ऑप्थल्मोलॉजी एवं नेत्र रोग विभाग",
+      "name_hinglish": "Ophthalmology aur Aankh ka Vibhag",
+      "description_hi": "आंखों की जांच, मोतियाबिंद और दृष्टि संबंधी सेवाएं",
+      "description_hinglish": "Aankhon ki jaanch aur motiyabind surgery"
     },
     {
       "id": "dept_011",
@@ -136,7 +180,11 @@
       "block": "Block B",
       "specialists": [
         "Dr. Anil Sharma"
-      ]
+      ],
+      "name_hi": "ईएनटी (कान, नाक, गला) विभाग",
+      "name_hinglish": "ENT (Kaan, Naak, Gala) Vibhag",
+      "description_hi": "कान, नाक और गले के रोगों का इलाज",
+      "description_hinglish": "Kaan, naak aur gale ke rog ka ilaj"
     },
     {
       "id": "dept_012",
@@ -146,7 +194,11 @@
       "block": "Block A",
       "specialists": [
         "Dr. Meera Singh"
-      ]
+      ],
+      "name_hi": "डर्मेटोलॉजी एवं त्वचा रोग विभाग",
+      "name_hinglish": "Dermatology aur Skin Vibhag",
+      "description_hi": "त्वचा, बालों और सौंदर्य संबंधी समस्याओं का इलाज",
+      "description_hinglish": "Skin, baal aur cosmetic bimariyon ka ilaj"
     },
     {
       "id": "dept_013",
@@ -156,7 +208,11 @@
       "block": "Block A",
       "specialists": [
         "On-call team available 24/7"
-      ]
+      ],
+      "name_hi": "इमरजेंसी एवं ट्रॉमा केयर",
+      "name_hinglish": "Emergency aur Trauma Care",
+      "description_hi": "24 घंटे आपातकालीन चिकित्सा और ट्रॉमा देखभाल",
+      "description_hinglish": "24 ghante emergency medical aur accident care"
     }
   ],
   "doctors": [
@@ -246,7 +302,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Director of Cardiology with 18 years of experience in interventional procedures and complex cardiac cases."
+      "biography": "Director of Cardiology with 18 years of experience in interventional procedures and complex cardiac cases.",
+      "availability_summary_hi": "Dr. Sameer Kulkarni (Cardiology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1200।",
+      "availability_summary_hinglish": "Dr. Sameer Kulkarni (Cardiology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1200."
     },
     {
       "id": "doc_002",
@@ -304,7 +362,9 @@
         "Saturday": [],
         "Sunday": []
       },
-      "biography": "Senior Consultant specializing in interventional cardiology with expertise in complex coronary interventions."
+      "biography": "Senior Consultant specializing in interventional cardiology with expertise in complex coronary interventions.",
+      "availability_summary_hi": "Dr. Rajesh Nair (Cardiology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1500।",
+      "availability_summary_hinglish": "Dr. Rajesh Nair (Cardiology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1500."
     },
     {
       "id": "doc_003",
@@ -359,7 +419,9 @@
         "Saturday": [],
         "Sunday": []
       },
-      "biography": "Head of Neurology department with special focus on acute stroke management and epilepsy."
+      "biography": "Head of Neurology department with special focus on acute stroke management and epilepsy.",
+      "availability_summary_hi": "Dr. Megha Rao (Neurology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1500।",
+      "availability_summary_hinglish": "Dr. Megha Rao (Neurology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1500."
     },
     {
       "id": "doc_004",
@@ -410,7 +472,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Senior Neurosurgeon with extensive experience in complex brain and spine surgeries."
+      "biography": "Senior Neurosurgeon with extensive experience in complex brain and spine surgeries.",
+      "availability_summary_hi": "Dr. Arjun Sood (Neurosurgery) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1800।",
+      "availability_summary_hinglish": "Dr. Arjun Sood (Neurosurgery) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1800."
     },
     {
       "id": "doc_005",
@@ -481,7 +545,9 @@
         "Saturday": [],
         "Sunday": []
       },
-      "biography": "Director of Orthopedics with 20 years of experience in joint replacement and sports injuries."
+      "biography": "Director of Orthopedics with 20 years of experience in joint replacement and sports injuries.",
+      "availability_summary_hi": "Dr. Vikram Shetty (Orthopedics) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1300।",
+      "availability_summary_hinglish": "Dr. Vikram Shetty (Orthopedics) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1300."
     },
     {
       "id": "doc_006",
@@ -571,7 +637,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Senior Pediatrician and Neonatologist with special expertise in newborn care."
+      "biography": "Senior Pediatrician and Neonatologist with special expertise in newborn care.",
+      "availability_summary_hi": "Dr. Sunita Pillai (Pediatrics) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹900।",
+      "availability_summary_hinglish": "Dr. Sunita Pillai (Pediatrics) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 900."
     },
     {
       "id": "doc_007",
@@ -647,7 +715,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Senior Obstetric specialist with expertise in managing high-risk pregnancies."
+      "biography": "Senior Obstetric specialist with expertise in managing high-risk pregnancies.",
+      "availability_summary_hi": "Dr. Ananya Reddy (Gynecology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1400।",
+      "availability_summary_hinglish": "Dr. Ananya Reddy (Gynecology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1400."
     },
     {
       "id": "doc_008",
@@ -710,7 +780,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Reproductive medicine specialist focusing on infertility and PCOS management."
+      "biography": "Reproductive medicine specialist focusing on infertility and PCOS management.",
+      "availability_summary_hi": "Dr. Priya Sharma (Gynecology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1200।",
+      "availability_summary_hinglish": "Dr. Priya Sharma (Gynecology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1200."
     },
     {
       "id": "doc_009",
@@ -814,7 +886,9 @@
           "10:00"
         ]
       },
-      "biography": "Head of Endocrinology with special focus on diabetes management and thyroid disorders."
+      "biography": "Head of Endocrinology with special focus on diabetes management and thyroid disorders.",
+      "availability_summary_hi": "Dr. Prateek Jain (Endocrinology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1000।",
+      "availability_summary_hinglish": "Dr. Prateek Jain (Endocrinology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1000."
     },
     {
       "id": "doc_010",
@@ -885,7 +959,9 @@
         "Saturday": [],
         "Sunday": []
       },
-      "biography": "Senior Gastroenterologist with expertise in liver diseases and advanced endoscopy procedures."
+      "biography": "Senior Gastroenterologist with expertise in liver diseases and advanced endoscopy procedures.",
+      "availability_summary_hi": "Dr. Suresh Balaji (Gastroenterology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1400।",
+      "availability_summary_hinglish": "Dr. Suresh Balaji (Gastroenterology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1400."
     },
     {
       "id": "doc_011",
@@ -959,7 +1035,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Pulmonologist specializing in sleep disorders and chronic respiratory diseases."
+      "biography": "Pulmonologist specializing in sleep disorders and chronic respiratory diseases.",
+      "availability_summary_hi": "Dr. Neeraj Kapoor (Pulmonology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1100।",
+      "availability_summary_hinglish": "Dr. Neeraj Kapoor (Pulmonology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1100."
     },
     {
       "id": "doc_012",
@@ -1020,7 +1098,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Senior Oncologist with 18 years of experience in comprehensive cancer management."
+      "biography": "Senior Oncologist with 18 years of experience in comprehensive cancer management.",
+      "availability_summary_hi": "Dr. Kavitha Menon (Oncology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1600।",
+      "availability_summary_hinglish": "Dr. Kavitha Menon (Oncology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1600."
     },
     {
       "id": "doc_013",
@@ -1084,7 +1164,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Ophthalmologist with expertise in cataract surgery and retinal diseases."
+      "biography": "Ophthalmologist with expertise in cataract surgery and retinal diseases.",
+      "availability_summary_hi": "Dr. Rajini Kumar (Ophthalmology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1000।",
+      "availability_summary_hinglish": "Dr. Rajini Kumar (Ophthalmology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1000."
     },
     {
       "id": "doc_014",
@@ -1147,7 +1229,9 @@
         "Saturday": [],
         "Sunday": []
       },
-      "biography": "ENT specialist with expertise in hearing disorders and sinus conditions."
+      "biography": "ENT specialist with expertise in hearing disorders and sinus conditions.",
+      "availability_summary_hi": "Dr. Anil Sharma (ENT) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹1000।",
+      "availability_summary_hinglish": "Dr. Anil Sharma (ENT) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 1000."
     },
     {
       "id": "doc_015",
@@ -1204,7 +1288,9 @@
         ],
         "Sunday": []
       },
-      "biography": "Dermatologist with expertise in cosmetic dermatology and hair loss management."
+      "biography": "Dermatologist with expertise in cosmetic dermatology and hair loss management.",
+      "availability_summary_hi": "Dr. Meera Singh (Dermatology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹900।",
+      "availability_summary_hinglish": "Dr. Meera Singh (Dermatology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 900."
     }
   ],
   "services": [
@@ -1229,7 +1315,9 @@
         "imaging",
         "neuro",
         "neuroimaging"
-      ]
+      ],
+      "answer_hi": "Brain MRI की फीस ₹8500 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Brain MRI ki fee Rs. 8500 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_mri_spine",
@@ -1250,7 +1338,9 @@
         "spine",
         "back",
         "imaging"
-      ]
+      ],
+      "answer_hi": "Spine MRI की फीस ₹9000 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Spine MRI ki fee Rs. 9000 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_mri_abdomen",
@@ -1271,7 +1361,9 @@
         "abdomen",
         "belly",
         "imaging"
-      ]
+      ],
+      "answer_hi": "Full Abdomen MRI की फीस ₹12000 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Full Abdomen MRI ki fee Rs. 12000 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_ct_head",
@@ -1293,7 +1385,9 @@
         "brain",
         "imaging",
         "scan"
-      ]
+      ],
+      "answer_hi": "CT Head Scan की फीस ₹4500 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "CT Head Scan ki fee Rs. 4500 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_ct_chest",
@@ -1315,7 +1409,9 @@
         "lung",
         "thorax",
         "imaging"
-      ]
+      ],
+      "answer_hi": "CT Chest Scan की फीस ₹5500 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "CT Chest Scan ki fee Rs. 5500 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_ct_abdomen",
@@ -1336,7 +1432,9 @@
         "abdomen",
         "contrast",
         "imaging"
-      ]
+      ],
+      "answer_hi": "CT Abdomen with Contrast की फीस ₹8000 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "CT Abdomen with Contrast ki fee Rs. 8000 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_thyroid_profile",
@@ -1358,7 +1456,9 @@
         "t3",
         "t4",
         "test"
-      ]
+      ],
+      "answer_hi": "Thyroid Profile Test की फीस ₹750 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Thyroid Profile Test ki fee Rs. 750 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_cbc",
@@ -1379,7 +1479,9 @@
         "blood",
         "count",
         "test"
-      ]
+      ],
+      "answer_hi": "Complete Blood Count (CBC) की फीस ₹400 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Complete Blood Count (CBC) ki fee Rs. 400 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_blood_sugar",
@@ -1400,7 +1502,9 @@
         "glucose",
         "fasting",
         "test"
-      ]
+      ],
+      "answer_hi": "Fasting Blood Sugar Test की फीस ₹300 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Fasting Blood Sugar Test ki fee Rs. 300 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_lipid_profile",
@@ -1421,7 +1525,9 @@
         "cholesterol",
         "triglyceride",
         "test"
-      ]
+      ],
+      "answer_hi": "Lipid Profile Test की फीस ₹600 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Lipid Profile Test ki fee Rs. 600 hai. Ye lab Ground Floor pe available hai."
     },
     {
       "id": "svc_liver_function",
@@ -1442,7 +1548,9 @@
         "lft",
         "enzyme",
         "test"
-      ]
+      ],
+      "answer_hi": "Liver Function Test (LFT) की फीस ₹500 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "Liver Function Test (LFT) ki fee Rs. 500 hai. Ye lab Ground Floor pe available hai."
     }
   ],
   "health_packages": [
@@ -1453,7 +1561,9 @@
       "target_age": "18-40 years",
       "description": "Basic health checkup package for young adults",
       "includes": "CBC, Blood Sugar (Fasting), Thyroid Profile, Lipid Profile, Urine Routine, KFT, ECG, Chest X-Ray, Doctor Consultation",
-      "prep_instructions": "Fasting of 8 hours required"
+      "prep_instructions": "Fasting of 8 hours required",
+      "answer_hi": "Silver Wellness Package की कुल फीस ₹2200 है। इसमें सभी जरूरी टेस्ट और डॉक्टर कंसल्टेशन शामिल है।",
+      "answer_hinglish": "Silver Wellness Package ka complete package price Rs. 2200 hai. Isme saare tests aur doctor consultation included hai."
     },
     {
       "id": "pkg_gold",
@@ -1462,7 +1572,9 @@
       "target_age": "40-60 years",
       "description": "Comprehensive health checkup for middle-aged adults",
       "includes": "Silver Package tests + LFT, Vitamin D, Vitamin B12, HbA1c, Ultrasound Abdomen, Dental Check, Eye Check, Specialist Consultation",
-      "prep_instructions": "Fasting of 8 hours required"
+      "prep_instructions": "Fasting of 8 hours required",
+      "answer_hi": "Gold Comprehensive Package की कुल फीस ₹4500 है। इसमें सभी जरूरी टेस्ट और डॉक्टर कंसल्टेशन शामिल है।",
+      "answer_hinglish": "Gold Comprehensive Package ka complete package price Rs. 4500 hai. Isme saare tests aur doctor consultation included hai."
     },
     {
       "id": "pkg_executive",
@@ -1471,7 +1583,9 @@
       "target_age": "All ages",
       "description": "Premium full-body health screening for busy professionals",
       "includes": "Gold Package tests + PFT, Stress Test (TMT), ECHO, Full Body MRI Screening, Bone Density Scan, Ophthalmology Exam, Detailed Report with Counselling",
-      "prep_instructions": "Fasting of 8 hours required"
+      "prep_instructions": "Fasting of 8 hours required",
+      "answer_hi": "Executive Full Body Package की कुल फीस ₹7500 है। इसमें सभी जरूरी टेस्ट और डॉक्टर कंसल्टेशन शामिल है।",
+      "answer_hinglish": "Executive Full Body Package ka complete package price Rs. 7500 hai. Isme saare tests aur doctor consultation included hai."
     },
     {
       "id": "pkg_cardiac",
@@ -1480,7 +1594,9 @@
       "target_age": "40+ years or high risk",
       "description": "Comprehensive cardiac health assessment",
       "includes": "ECG, Echocardiogram, Lipid Profile, Blood Pressure Monitoring, Blood Sugar, HbA1c, KFT, Cardiologist Consultation",
-      "prep_instructions": "No fasting required"
+      "prep_instructions": "No fasting required",
+      "answer_hi": "Cardiac Screening Package की कुल फीस ₹3200 है। इसमें सभी जरूरी टेस्ट और डॉक्टर कंसल्टेशन शामिल है।",
+      "answer_hinglish": "Cardiac Screening Package ka complete package price Rs. 3200 hai. Isme saare tests aur doctor consultation included hai."
     },
     {
       "id": "pkg_womens",
@@ -1489,7 +1605,9 @@
       "target_age": "Adult women",
       "description": "Comprehensive health screening designed for women",
       "includes": "Gynecology Consultation, Pap Smear, Mammogram, CBC, Thyroid Profile, Vitamin D, Vitamin B12, Urine Routine, Blood Sugar, Bone Density Check",
-      "prep_instructions": "No fasting required"
+      "prep_instructions": "No fasting required",
+      "answer_hi": "Women's Wellness Package की कुल फीस ₹3800 है। इसमें सभी जरूरी टेस्ट और डॉक्टर कंसल्टेशन शामिल है।",
+      "answer_hinglish": "Women's Wellness Package ka complete package price Rs. 3800 hai. Isme saare tests aur doctor consultation included hai."
     }
   ],
   "room_types": [
@@ -1517,7 +1635,9 @@
         "Sofa",
         "WiFi",
         "Telephone"
-      ]
+      ],
+      "answer_hi": "डिलक्स प्राइवेट रूम का किराया ₹5,000 प्रति दिन है। इसमें सिंगल प्राइवेट रूम, टीवी, एसी, अटेंडेंट बेड और भोजन शामिल है।",
+      "answer_hinglish": "Deluxe Private Room ka daily rate Rs. 5,000 hai. Isme single room, TV, AC, attendant bed aur food included hai."
     },
     {
       "id": "room_semi_private",
@@ -1529,7 +1649,9 @@
         "Basic amenities",
         "Shared bathroom",
         "TV"
-      ]
+      ],
+      "answer_hi": "सेमी-प्राइवेट रूम का किराया ₹3,000 प्रति दिन है। इसमें 2 मरीजों के लिए शेयरिंग रूम, टीवी और अटेंडेंट चेयर शामिल है।",
+      "answer_hinglish": "Semi-Private Room ka daily rate Rs. 3,000 hai. Isme 2-patient sharing, TV aur attendant chair included hai."
     },
     {
       "id": "room_general",
@@ -1540,7 +1662,9 @@
         "Standard care",
         "Basic facilities",
         "Shared ward"
-      ]
+      ],
+      "answer_hi": "जनरल वार्ड का किराया ₹1,500 प्रति दिन है। इसमें कॉमन शेयरिंग एसी वार्ड और नर्सिंग केयर शामिल है।",
+      "answer_hinglish": "General Ward ka daily charge Rs. 1,500 hai. Isme AC sharing ward aur nursing care included hai."
     }
   ],
   "operating_hours": {
@@ -1582,7 +1706,11 @@
       "tags": [
         "location",
         "address"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Indiserve Multi-Specialty Hospital is located at 12-B, MG Road, Residency Area, Bengaluru - 560025. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Indiserve Multi-Specialty Hospital is located at 12-B, MG Road, Residency Area, Bengaluru - 560025. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "hospital address के बारे में जानकारी",
+      "question_hinglish": "hospital address ke baare me jankari"
     },
     {
       "id": "faq_002",
@@ -1598,7 +1726,11 @@
       "tags": [
         "contact",
         "phone"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: You can reach us at our main reception on +91 80 4000 9000. For emergencies, dial 1066. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: You can reach us at our main reception on +91 80 4000 9000. For emergencies, dial 1066. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "hospital contact के बारे में जानकारी",
+      "question_hinglish": "hospital contact ke baare me jankari"
     },
     {
       "id": "faq_003",
@@ -1614,7 +1746,11 @@
       "tags": [
         "departments",
         "specialties"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We have 13 departments: Cardiology & Cardiothoracic Surgery, Neurology & Neurosurgery, Orthopedics & Joint Replacement, Pediatrics & Neonatology, Gynecology & Obstetrics, Endocrinology & Diabetes Clinic, Gastroenterology & Hepatology, Pulmonology & Chest Medicine, Oncology, Ophthalmology, ENT, Dermatology & Aesthetics, and Emergency & Trauma. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We have 13 departments: Cardiology & Cardiothoracic Surgery, Neurology & Neurosurgery, Orthopedics & Joint Replacement, Pediatrics & Neonatology, Gynecology & Obstetrics, Endocrinology & Diabetes Clinic, Gastroenterology & Hepatology, Pulmonology & Chest Medicine, Oncology, Ophthalmology, ENT, Dermatology & Aesthetics, and Emergency & Trauma. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "list departments के बारे में जानकारी",
+      "question_hinglish": "list departments ke baare me jankari"
     },
     {
       "id": "faq_004",
@@ -1632,7 +1768,11 @@
         "mri",
         "pricing",
         "brain"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Brain MRI costs Rs. 8,500 and takes approximately 45 minutes. No fasting required. It is located in the Radiology department on the Ground Floor, Lab Wing B. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Brain MRI costs Rs. 8,500 and takes approximately 45 minutes. No fasting required. It is located in the Radiology department on the Ground Floor, Lab Wing B. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "brain mri cost के बारे में जानकारी",
+      "question_hinglish": "brain mri cost ke baare me jankari"
     },
     {
       "id": "faq_005",
@@ -1650,7 +1790,11 @@
         "mri",
         "pricing",
         "spine"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Spine MRI costs Rs. 9,000. It takes approximately 50 minutes. No special fasting is required. Located in the Radiology department. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Spine MRI costs Rs. 9,000. It takes approximately 50 minutes. No special fasting is required. Located in the Radiology department. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "spine mri cost के बारे में जानकारी",
+      "question_hinglish": "spine mri cost ke baare me jankari"
     },
     {
       "id": "faq_006",
@@ -1668,7 +1812,11 @@
         "ct",
         "pricing",
         "head"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: A CT Head scan costs Rs. 4,500 and takes about 20 minutes. No special preparation is required. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: A CT Head scan costs Rs. 4,500 and takes about 20 minutes. No special preparation is required. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "ct head cost के बारे में जानकारी",
+      "question_hinglish": "ct head cost ke baare me jankari"
     },
     {
       "id": "faq_007",
@@ -1686,7 +1834,11 @@
         "ct",
         "pricing",
         "chest"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: CT Chest costs Rs. 5,500 and takes approximately 25 minutes. Wear comfortable clothes without metal buttons. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: CT Chest costs Rs. 5,500 and takes approximately 25 minutes. Wear comfortable clothes without metal buttons. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "ct chest cost के बारे में जानकारी",
+      "question_hinglish": "ct chest cost ke baare me jankari"
     },
     {
       "id": "faq_008",
@@ -1705,7 +1857,11 @@
         "pricing",
         "abdomen",
         "contrast"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: CT Abdomen with contrast costs Rs. 8,000 and takes about 30 minutes. Fasting of 4 hours is required. You'll need to drink 500ml of contrast water 1 hour before the scan. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: CT Abdomen with contrast costs Rs. 8,000 and takes about 30 minutes. Fasting of 4 hours is required. You'll need to drink 500ml of contrast water 1 hour before the scan. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "ct abdomen contrast cost के बारे में जानकारी",
+      "question_hinglish": "ct abdomen contrast cost ke baare me jankari"
     },
     {
       "id": "faq_009",
@@ -1722,7 +1878,11 @@
         "parking",
         "facilities",
         "cost"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Parking rates: Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. Multi-level parking is available in Basement B1 and B2 with capacity for 500 vehicles. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Parking rates: Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. Multi-level parking is available in Basement B1 and B2 with capacity for 500 vehicles. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "parking charges के बारे में जानकारी",
+      "question_hinglish": "parking charges ke baare me jankari"
     },
     {
       "id": "faq_010",
@@ -1738,7 +1898,11 @@
       "tags": [
         "visiting hours",
         "icu"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: ICU visiting hours are strictly from 11:00 AM to 12:00 PM and 5:00 PM to 6:00 PM daily. Only one visitor is allowed at a time, and a valid ICU visitor pass is required which can be obtained from the ICU Reception on the 4th Floor. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: ICU visiting hours are strictly from 11:00 AM to 12:00 PM and 5:00 PM to 6:00 PM daily. Only one visitor is allowed at a time, and a valid ICU visitor pass is required which can be obtained from the ICU Reception on the 4th Floor. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "icu visiting hours के बारे में जानकारी",
+      "question_hinglish": "icu visiting hours ke baare me jankari"
     },
     {
       "id": "faq_011",
@@ -1754,7 +1918,11 @@
       "tags": [
         "visiting hours",
         "ward"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: General ward visiting hours are from 4:00 PM to 7:00 PM daily. Maximum two visitors are allowed per patient at a time. Children below 12 years are not permitted inside the ward. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: General ward visiting hours are from 4:00 PM to 7:00 PM daily. Maximum two visitors are allowed per patient at a time. Children below 12 years are not permitted inside the ward. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "general ward visiting के बारे में जानकारी",
+      "question_hinglish": "general ward visiting ke baare me jankari"
     },
     {
       "id": "faq_012",
@@ -1771,7 +1939,11 @@
         "insurance",
         "billing",
         "payment"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we are empanelled with over 30 TPA and insurance companies including Star Health, HDFC Ergo, ICICI Lombard, Bajaj Allianz, New India Assurance, and Max Bupa. Our cashless desk is on the Ground Floor near the main billing counter. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we are empanelled with over 30 TPA and insurance companies including Star Health, HDFC Ergo, ICICI Lombard, Bajaj Allianz, New India Assurance, and Max Bupa. Our cashless desk is on the Ground Floor near the main billing counter. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "insurance accepted के बारे में जानकारी",
+      "question_hinglish": "insurance accepted ke baare me jankari"
     },
     {
       "id": "faq_013",
@@ -1787,7 +1959,11 @@
       "tags": [
         "emergency",
         "contact"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our 24x7 hospital emergency helpline is +91 80 4000 9000. For national medical emergencies, dial 1066. Our Emergency and Trauma Centre is always open at Ground Floor, Block A main gate entrance. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our 24x7 hospital emergency helpline is +91 80 4000 9000. For national medical emergencies, dial 1066. Our Emergency and Trauma Centre is always open at Ground Floor, Block A main gate entrance. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "emergency contact के बारे में जानकारी",
+      "question_hinglish": "emergency contact ke baare me jankari"
     },
     {
       "id": "faq_014",
@@ -1804,7 +1980,11 @@
         "tests",
         "fasting",
         "blood"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: It depends on the test. For fasting blood sugar: 8-10 hours fasting required. For lipid profile: 10-12 hours fasting required. For most routine tests like CBC and thyroid: no fasting required. Please consult the lab staff for specific tests. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: It depends on the test. For fasting blood sugar: 8-10 hours fasting required. For lipid profile: 10-12 hours fasting required. For most routine tests like CBC and thyroid: no fasting required. Please consult the lab staff for specific tests. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "blood test fasting के बारे में जानकारी",
+      "question_hinglish": "blood test fasting ke baare me jankari"
     },
     {
       "id": "faq_015",
@@ -1820,7 +2000,11 @@
       "tags": [
         "payment",
         "billing"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We accept all major payment modes including UPI, debit and credit cards, net banking, cash, and insurance cashless billing. Our billing counter is on the Ground Floor near the main entrance. We also have EMI options for bills above Rs. 50,000. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We accept all major payment modes including UPI, debit and credit cards, net banking, cash, and insurance cashless billing. Our billing counter is on the Ground Floor near the main entrance. We also have EMI options for bills above Rs. 50,000. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "payment modes के बारे में जानकारी",
+      "question_hinglish": "payment modes ke baare me jankari"
     },
     {
       "id": "faq_016",
@@ -1837,7 +2021,11 @@
         "doctor",
         "fee",
         "cardiology"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The consultation fee for our senior cardiologists is Rs. 1,200 to Rs. 1,500 per visit. For follow-up consultations within 7 days, a discounted fee of Rs. 600-750 applies. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The consultation fee for our senior cardiologists is Rs. 1,200 to Rs. 1,500 per visit. For follow-up consultations within 7 days, a discounted fee of Rs. 600-750 applies. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "cardiology doctor cost के बारे में जानकारी",
+      "question_hinglish": "cardiology doctor cost ke baare me jankari"
     },
     {
       "id": "faq_017",
@@ -1854,7 +2042,11 @@
         "wifi",
         "internet",
         "facilities"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, free WiFi is available throughout the hospital. Connect to the network named Indiserve-Guest and enter your mobile number to receive the OTP for access. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, free WiFi is available throughout the hospital. Connect to the network named Indiserve-Guest and enter your mobile number to receive the OTP for access. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "wifi available के बारे में जानकारी",
+      "question_hinglish": "wifi available ke baare me jankari"
     },
     {
       "id": "faq_018",
@@ -1871,7 +2063,11 @@
         "pharmacy",
         "hours",
         "services"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, our main pharmacy is open 24 hours a day, 7 days a week. It is located on the Ground Floor near the main exit. We also have an in-patient pharmacy on the 3rd Floor for admitted patients. Home delivery of medicines is also available. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, our main pharmacy is open 24 hours a day, 7 days a week. It is located on the Ground Floor near the main exit. We also have an in-patient pharmacy on the 3rd Floor for admitted patients. Home delivery of medicines is also available. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "pharmacy hours के बारे में जानकारी",
+      "question_hinglish": "pharmacy hours ke baare me jankari"
     },
     {
       "id": "faq_019",
@@ -1888,7 +2084,11 @@
         "doctor",
         "availability",
         "appointment"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Doctor availability varies by department and day. For tomorrow's availability, you can tell me the department or doctor name you're interested in, and I can check specific availability and book it for you right now. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Doctor availability varies by department and day. For tomorrow's availability, you can tell me the department or doctor name you're interested in, and I can check specific availability and book it for you right now. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "doctor availability tomorrow के बारे में जानकारी",
+      "question_hinglish": "doctor availability tomorrow ke baare me jankari"
     },
     {
       "id": "faq_020",
@@ -1905,7 +2105,11 @@
         "accreditation",
         "quality",
         "certification"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, Indiserve Multi-Specialty Hospital is NABH accredited, which means we meet the highest standards of patient care, safety, and quality as per the National Accreditation Board for Hospitals standards. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, Indiserve Multi-Specialty Hospital is NABH accredited, which means we meet the highest standards of patient care, safety, and quality as per the National Accreditation Board for Hospitals standards. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "hospital accreditation के बारे में जानकारी",
+      "question_hinglish": "hospital accreditation ke baare me jankari"
     },
     {
       "id": "faq_021",
@@ -1925,7 +2129,11 @@
         "walk-in",
         "appointment",
         "booking"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For most OPD consultations, walk-in is welcome during OPD hours from 8 AM to 7 PM Monday to Friday and 8 AM to 1 PM on Saturday. However, booking an appointment in advance ensures minimal waiting time. Would you like me to book this appointment for you right now? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For most OPD consultations, walk-in is welcome during OPD hours from 8 AM to 7 PM Monday to Friday and 8 AM to 1 PM on Saturday. However, booking an appointment in advance ensures minimal waiting time. Would you like me to book this appointment for you right now? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "walkin vs appointment के बारे में जानकारी",
+      "question_hinglish": "walkin vs appointment ke baare me jankari"
     },
     {
       "id": "faq_022",
@@ -1946,7 +2154,11 @@
         "timing",
         "hours",
         "outpatient"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: General OPD is open from 8:00 AM to 7:00 PM on Monday to Friday, and 8:00 AM to 1:00 PM on Saturday. It is closed on Sundays. Emergency services are open 24 hours a day, 7 days a week. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: General OPD is open from 8:00 AM to 7:00 PM on Monday to Friday, and 8:00 AM to 1:00 PM on Saturday. It is closed on Sundays. Emergency services are open 24 hours a day, 7 days a week. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "opd timings के बारे में जानकारी",
+      "question_hinglish": "opd timings ke baare me jankari"
     },
     {
       "id": "faq_023",
@@ -1967,7 +2179,11 @@
         "documents",
         "mrn",
         "id proof"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For new patient registration, please bring a valid government photo ID such as Aadhaar or PAN card. Registration is done at the Reception Counter on the Ground Floor. A one-time registration charge of Rs. 200 is applicable, which provides you a unique Medical Record Number for all future visits. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For new patient registration, please bring a valid government photo ID such as Aadhaar or PAN card. Registration is done at the Reception Counter on the Ground Floor. A one-time registration charge of Rs. 200 is applicable, which provides you a unique Medical Record Number for all future visits. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "new patient registration के बारे में जानकारी",
+      "question_hinglish": "new patient registration ke baare me jankari"
     },
     {
       "id": "faq_024",
@@ -1988,7 +2204,11 @@
         "validity",
         "consultation fee",
         "report"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Your OPD consultation fee is valid for 7 days from your first visit with the same doctor. Within this period, you can return to show reports or follow up without paying the consultation fee again. After 7 days, a fresh ticket is required. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Your OPD consultation fee is valid for 7 days from your first visit with the same doctor. Within this period, you can return to show reports or follow up without paying the consultation fee again. After 7 days, a fresh ticket is required. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "followup consultation validity के बारे में जानकारी",
+      "question_hinglish": "followup consultation validity ke baare me jankari"
     },
     {
       "id": "faq_025",
@@ -2008,7 +2228,11 @@
         "doctor delay",
         "queue",
         "appointment"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We apologize for the wait. As a trauma center, doctors may sometimes be delayed due to ongoing emergencies. Please check with our reception desk for your current queue status. If you are in a hurry, we can reschedule or help you consult a different available specialist. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We apologize for the wait. As a trauma center, doctors may sometimes be delayed due to ongoing emergencies. Please check with our reception desk for your current queue status. If you are in a hurry, we can reschedule or help you consult a different available specialist. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "doctor delay wait time के बारे में जानकारी",
+      "question_hinglish": "doctor delay wait time ke baare me jankari"
     },
     {
       "id": "faq_026",
@@ -2028,7 +2252,11 @@
         "reschedule",
         "appointment",
         "booking"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: You can cancel or reschedule your appointment. Would you like me to reschedule or help you check your booking right now? Please note that rescheduling is free up to 24 hours before. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: You can cancel or reschedule your appointment. Would you like me to reschedule or help you check your booking right now? Please note that rescheduling is free up to 24 hours before. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "cancel reschedule appointment के बारे में जानकारी",
+      "question_hinglish": "cancel reschedule appointment ke baare me jankari"
     },
     {
       "id": "faq_027",
@@ -2048,7 +2276,11 @@
         "fasting",
         "preparation",
         "scan"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For an abdominal ultrasound or USG, 6 hours of fasting is required. You should have a full bladder for pelvic or pregnancy scans, so drink 4 to 5 glasses of water 1 hour before and do not urinate before the scan. For thyroid or neck ultrasound, no fasting is required. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For an abdominal ultrasound or USG, 6 hours of fasting is required. You should have a full bladder for pelvic or pregnancy scans, so drink 4 to 5 glasses of water 1 hour before and do not urinate before the scan. For thyroid or neck ultrasound, no fasting is required. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "usg fasting rules के बारे में जानकारी",
+      "question_hinglish": "usg fasting rules ke baare me jankari"
     },
     {
       "id": "faq_028",
@@ -2068,7 +2300,11 @@
         "fasting",
         "metal",
         "contrast"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For most MRI scans, no fasting is required unless it is an abdominal MRI with contrast, for which 4 hours fasting is needed. You must remove all metal objects including jewellery, hairpins, and watches before entering the MRI room. Inform us if you have any metal implants, pacemaker, or are pregnant. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For most MRI scans, no fasting is required unless it is an abdominal MRI with contrast, for which 4 hours fasting is needed. You must remove all metal objects including jewellery, hairpins, and watches before entering the MRI room. Inform us if you have any metal implants, pacemaker, or are pregnant. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "mri preparation के बारे में जानकारी",
+      "question_hinglish": "mri preparation ke baare me jankari"
     },
     {
       "id": "faq_029",
@@ -2089,7 +2325,11 @@
         "results",
         "timing",
         "turnaround"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Routine blood tests like CBC, Thyroid, and Sugar are ready within 3 to 4 hours of sample collection. CT and X-Ray reports are typically available within 4 to 6 hours. MRI reports require 12 to 24 hours. Specialized pathology reports may take up to 48 hours. Our lab staff will inform you of the exact timing. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Routine blood tests like CBC, Thyroid, and Sugar are ready within 3 to 4 hours of sample collection. CT and X-Ray reports are typically available within 4 to 6 hours. MRI reports require 12 to 24 hours. Specialized pathology reports may take up to 48 hours. Our lab staff will inform you of the exact timing. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "report turnaround time के बारे में जानकारी",
+      "question_hinglish": "report turnaround time ke baare me jankari"
     },
     {
       "id": "faq_030",
@@ -2111,7 +2351,11 @@
         "download",
         "sms",
         "portal"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, once your report is ready, a secure download link is sent via SMS and WhatsApp to your registered mobile number. You can also download all past reports by logging into our patient portal. Please ensure your mobile number is correctly registered at reception. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, once your report is ready, a secure download link is sent via SMS and WhatsApp to your registered mobile number. You can also download all past reports by logging into our patient portal. Please ensure your mobile number is correctly registered at reception. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "online report download के बारे में जानकारी",
+      "question_hinglish": "online report download ke baare me jankari"
     },
     {
       "id": "faq_031",
@@ -2132,7 +2376,11 @@
         "timing",
         "pathology",
         "blood test"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our pathology lab accepts samples from 7:00 AM to 8:00 PM Monday to Saturday, and 8:00 AM to 2:00 PM on Sundays. For emergency tests, our 24-hour urgent lab on the Ground Floor, Block A is always available. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our pathology lab accepts samples from 7:00 AM to 8:00 PM Monday to Saturday, and 8:00 AM to 2:00 PM on Sundays. For emergency tests, our 24-hour urgent lab on the Ground Floor, Block A is always available. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "lab sample timings के बारे में जानकारी",
+      "question_hinglish": "lab sample timings ke baare me jankari"
     },
     {
       "id": "faq_032",
@@ -2153,7 +2401,11 @@
         "creatinine",
         "kidney",
         "prerequisite"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, for any CT or MRI scan with contrast dye injection, a Serum Creatinine blood test report less than 15 days old is mandatory. This ensures your kidneys can safely process the contrast. Please bring this report on the day of your scan or get it done at our lab beforehand. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, for any CT or MRI scan with contrast dye injection, a Serum Creatinine blood test report less than 15 days old is mandatory. This ensures your kidneys can safely process the contrast. Please bring this report on the day of your scan or get it done at our lab beforehand. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "contrast ct prerequisites के बारे में जानकारी",
+      "question_hinglish": "contrast ct prerequisites ke baare me jankari"
     },
     {
       "id": "faq_033",
@@ -2173,7 +2425,11 @@
         "pre-op",
         "operation",
         "reports"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Before any planned surgery, please bring your doctor's written advice or prescription, all recent investigation reports, your insurance card if applicable, and a government photo ID. For cashless insurance patients, please visit the TPA desk at least 48 hours before the planned surgery date. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Before any planned surgery, please bring your doctor's written advice or prescription, all recent investigation reports, your insurance card if applicable, and a government photo ID. For cashless insurance patients, please visit the TPA desk at least 48 hours before the planned surgery date. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "surgery documents required के बारे में जानकारी",
+      "question_hinglish": "surgery documents required ke baare me jankari"
     },
     {
       "id": "faq_034",
@@ -2195,7 +2451,11 @@
         "operation",
         "pre-op",
         "khana"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For any surgery requiring general anesthesia, you must not eat or drink anything for at least 8 hours before the procedure. You may take small sips of plain water with your prescribed morning medications only if your anesthesiologist has specifically allowed it. Your surgical team will give you exact instructions based on your procedure. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For any surgery requiring general anesthesia, you must not eat or drink anything for at least 8 hours before the procedure. You may take small sips of plain water with your prescribed morning medications only if your anesthesiologist has specifically allowed it. Your surgical team will give you exact instructions based on your procedure. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "surgery fasting rules के बारे में जानकारी",
+      "question_hinglish": "surgery fasting rules ke baare me jankari"
     },
     {
       "id": "faq_035",
@@ -2215,7 +2475,11 @@
         "discharge",
         "recovery",
         "post-op"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The duration of your hospital stay depends entirely on the type of surgery and your recovery progress. Minor day-care procedures allow same-day discharge. Most major surgeries require 2 to 5 days of hospital stay. Your surgeon will give you a personalized recovery plan and expected discharge date. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The duration of your hospital stay depends entirely on the type of surgery and your recovery progress. Minor day-care procedures allow same-day discharge. Most major surgeries require 2 to 5 days of hospital stay. Your surgeon will give you a personalized recovery plan and expected discharge date. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "surgery hospital stay duration के बारे में जानकारी",
+      "question_hinglish": "surgery hospital stay duration ke baare me jankari"
     },
     {
       "id": "faq_036",
@@ -2235,7 +2499,11 @@
         "post-op",
         "anesthesia",
         "recovery"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our anesthesia and nursing team will manage your pain carefully after surgery. You will receive appropriate pain medications through intravenous drip or tablets. Our nurses check your pain levels every few hours. Please inform your nurse immediately if the pain is severe so medications can be adjusted. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our anesthesia and nursing team will manage your pain carefully after surgery. You will receive appropriate pain medications through intravenous drip or tablets. Our nurses check your pain levels every few hours. Please inform your nurse immediately if the pain is severe so medications can be adjusted. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "post op pain management के बारे में जानकारी",
+      "question_hinglish": "post op pain management ke baare me jankari"
     },
     {
       "id": "faq_037",
@@ -2254,7 +2522,11 @@
         "post-op",
         "critical care",
         "monitoring"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Whether you need ICU care after surgery depends on the complexity of your procedure and your overall health condition. For major heart, brain, or abdominal surgeries, a brief ICU stay of 1 to 2 days is standard for close monitoring. Your surgeon will discuss this with you in advance during your pre-operative consultation. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Whether you need ICU care after surgery depends on the complexity of your procedure and your overall health condition. For major heart, brain, or abdominal surgeries, a brief ICU stay of 1 to 2 days is standard for close monitoring. Your surgeon will discuss this with you in advance during your pre-operative consultation. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "icu after surgery के बारे में जानकारी",
+      "question_hinglish": "icu after surgery ke baare me jankari"
     },
     {
       "id": "faq_038",
@@ -2274,7 +2546,11 @@
         "admit",
         "counter",
         "bed"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The admission counter is on the Ground Floor near the main entrance. You will need your doctor's admission advice note, a government photo ID, and your insurance card if applicable. Our admissions team will allocate a bed based on your doctor's recommendation and room preference. For emergencies, directly approach our Emergency gate on Block A. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The admission counter is on the Ground Floor near the main entrance. You will need your doctor's admission advice note, a government photo ID, and your insurance card if applicable. Our admissions team will allocate a bed based on your doctor's recommendation and room preference. For emergencies, directly approach our Emergency gate on Block A. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "admission process के बारे में जानकारी",
+      "question_hinglish": "admission process ke baare me jankari"
     },
     {
       "id": "faq_039",
@@ -2295,7 +2571,11 @@
         "advance",
         "cashless",
         "insurance"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For cash-paying patients, an initial deposit of Rs. 10,000 is required for General Ward and Rs. 25,000 for Private Rooms. For cashless insurance patients, a security deposit of Rs. 2,000 is collected to cover non-medical expenses. This amount is adjusted in the final bill. Unused portions are fully refunded. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For cash-paying patients, an initial deposit of Rs. 10,000 is required for General Ward and Rs. 25,000 for Private Rooms. For cashless insurance patients, a security deposit of Rs. 2,000 is collected to cover non-medical expenses. This amount is adjusted in the final bill. Unused portions are fully refunded. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "admission deposit amount के बारे में जानकारी",
+      "question_hinglish": "admission deposit amount ke baare me jankari"
     },
     {
       "id": "faq_040",
@@ -2316,7 +2596,11 @@
         "visitor",
         "icu",
         "ipd"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: One 24-hour attendant pass is issued per patient at the time of admission. For Private Rooms, up to two passes can be issued on request. For ICU patients, overnight stays are strictly not allowed; attendants must wait in the ICU waiting lounge on the 4th Floor during non-visiting hours. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: One 24-hour attendant pass is issued per patient at the time of admission. For Private Rooms, up to two passes can be issued on request. For ICU patients, overnight stays are strictly not allowed; attendants must wait in the ICU waiting lounge on the 4th Floor during non-visiting hours. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "attendant pass rules के बारे में जानकारी",
+      "question_hinglish": "attendant pass rules ke baare me jankari"
     },
     {
       "id": "faq_041",
@@ -2338,7 +2622,11 @@
         "patient meals",
         "attendant",
         "cafeteria"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Outside food is not permitted for admitted patients, as their diet is medically managed by our clinical kitchen according to their treatment plan. The hospital provides three meals daily to the patient. For attendants, meals can be ordered from our cafeteria on the 5th Floor or through our in-house food service. Food delivery executives from Swiggy or Zomato can leave orders at the main reception desk. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Outside food is not permitted for admitted patients, as their diet is medically managed by our clinical kitchen according to their treatment plan. The hospital provides three meals daily to the patient. For attendants, meals can be ordered from our cafeteria on the 5th Floor or through our in-house food service. Food delivery executives from Swiggy or Zomato can leave orders at the main reception desk. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "food rules ipd के बारे में जानकारी",
+      "question_hinglish": "food rules ipd ke baare me jankari"
     },
     {
       "id": "faq_042",
@@ -2358,7 +2646,11 @@
         "belongings",
         "what to bring",
         "documents"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Please bring your doctor's admission note, all recent medical reports and scan films, your insurance card and Aadhaar or government ID, all current medications, one change of comfortable clothes for discharge day, personal toiletries like toothbrush and comb, and slippers. The hospital provides gowns, bedding, and towels. Please avoid bringing valuables, large amounts of cash, or jewellery. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Please bring your doctor's admission note, all recent medical reports and scan films, your insurance card and Aadhaar or government ID, all current medications, one change of comfortable clothes for discharge day, personal toiletries like toothbrush and comb, and slippers. The hospital provides gowns, bedding, and towels. Please avoid bringing valuables, large amounts of cash, or jewellery. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "admission checklist के बारे में जानकारी",
+      "question_hinglish": "admission checklist ke baare me jankari"
     },
     {
       "id": "faq_043",
@@ -2379,7 +2671,11 @@
         "ward",
         "semi-private",
         "charges"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We offer four room categories: ICU at Rs. 12,000 per day with continuous monitoring, Deluxe Private Room at Rs. 5,500 per day with attached bathroom and TV, Semi-Private Room at Rs. 3,000 per day, and General Ward at Rs. 1,200 per day. Your doctor will recommend the most suitable room based on your medical condition. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We offer four room categories: ICU at Rs. 12,000 per day with continuous monitoring, Deluxe Private Room at Rs. 5,500 per day with attached bathroom and TV, Semi-Private Room at Rs. 3,000 per day, and General Ward at Rs. 1,200 per day. Your doctor will recommend the most suitable room based on your medical condition. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "room types overview के बारे में जानकारी",
+      "question_hinglish": "room types overview ke baare me jankari"
     },
     {
       "id": "faq_044",
@@ -2400,7 +2696,11 @@
         "surgery",
         "waiting",
         "sterile"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Visitors are not permitted inside the Operation Theatre as it is a sterile zone. Family members should wait in the OT Waiting Lounge on the 2nd Floor, Block B. Our nursing staff will keep you updated on the progress of the surgery and will call you as soon as it is completed. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Visitors are not permitted inside the Operation Theatre as it is a sterile zone. Family members should wait in the OT Waiting Lounge on the 2nd Floor, Block B. Our nursing staff will keep you updated on the progress of the surgery and will call you as soon as it is completed. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "ot visiting policy के बारे में जानकारी",
+      "question_hinglish": "ot visiting policy ke baare me jankari"
     },
     {
       "id": "faq_045",
@@ -2420,7 +2720,11 @@
         "baby",
         "visiting hours",
         "neonatal"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: NICU visiting hours are from 10:00 AM to 11:00 AM and 5:00 PM to 6:00 PM daily. Only parents and one designated family member are allowed inside with mandatory hand hygiene. Extended kangaroo care sessions for parents can be arranged by the neonatologist on request. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: NICU visiting hours are from 10:00 AM to 11:00 AM and 5:00 PM to 6:00 PM daily. Only parents and one designated family member are allowed inside with mandatory hand hygiene. Extended kangaroo care sessions for parents can be arranged by the neonatologist on request. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "nicu visiting hours के बारे में जानकारी",
+      "question_hinglish": "nicu visiting hours ke baare me jankari"
     },
     {
       "id": "faq_046",
@@ -2439,7 +2743,11 @@
         "after hours",
         "raat",
         "visitor policy"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Visiting hours are from 4:00 PM to 7:00 PM daily for general wards. No visitors are permitted before 4 PM or after 7 PM except for one authorized overnight attendant per patient. ICU and NICU night visiting is strictly not allowed for infection control reasons. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Visiting hours are from 4:00 PM to 7:00 PM daily for general wards. No visitors are permitted before 4 PM or after 7 PM except for one authorized overnight attendant per patient. ICU and NICU night visiting is strictly not allowed for infection control reasons. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "night visiting rules के बारे में जानकारी",
+      "question_hinglish": "night visiting rules ke baare me jankari"
     },
     {
       "id": "faq_047",
@@ -2459,7 +2767,11 @@
         "visitors",
         "ward",
         "age restriction"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Children below 12 years of age are not permitted inside patient wards or the ICU for infection control reasons. This rule is strictly enforced for the safety of patients with weakened immune systems. You are welcome to bring children to the main reception or waiting areas. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Children below 12 years of age are not permitted inside patient wards or the ICU for infection control reasons. This rule is strictly enforced for the safety of patients with weakened immune systems. You are welcome to bring children to the main reception or waiting areas. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "children visitor rules के बारे में जानकारी",
+      "question_hinglish": "children visitor rules ke baare me jankari"
     },
     {
       "id": "faq_048",
@@ -2479,7 +2791,11 @@
         "tpa",
         "insurance approval",
         "time"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Initial cashless pre-authorization typically takes 3 to 4 hours after our TPA desk submits your documents. Final discharge clearance from the insurer can take 4 to 5 hours depending on your insurance company's response time. Our team actively follows up with the insurer to minimize delays. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Initial cashless pre-authorization typically takes 3 to 4 hours after our TPA desk submits your documents. Final discharge clearance from the insurer can take 4 to 5 hours depending on your insurance company's response time. Our team actively follows up with the insurer to minimize delays. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "cashless approval timeline के बारे में जानकारी",
+      "question_hinglish": "cashless approval timeline ke baare me jankari"
     },
     {
       "id": "faq_049",
@@ -2499,7 +2815,11 @@
         "insurance exclusion",
         "cashless",
         "consumables"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Insurance companies exclude certain consumable items from cashless coverage. These include syringes, gloves, surgical dressings, hygiene kits, registration fees, and attendant food. These are called non-medical or non-payable expenses and must be paid directly by the patient before discharge. Our billing team will explain these charges item by item. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Insurance companies exclude certain consumable items from cashless coverage. These include syringes, gloves, surgical dressings, hygiene kits, registration fees, and attendant food. These are called non-medical or non-payable expenses and must be paid directly by the patient before discharge. Our billing team will explain these charges item by item. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "non medical expenses के बारे में जानकारी",
+      "question_hinglish": "non medical expenses ke baare me jankari"
     },
     {
       "id": "faq_050",
@@ -2519,7 +2839,11 @@
         "advance",
         "billing",
         "discharge"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: If your final bill is less than the advance deposit, the balance is refunded on the day of discharge. Cash refunds up to Rs. 10,000 are processed at the discharge counter. For card or online payments, or refunds above Rs. 10,000, the amount is credited back within 7 to 10 working days. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: If your final bill is less than the advance deposit, the balance is refunded on the day of discharge. Cash refunds up to Rs. 10,000 are processed at the discharge counter. For card or online payments, or refunds above Rs. 10,000, the amount is credited back within 7 to 10 working days. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "deposit refund process के बारे में जानकारी",
+      "question_hinglish": "deposit refund process ke baare me jankari"
     },
     {
       "id": "faq_051",
@@ -2539,7 +2863,11 @@
         "finance",
         "large bill",
         "payment plan"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we offer no-cost EMI options for hospital bills above Rs. 50,000 through our partner banks. Please speak with our billing counselor at the Ground Floor billing counter who will explain the available schemes and help you with the application. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we offer no-cost EMI options for hospital bills above Rs. 50,000 through our partner banks. Please speak with our billing counselor at the Ground Floor billing counter who will explain the available schemes and help you with the application. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "emi finance options के बारे में जानकारी",
+      "question_hinglish": "emi finance options ke baare me jankari"
     },
     {
       "id": "faq_052",
@@ -2559,7 +2887,11 @@
         "insurance",
         "location",
         "documents"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our TPA and insurance cashless desk is on the Ground Floor near the main billing counter. Please bring your insurance card, a government ID, and your doctor's admission advice. For planned procedures, visit the desk at least 48 hours in advance. For emergencies, submit documents within 24 hours of admission. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our TPA and insurance cashless desk is on the Ground Floor near the main billing counter. Please bring your insurance card, a government ID, and your doctor's admission advice. For planned procedures, visit the desk at least 48 hours in advance. For emergencies, submit documents within 24 hours of admission. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "tpa desk location process के बारे में जानकारी",
+      "question_hinglish": "tpa desk location process ke baare me jankari"
     },
     {
       "id": "faq_053",
@@ -2579,7 +2911,11 @@
         "billing",
         "counseling",
         "advance quote"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, our financial counseling team can provide a detailed cost estimate before any planned procedure or admission. This estimate covers room charges, surgeon fees, anesthesia, investigations, and consumables. Would you like me to schedule a pre-admission financial counseling session for you? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, our financial counseling team can provide a detailed cost estimate before any planned procedure or admission. This estimate covers room charges, surgeon fees, anesthesia, investigations, and consumables. Would you like me to schedule a pre-admission financial counseling session for you? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "cost estimate before admission के बारे में जानकारी",
+      "question_hinglish": "cost estimate before admission ke baare me jankari"
     },
     {
       "id": "faq_054",
@@ -2600,7 +2936,11 @@
         "billing",
         "insurance",
         "checkout"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Discharge involves several steps: the doctor writes the discharge summary, pharmacy audits unused medicines, billing compiles final charges, and for cashless patients we must wait for insurance final approval. For cash patients, expect 2 to 3 hours. For insurance patients, plan for 4 to 5 hours. Please initiate discharge formalities early in the morning. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Discharge involves several steps: the doctor writes the discharge summary, pharmacy audits unused medicines, billing compiles final charges, and for cashless patients we must wait for insurance final approval. For cash patients, expect 2 to 3 hours. For insurance patients, plan for 4 to 5 hours. Please initiate discharge formalities early in the morning. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "discharge process duration के बारे में जानकारी",
+      "question_hinglish": "discharge process duration ke baare me jankari"
     },
     {
       "id": "faq_055",
@@ -2620,7 +2960,11 @@
         "documents",
         "nursing station",
         "prescription"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: After billing clearance, collect your clearance receipt and take it to the Nursing Station on your ward floor. The floor nurse or ward secretary will hand over your discharge summary, medication instructions, and any investigation reports. Home medicine returns from the pharmacy will also be coordinated at this stage. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: After billing clearance, collect your clearance receipt and take it to the Nursing Station on your ward floor. The floor nurse or ward secretary will hand over your discharge summary, medication instructions, and any investigation reports. Home medicine returns from the pharmacy will also be coordinated at this stage. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "discharge summary collection के बारे में जानकारी",
+      "question_hinglish": "discharge summary collection ke baare me jankari"
     },
     {
       "id": "faq_056",
@@ -2640,7 +2984,11 @@
         "stitch removal",
         "appointment",
         "next visit"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Your discharge summary will include specific instructions for your follow-up appointment. Typically, a first follow-up is scheduled 5 to 7 days after discharge for wound review or stitch removal. Would you like me to confirm or book your follow-up appointment right now? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Your discharge summary will include specific instructions for your follow-up appointment. Typically, a first follow-up is scheduled 5 to 7 days after discharge for wound review or stitch removal. Would you like me to confirm or book your follow-up appointment right now? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "followup after discharge के बारे में जानकारी",
+      "question_hinglish": "followup after discharge ke baare me jankari"
     },
     {
       "id": "faq_057",
@@ -2661,7 +3009,11 @@
         "normal delivery",
         "c-section",
         "package"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We offer comprehensive maternity packages. Normal delivery packages start from Rs. 35,000 and include room stay, routine investigations, doctor fees, and postnatal care. C-section packages start from Rs. 60,000. Would you like me to help you book a consultation with our maternity team? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We offer comprehensive maternity packages. Normal delivery packages start from Rs. 35,000 and include room stay, routine investigations, doctor fees, and postnatal care. C-section packages start from Rs. 60,000. Would you like me to help you book a consultation with our maternity team? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "maternity packages के बारे में जानकारी",
+      "question_hinglish": "maternity packages ke baare me jankari"
     },
     {
       "id": "faq_058",
@@ -2681,7 +3033,11 @@
         "checkup",
         "gynecology",
         "trimester"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We recommend your first antenatal visit as soon as pregnancy is confirmed, ideally before 12 weeks. Routine checkups are scheduled at 4-weekly intervals up to 28 weeks, then fortnightly until 36 weeks, and weekly thereafter. Our Gynecology department on the 4th Floor, Block C handles all antenatal care. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We recommend your first antenatal visit as soon as pregnancy is confirmed, ideally before 12 weeks. Routine checkups are scheduled at 4-weekly intervals up to 28 weeks, then fortnightly until 36 weeks, and weekly thereafter. Our Gynecology department on the 4th Floor, Block C handles all antenatal care. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "antenatal checkup timings के बारे में जानकारी",
+      "question_hinglish": "antenatal checkup timings ke baare me jankari"
     },
     {
       "id": "faq_059",
@@ -2701,7 +3057,11 @@
         "newborn",
         "counselor",
         "maternity"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have a dedicated lactation counselor who supports new mothers with breastfeeding guidance. You can request a lactation consultation at any time during your maternity stay by informing your floor nurse. Post-discharge lactation support sessions are also available on appointment. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have a dedicated lactation counselor who supports new mothers with breastfeeding guidance. You can request a lactation consultation at any time during your maternity stay by informing your floor nurse. Post-discharge lactation support sessions are also available on appointment. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "lactation support के बारे में जानकारी",
+      "question_hinglish": "lactation support ke baare me jankari"
     },
     {
       "id": "faq_060",
@@ -2722,7 +3082,11 @@
         "baby",
         "neonatal",
         "admission"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Babies are admitted to the NICU for reasons such as premature birth before 37 weeks, low birth weight below 2 kg, breathing difficulties, jaundice requiring phototherapy, infections, or blood sugar problems. Our experienced neonatologists and nurses provide round the clock specialized care. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Babies are admitted to the NICU for reasons such as premature birth before 37 weeks, low birth weight below 2 kg, breathing difficulties, jaundice requiring phototherapy, infections, or blood sugar problems. Our experienced neonatologists and nurses provide round the clock specialized care. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "nicu admission reasons के बारे में जानकारी",
+      "question_hinglish": "nicu admission reasons ke baare me jankari"
     },
     {
       "id": "faq_061",
@@ -2743,7 +3107,11 @@
         "newborn",
         "criteria",
         "weight"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Your baby will be discharged from NICU when they can breathe independently without support, maintain their own body temperature, feed adequately by mouth either by breast or bottle, and have a stable weight gain. The neonatologist will give you a clear update on your baby's progress daily. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Your baby will be discharged from NICU when they can breathe independently without support, maintain their own body temperature, feed adequately by mouth either by breast or bottle, and have a stable weight gain. The neonatologist will give you a clear update on your baby's progress daily. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "nicu discharge criteria के बारे में जानकारी",
+      "question_hinglish": "nicu discharge criteria ke baare me jankari"
     },
     {
       "id": "faq_062",
@@ -2764,7 +3132,11 @@
         "neonatology",
         "opd",
         "floor"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our Pediatrics department is on the 3rd Floor, Block C. Dr. Sunita Pillai is our senior pediatrician available Monday to Saturday. For newborn care, our Neonatology team is available round the clock. Would you like me to book a pediatric appointment for you? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our Pediatrics department is on the 3rd Floor, Block C. Dr. Sunita Pillai is our senior pediatrician available Monday to Saturday. For newborn care, our Neonatology team is available round the clock. Would you like me to book a pediatric appointment for you? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "pediatric opd info के बारे में जानकारी",
+      "question_hinglish": "pediatric opd info ke baare me jankari"
     },
     {
       "id": "faq_063",
@@ -2785,7 +3157,11 @@
         "pediatrics",
         "tikka",
         "schedule"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we provide complete childhood vaccination services as per the Indian Academy of Pediatrics schedule. Vaccines are available at our Pediatrics OPD on the 3rd Floor. We administer vaccines for BCG, Polio, DPT, Hepatitis B, MMR, Varicella, and many others. Would you like me to book a vaccination slot for your child? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we provide complete childhood vaccination services as per the Indian Academy of Pediatrics schedule. Vaccines are available at our Pediatrics OPD on the 3rd Floor. We administer vaccines for BCG, Polio, DPT, Hepatitis B, MMR, Varicella, and many others. Would you like me to book a vaccination slot for your child? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "vaccination schedule के बारे में जानकारी",
+      "question_hinglish": "vaccination schedule ke baare me jankari"
     },
     {
       "id": "faq_064",
@@ -2805,7 +3181,11 @@
         "location",
         "timing",
         "24 hours"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our 24-hour Blood Bank is located on the 1st Floor, Block A. It is open round the clock including weekends and public holidays. For urgent blood requirements, contact the Blood Bank directly on extension 1050 or approach our Emergency desk. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our 24-hour Blood Bank is located on the 1st Floor, Block A. It is open round the clock including weekends and public holidays. For urgent blood requirements, contact the Blood Bank directly on extension 1050 or approach our Emergency desk. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "blood bank hours location के बारे में जानकारी",
+      "question_hinglish": "blood bank hours location ke baare me jankari"
     },
     {
       "id": "faq_065",
@@ -2825,7 +3205,11 @@
         "cross-match",
         "blood bank",
         "emergency"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: To request blood, submit a blood requisition form signed by your attending doctor along with a 3 ml blood sample of the patient for cross-matching. This process usually takes 30 to 45 minutes. In life-threatening emergencies, O-negative blood can be issued immediately without cross-matching upon doctor's request. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: To request blood, submit a blood requisition form signed by your attending doctor along with a 3 ml blood sample of the patient for cross-matching. This process usually takes 30 to 45 minutes. In life-threatening emergencies, O-negative blood can be issued immediately without cross-matching upon doctor's request. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "blood request process के बारे में जानकारी",
+      "question_hinglish": "blood request process ke baare me jankari"
     },
     {
       "id": "faq_066",
@@ -2844,7 +3228,11 @@
         "donate blood",
         "voluntary",
         "blood bank"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we welcome voluntary blood donors at our Blood Bank on the 1st Floor, Block A anytime during 8 AM to 8 PM. You must be between 18 and 65 years old, weigh at least 45 kg, and be in good health. You will receive a health check before donation. The process takes about 30 minutes. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we welcome voluntary blood donors at our Blood Bank on the 1st Floor, Block A anytime during 8 AM to 8 PM. You must be between 18 and 65 years old, weigh at least 45 kg, and be in good health. You will receive a health check before donation. The process takes about 30 minutes. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "blood donation के बारे में जानकारी",
+      "question_hinglish": "blood donation ke baare me jankari"
     },
     {
       "id": "faq_067",
@@ -2865,7 +3253,11 @@
         "1066",
         "transport",
         "helpline"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: For emergency ambulance dispatch, call our 24-hour helpline 1066 immediately. For non-emergency patient transport, would you like me to help you book a transport vehicle right now? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: For emergency ambulance dispatch, call our 24-hour helpline 1066 immediately. For non-emergency patient transport, would you like me to help you book a transport vehicle right now? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "ambulance booking के बारे में जानकारी",
+      "question_hinglish": "ambulance booking ke baare me jankari"
     },
     {
       "id": "faq_068",
@@ -2887,7 +3279,11 @@
         "mg road",
         "location",
         "navigation"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Indiserve Multi-Specialty Hospital is at 12-B, MG Road, Bengaluru 560025. The nearest metro station is MG Road Metro Station on the Purple Line, just a 2-minute walk from our main gate. From Majestic or KSR Railway Station, take the Purple Line metro to MG Road. By road, we are on Residency Road junction on MG Road. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Indiserve Multi-Specialty Hospital is at 12-B, MG Road, Bengaluru 560025. The nearest metro station is MG Road Metro Station on the Purple Line, just a 2-minute walk from our main gate. From Majestic or KSR Railway Station, take the Purple Line metro to MG Road. By road, we are on Residency Road junction on MG Road. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "hospital directions के बारे में जानकारी",
+      "question_hinglish": "hospital directions ke baare me jankari"
     },
     {
       "id": "faq_069",
@@ -2911,7 +3307,11 @@
         "train",
         "directions",
         "bengaluru"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our hospital is in Bengaluru at MG Road. If you are travelling from Mumbai or Delhi, the fastest option is to fly to Kempegowda International Airport Bengaluru, then take the Metro or a cab to MG Road which is about 45 minutes from the airport. Trains from Mumbai and Delhi also arrive at KSR Bengaluru station, from where our hospital is just 20 minutes by metro. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our hospital is in Bengaluru at MG Road. If you are travelling from Mumbai or Delhi, the fastest option is to fly to Kempegowda International Airport Bengaluru, then take the Metro or a cab to MG Road which is about 45 minutes from the airport. Trains from Mumbai and Delhi also arrive at KSR Bengaluru station, from where our hospital is just 20 minutes by metro. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "travel from another city के बारे में जानकारी",
+      "question_hinglish": "travel from another city ke baare me jankari"
     },
     {
       "id": "faq_070",
@@ -2933,7 +3333,11 @@
         "assistance",
         "free",
         "gate"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Wheelchair and porter assistance is available free of charge at all hospital entrance gates. Just inform our security staff at the main gate or emergency gate and a porter will assist you immediately. No prior booking is required. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Wheelchair and porter assistance is available free of charge at all hospital entrance gates. Just inform our security staff at the main gate or emergency gate and a porter will assist you immediately. No prior booking is required. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "wheelchair porter assistance के बारे में जानकारी",
+      "question_hinglish": "wheelchair porter assistance ke baare me jankari"
     },
     {
       "id": "faq_071",
@@ -2954,7 +3358,11 @@
         "security",
         "belongings",
         "stolen"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: All lost and found items are deposited at our Security Command Center on the Ground Floor near the Emergency Gate. Please visit with a valid ID and describe your item. You can also report at the main reception. We request all visitors to keep personal belongings secure as the hospital cannot be held responsible for lost valuables. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: All lost and found items are deposited at our Security Command Center on the Ground Floor near the Emergency Gate. Please visit with a valid ID and describe your item. You can also report at the main reception. We request all visitors to keep personal belongings secure as the hospital cannot be held responsible for lost valuables. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "lost and found के बारे में जानकारी",
+      "question_hinglish": "lost and found ke baare me jankari"
     },
     {
       "id": "faq_072",
@@ -2974,7 +3382,11 @@
         "banking",
         "sbi",
         "withdrawal"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, there is a 24-hour SBI ATM on the Ground Floor near our pharmacy. It accepts all major debit and credit cards. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, there is a 24-hour SBI ATM on the Ground Floor near our pharmacy. It accepts all major debit and credit cards. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "atm availability के बारे में जानकारी",
+      "question_hinglish": "atm availability ke baare me jankari"
     },
     {
       "id": "faq_073",
@@ -2996,7 +3408,11 @@
         "reports",
         "history",
         "old records"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Medical records including discharge summaries, investigation reports, and scan films can be requested from the Medical Records Department, MRD, on the Ground Floor, Block A. Please bring a valid government ID of the patient. Records are typically processed within 24 to 48 working hours. Old records may take up to 5 working days. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Medical records including discharge summaries, investigation reports, and scan films can be requested from the Medical Records Department, MRD, on the Ground Floor, Block A. Please bring a valid government ID of the patient. Records are typically processed within 24 to 48 working hours. Old records may take up to 5 working days. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "medical records mrd के बारे में जानकारी",
+      "question_hinglish": "medical records mrd ke baare me jankari"
     },
     {
       "id": "faq_074",
@@ -3017,7 +3433,11 @@
         "religion",
         "faith",
         "quiet room"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have a quiet meditation and prayer room open 24 hours a day on the Ground Floor near the main waiting area. It is a non-denominational space welcoming all faiths. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have a quiet meditation and prayer room open 24 hours a day on the Ground Floor near the main waiting area. It is a non-denominational space welcoming all faiths. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "prayer room के बारे में जानकारी",
+      "question_hinglish": "prayer room ke baare me jankari"
     },
     {
       "id": "faq_075",
@@ -3038,7 +3458,11 @@
         "waiting",
         "activity",
         "opd"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have a supervised children's play area near the OPD waiting zone on the Ground Floor. It is open from 9:00 AM to 6:00 PM daily and is designed to keep children comfortable while guardians are consulting doctors. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have a supervised children's play area near the OPD waiting zone on the Ground Floor. It is open from 9:00 AM to 6:00 PM daily and is designed to keep children comfortable while guardians are consulting doctors. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "children play area के बारे में जानकारी",
+      "question_hinglish": "children play area ke baare me jankari"
     },
     {
       "id": "faq_076",
@@ -3060,7 +3484,11 @@
         "gate",
         "location",
         "24 hours"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our 24-hour Emergency and Trauma Centre is on the Ground Floor, Block A, at the main gate entrance. There is a dedicated Emergency Gate with direct ambulance access. For life-threatening emergencies, call 1066 immediately and our team will be dispatched. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our 24-hour Emergency and Trauma Centre is on the Ground Floor, Block A, at the main gate entrance. There is a dedicated Emergency Gate with direct ambulance access. For life-threatening emergencies, call 1066 immediately and our team will be dispatched. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "emergency department location के बारे में जानकारी",
+      "question_hinglish": "emergency department location ke baare me jankari"
     },
     {
       "id": "faq_077",
@@ -3080,7 +3508,11 @@
         "triage",
         "charges",
         "insurance"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Emergency registration and initial doctor consultation fee is Rs. 1,500. Patients are triaged by severity: critical red cases are seen immediately, urgent yellow cases within 15 minutes, and non-urgent green cases as soon as a doctor is free. Emergency treatment is eligible for cashless insurance subject to your policy terms. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Emergency registration and initial doctor consultation fee is Rs. 1,500. Patients are triaged by severity: critical red cases are seen immediately, urgent yellow cases within 15 minutes, and non-urgent green cases as soon as a doctor is free. Emergency treatment is eligible for cashless insurance subject to your policy terms. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "emergency consultation fee के बारे में जानकारी",
+      "question_hinglish": "emergency consultation fee ke baare me jankari"
     },
     {
       "id": "faq_078",
@@ -3099,7 +3531,11 @@
         "specialist",
         "consultation",
         "another doctor"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Absolutely, we welcome patients seeking a second opinion. Our specialists across all departments are available for consultation. Would you like me to book a second opinion appointment for you right now? Please bring all your current reports, scans, and prescriptions. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Absolutely, we welcome patients seeking a second opinion. Our specialists across all departments are available for consultation. Would you like me to book a second opinion appointment for you right now? Please bring all your current reports, scans, and prescriptions. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "second opinion के बारे में जानकारी",
+      "question_hinglish": "second opinion ke baare me jankari"
     },
     {
       "id": "faq_079",
@@ -3119,7 +3555,11 @@
         "physiotherapy",
         "post discharge",
         "dressing"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we offer home nursing, wound dressing, injection administration, and physiotherapy services after discharge. Please speak with our patient support desk on the Ground Floor to arrange home care services. Bookings must be made at least 24 hours in advance. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we offer home nursing, wound dressing, injection administration, and physiotherapy services after discharge. Please speak with our patient support desk on the Ground Floor to arrange home care services. Bookings must be made at least 24 hours in advance. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "home nursing physiotherapy के बारे में जानकारी",
+      "question_hinglish": "home nursing physiotherapy ke baare me jankari"
     },
     {
       "id": "faq_080",
@@ -3141,7 +3581,11 @@
         "restaurant",
         "timing",
         "meals"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our multi-cuisine food court and cafeteria is on the 5th Floor, Block B. It is open from 7:00 AM to 10:00 PM daily. It serves breakfast, lunch, dinner, and snacks at affordable prices. Attendants and visitors are welcome. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our multi-cuisine food court and cafeteria is on the 5th Floor, Block B. It is open from 7:00 AM to 10:00 PM daily. It serves breakfast, lunch, dinner, and snacks at affordable prices. Attendants and visitors are welcome. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "cafeteria location timings के बारे में जानकारी",
+      "question_hinglish": "cafeteria location timings ke baare me jankari"
     },
     {
       "id": "faq_081",
@@ -3161,7 +3605,11 @@
         "medicine",
         "prescription",
         "delivery"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, our pharmacy offers home delivery of prescribed medications. Same-day delivery is available within 10 km of the hospital. Shall I connect you to the pharmacy? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, our pharmacy offers home delivery of prescribed medications. Same-day delivery is available within 10 km of the hospital. Shall I connect you to the pharmacy? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "pharmacy home delivery के बारे में जानकारी",
+      "question_hinglish": "pharmacy home delivery ke baare me jankari"
     },
     {
       "id": "faq_082",
@@ -3182,7 +3630,11 @@
         "priority",
         "assistance",
         "buzurg"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have dedicated priority counters for senior citizens above 60 years at our OPD and billing desks. Wheelchair assistance is free of charge at all entrances. Our staff is trained to assist elderly and differently-abled patients with special care. Please inform us in advance for any special assistance requirements. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have dedicated priority counters for senior citizens above 60 years at our OPD and billing desks. Wheelchair assistance is free of charge at all entrances. Our staff is trained to assist elderly and differently-abled patients with special care. Please inform us in advance for any special assistance requirements. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "senior citizen disability assistance के बारे में जानकारी",
+      "question_hinglish": "senior citizen disability assistance ke baare me jankari"
     },
     {
       "id": "faq_083",
@@ -3203,7 +3655,11 @@
         "epidemic",
         "mask",
         "safety"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We follow standard infection control protocols at all times. During any active outbreak or epidemic period, visitor restrictions may be increased as per safety guidelines. Would you like me to check the current visitor rules for you right now? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We follow standard infection control protocols at all times. During any active outbreak or epidemic period, visitor restrictions may be increased as per safety guidelines. Would you like me to check the current visitor rules for you right now? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "infection control visiting के बारे में जानकारी",
+      "question_hinglish": "infection control visiting ke baare me jankari"
     },
     {
       "id": "faq_084",
@@ -3225,7 +3681,11 @@
         "government scheme",
         "cashless",
         "sarkari"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We are empanelled with Ayushman Bharat PMJAY and CGHS schemes. Please bring your Ayushman card and a government ID to our TPA desk on the Ground Floor. Our team will verify eligibility and guide you through the cashless treatment process under these schemes. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We are empanelled with Ayushman Bharat PMJAY and CGHS schemes. Please bring your Ayushman card and a government ID to our TPA desk on the Ground Floor. Our team will verify eligibility and guide you through the cashless treatment process under these schemes. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "government health schemes के बारे में जानकारी",
+      "question_hinglish": "government health schemes ke baare me jankari"
     },
     {
       "id": "faq_085",
@@ -3245,7 +3705,11 @@
         "staff",
         "communication",
         "kannada"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, all our reception and administrative staff speak Hindi, English, and Kannada. Most of our doctors also communicate in Hindi and English. If you need language assistance at any point, please inform our reception and we will ensure a Hindi-speaking staff member is available to assist you. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, all our reception and administrative staff speak Hindi, English, and Kannada. Most of our doctors also communicate in Hindi and English. If you need language assistance at any point, please inform our reception and we will ensure a Hindi-speaking staff member is available to assist you. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "hindi speaking staff के बारे में जानकारी",
+      "question_hinglish": "hindi speaking staff ke baare me jankari"
     },
     {
       "id": "faq_086",
@@ -3266,7 +3730,11 @@
         "emergency",
         "opd",
         "open"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our Emergency department, pharmacy, blood bank, and ICU are open 24 hours every day including Sundays and public holidays. General OPD is open on Sundays from 9:00 AM to 1:00 PM for emergency consultations only. Planned OPD services are not available on Sundays. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our Emergency department, pharmacy, blood bank, and ICU are open 24 hours every day including Sundays and public holidays. General OPD is open on Sundays from 9:00 AM to 1:00 PM for emergency consultations only. Planned OPD services are not available on Sundays. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "holiday timings के बारे में जानकारी",
+      "question_hinglish": "holiday timings ke baare me jankari"
     },
     {
       "id": "faq_087",
@@ -3286,7 +3754,11 @@
         "operation",
         "schedule",
         "ot"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: To book a planned surgery, first consult with our specialist to confirm the procedure. The surgeon will then coordinate with the Operation Theatre scheduling team. Once a date is fixed, visit our admission desk to complete pre-admission formalities, financial counseling, and insurance pre-authorization. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: To book a planned surgery, first consult with our specialist to confirm the procedure. The surgeon will then coordinate with the Operation Theatre scheduling team. Once a date is fixed, visit our admission desk to complete pre-admission formalities, financial counseling, and insurance pre-authorization. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "advance surgery booking के बारे में जानकारी",
+      "question_hinglish": "advance surgery booking ke baare me jankari"
     },
     {
       "id": "faq_088",
@@ -3307,7 +3779,11 @@
         "vegetarian",
         "south indian",
         "vending machine"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our cafeteria on the 5th Floor offers a wide variety including South Indian breakfast, North Indian dal rice and roti, sandwiches, soups, juices, and snacks. Both vegetarian and non-vegetarian options are available. Vending machines for tea, coffee, and snacks are also on every floor. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our cafeteria on the 5th Floor offers a wide variety including South Indian breakfast, North Indian dal rice and roti, sandwiches, soups, juices, and snacks. Both vegetarian and non-vegetarian options are available. Vending machines for tea, coffee, and snacks are also on every floor. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "canteen menu info के बारे में जानकारी",
+      "question_hinglish": "canteen menu info ke baare me jankari"
     },
     {
       "id": "faq_089",
@@ -3328,7 +3804,11 @@
         "employee",
         "health card",
         "discount"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have corporate health tie-ups with over 200 companies. Employees can avail cashless treatment by showing their company health card at our TPA desk. Would you like me to verify if your company is empanelled with us? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have corporate health tie-ups with over 200 companies. Employees can avail cashless treatment by showing their company health card at our TPA desk. Would you like me to verify if your company is empanelled with us? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "corporate health tieup के बारे में जानकारी",
+      "question_hinglish": "corporate health tieup ke baare me jankari"
     },
     {
       "id": "faq_090",
@@ -3349,7 +3829,11 @@
         "back pain",
         "recovery",
         "sports injury"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, our Physiotherapy and Rehabilitation department is on the Ground Floor, Block B. We offer physiotherapy for post-surgery recovery, sports injuries, back and neck pain, stroke rehabilitation, and neurological conditions. Sessions are available by appointment from 8 AM to 6 PM Monday to Saturday. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, our Physiotherapy and Rehabilitation department is on the Ground Floor, Block B. We offer physiotherapy for post-surgery recovery, sports injuries, back and neck pain, stroke rehabilitation, and neurological conditions. Sessions are available by appointment from 8 AM to 6 PM Monday to Saturday. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "physiotherapy department के बारे में जानकारी",
+      "question_hinglish": "physiotherapy department ke baare me jankari"
     },
     {
       "id": "faq_091",
@@ -3369,7 +3853,11 @@
         "hemodialysis",
         "nephrology",
         "renal"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have a dedicated Dialysis Centre on the 1st Floor, Block A offering both hemodialysis and peritoneal dialysis. We have 10 dialysis chairs and perform over 50 sessions daily. Cost per session starts from Rs. 2,500. Insurance including CGHS and Ayushman Bharat is accepted for dialysis treatment. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have a dedicated Dialysis Centre on the 1st Floor, Block A offering both hemodialysis and peritoneal dialysis. We have 10 dialysis chairs and perform over 50 sessions daily. Cost per session starts from Rs. 2,500. Insurance including CGHS and Ayushman Bharat is accepted for dialysis treatment. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "dialysis services के बारे में जानकारी",
+      "question_hinglish": "dialysis services ke baare me jankari"
     },
     {
       "id": "faq_092",
@@ -3389,7 +3877,11 @@
         "chemotherapy",
         "radiation",
         "tumor"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, our Oncology department on the 5th Floor, Block D offers comprehensive cancer care including medical oncology, radiation therapy, and surgical oncology. Dr. Kavitha Menon is our senior oncologist. Chemotherapy, immunotherapy, and targeted therapy are all available. Please call to schedule an initial consultation. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, our Oncology department on the 5th Floor, Block D offers comprehensive cancer care including medical oncology, radiation therapy, and surgical oncology. Dr. Kavitha Menon is our senior oncologist. Chemotherapy, immunotherapy, and targeted therapy are all available. Please call to schedule an initial consultation. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "oncology services के बारे में जानकारी",
+      "question_hinglish": "oncology services ke baare me jankari"
     },
     {
       "id": "faq_093",
@@ -3410,7 +3902,11 @@
         "vision",
         "lasik",
         "specialist"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our Ophthalmology department is on the 2nd Floor, Block B. Dr. Rajini Kumar is our senior eye specialist. We offer complete eye care including cataract surgery, LASIK consultations, glaucoma treatment, retina care, and routine eye examinations. Would you like me to book an appointment with our eye specialist? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our Ophthalmology department is on the 2nd Floor, Block B. Dr. Rajini Kumar is our senior eye specialist. We offer complete eye care including cataract surgery, LASIK consultations, glaucoma treatment, retina care, and routine eye examinations. Would you like me to book an appointment with our eye specialist? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "ophthalmology services के बारे में जानकारी",
+      "question_hinglish": "ophthalmology services ke baare me jankari"
     },
     {
       "id": "faq_094",
@@ -3431,7 +3927,11 @@
         "acne",
         "cosmetic",
         "specialist"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Our Dermatology and Aesthetics department is on the Ground Floor, Block A. Dr. Meera Singh is our senior dermatologist. We offer treatment for acne, psoriasis, eczema, skin allergies, hair loss, and cosmetic procedures. Appointments are available on all weekdays. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Our Dermatology and Aesthetics department is on the Ground Floor, Block A. Dr. Meera Singh is our senior dermatologist. We offer treatment for acne, psoriasis, eczema, skin allergies, hair loss, and cosmetic procedures. Appointments are available on all weekdays. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "dermatology services के बारे में जानकारी",
+      "question_hinglish": "dermatology services ke baare me jankari"
     },
     {
       "id": "faq_095",
@@ -3452,7 +3952,11 @@
         "tooth pain",
         "oral",
         "referral"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We do not have an in-house dental department, but we can refer you to empanelled dental clinics nearby. For dental emergencies arising from trauma or accidents, our Emergency department handles immediate oral injury care. Would you like me to check and provide the contact details for our empanelled dental referrals? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We do not have an in-house dental department, but we can refer you to empanelled dental clinics nearby. For dental emergencies arising from trauma or accidents, our Emergency department handles immediate oral injury care. Would you like me to check and provide the contact details for our empanelled dental referrals? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "dental services के बारे में जानकारी",
+      "question_hinglish": "dental services ke baare me jankari"
     },
     {
       "id": "faq_096",
@@ -3473,7 +3977,11 @@
         "full body",
         "preventive",
         "annual checkup"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We offer multiple health checkup packages: the Basic Health Checkup at Rs. 1,999 includes 35 tests, the Comprehensive Package at Rs. 3,999 includes 65 tests, the Cardiac Package at Rs. 4,999 includes ECG, Echo, and heart-specific tests, and the Women's Health Package at Rs. 4,499 includes gynecological screening. All packages include a doctor consultation. Which one would you like to know more about? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We offer multiple health checkup packages: the Basic Health Checkup at Rs. 1,999 includes 35 tests, the Comprehensive Package at Rs. 3,999 includes 65 tests, the Cardiac Package at Rs. 4,999 includes ECG, Echo, and heart-specific tests, and the Women's Health Package at Rs. 4,499 includes gynecological screening. All packages include a doctor consultation. Which one would you like to know more about? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "health checkup packages overview के बारे में जानकारी",
+      "question_hinglish": "health checkup packages overview ke baare me jankari"
     },
     {
       "id": "faq_097",
@@ -3493,7 +4001,11 @@
         "foreign patient",
         "medical visa",
         "overseas"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, we have a dedicated International Patient Services desk on the Ground Floor near main reception. We assist NRI and foreign patients with cost estimates, medical visa invitation letters, airport pickup coordination, translation services, and insurance claim documentation. Would you like me to connect you to our International Patient Services team? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, we have a dedicated International Patient Services desk on the Ground Floor near main reception. We assist NRI and foreign patients with cost estimates, medical visa invitation letters, airport pickup coordination, translation services, and insurance claim documentation. Would you like me to connect you to our International Patient Services team? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "international nri patients के बारे में जानकारी",
+      "question_hinglish": "international nri patients ke baare me jankari"
     },
     {
       "id": "faq_098",
@@ -3514,7 +4026,11 @@
         "reminder",
         "whatsapp",
         "booking"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Once your appointment is booked, you will receive a confirmation SMS and WhatsApp message with the date, time, and doctor's name on your registered mobile number. A reminder is also sent one day before your appointment. Would you like me to double-check the booking details in our system for you? (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Once your appointment is booked, you will receive a confirmation SMS and WhatsApp message with the date, time, and doctor's name on your registered mobile number. A reminder is also sent one day before your appointment. Would you like me to double-check the booking details in our system for you? (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "appointment confirmation के बारे में जानकारी",
+      "question_hinglish": "appointment confirmation ke baare me jankari"
     },
     {
       "id": "faq_099",
@@ -3535,7 +4051,11 @@
         "ramp",
         "lift",
         "differently abled"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, our hospital is fully accessible. We have wheelchair ramps at all entrances, dedicated lifts with Braille buttons, accessible restrooms on every floor, priority counters for differently-abled patients, and free wheelchair availability at all gates. Please inform our staff on arrival and we will ensure a comfortable experience. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, our hospital is fully accessible. We have wheelchair ramps at all entrances, dedicated lifts with Braille buttons, accessible restrooms on every floor, priority counters for differently-abled patients, and free wheelchair availability at all gates. Please inform our staff on arrival and we will ensure a comfortable experience. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "disabled friendly facilities के बारे में जानकारी",
+      "question_hinglish": "disabled friendly facilities ke baare me jankari"
     },
     {
       "id": "faq_100",
@@ -3555,7 +4075,11 @@
         "patient satisfaction",
         "review",
         "opinion"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: We value your feedback highly. You can fill in our patient feedback form available at all nursing stations and the main reception. You can also speak with our Patient Relations Officer at the Ground Floor, Room 102, or email your feedback to care@Indiserve.ai. All complaints are reviewed within 48 hours. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: We value your feedback highly. You can fill in our patient feedback form available at all nursing stations and the main reception. You can also speak with our Patient Relations Officer at the Ground Floor, Room 102, or email your feedback to care@Indiserve.ai. All complaints are reviewed within 48 hours. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "complaint feedback के बारे में जानकारी",
+      "question_hinglish": "complaint feedback ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051815_8056",
@@ -3567,7 +4091,11 @@
       "answer": "Yes, Dr. Sen's clinic is on the 3rd floor.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, Dr. Sen's clinic is on the 3rd floor. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, Dr. Sen's clinic is on the 3rd floor. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051815 8056 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051815 8056 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051815_2720",
@@ -3579,7 +4107,11 @@
       "answer": "The parking rate is 20 rupees for an hour.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The parking rate is 20 rupees for an hour. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The parking rate is 20 rupees for an hour. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051815 2720 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051815 2720 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051815_2947",
@@ -3591,7 +4123,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051815 2947 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051815 2947 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051815_9535",
@@ -3603,7 +4139,11 @@
       "answer": "Rs. 500.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Rs. 500. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Rs. 500. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051815 9535 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051815 9535 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051815_7197",
@@ -3615,7 +4155,11 @@
       "answer": "Yes, Dr. Sen's clinic is now on the 3rd floor.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, Dr. Sen's clinic is now on the 3rd floor. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, Dr. Sen's clinic is now on the 3rd floor. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051815 7197 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051815 7197 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051938_3730",
@@ -3627,7 +4171,11 @@
       "answer": "No new information provided",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No new information provided (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No new information provided (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051938 3730 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051938 3730 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051938_8531",
@@ -3639,7 +4187,11 @@
       "answer": "No new information provided",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No new information provided (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No new information provided (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051938 8531 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051938 8531 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051938_2498",
@@ -3651,7 +4203,11 @@
       "answer": "Requires patient ID or full name",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Requires patient ID or full name (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Requires patient ID or full name (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051938 2498 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051938 2498 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051938_5958",
@@ -3663,7 +4219,11 @@
       "answer": "Dr. Sen from the Cardiology department is available Monday to Friday, from 10:00 AM to 02:00 PM.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sen from the Cardiology department is available Monday to Friday, from 10:00 AM to 02:00 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sen from the Cardiology department is available Monday to Friday, from 10:00 AM to 02:00 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051938 5958 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051938 5958 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051938_4534",
@@ -3675,7 +4235,11 @@
       "answer": "3rd floor",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 3rd floor (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 3rd floor (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051938 4534 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051938 4534 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780051938_9019",
@@ -3687,7 +4251,11 @@
       "answer": "3rd floor",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 3rd floor (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 3rd floor (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780051938 9019 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780051938 9019 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_9481",
@@ -3699,7 +4267,11 @@
       "answer": "See a doctor today, it sounds urgent.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: See a doctor today, it sounds urgent. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: See a doctor today, it sounds urgent. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 9481 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 9481 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_1170",
@@ -3711,7 +4283,11 @@
       "answer": "Provide your patient ID or full name to retrieve your billing details.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Provide your patient ID or full name to retrieve your billing details. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Provide your patient ID or full name to retrieve your billing details. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 1170 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 1170 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_4860",
@@ -3723,7 +4299,11 @@
       "answer": "Cardiology department",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Cardiology department (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Cardiology department (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 4860 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 4860 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_9170",
@@ -3735,7 +4315,11 @@
       "answer": "Dr. Sen",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sen (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sen (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 9170 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 9170 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_8068",
@@ -3747,7 +4331,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 8068 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 8068 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_3203",
@@ -3759,7 +4347,11 @@
       "answer": "Yes, multi-level parking is available at Basement B1 and B2.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, multi-level parking is available at Basement B1 and B2. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, multi-level parking is available at Basement B1 and B2. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 3203 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 3203 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_5568",
@@ -3771,7 +4363,11 @@
       "answer": "Yes, the multi-cuisine food court is on the 5th Floor, Block B, open from 7 AM to 10 PM.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, the multi-cuisine food court is on the 5th Floor, Block B, open from 7 AM to 10 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, the multi-cuisine food court is on the 5th Floor, Block B, open from 7 AM to 10 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 5568 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 5568 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_9501",
@@ -3783,7 +4379,11 @@
       "answer": "The parking rate is 20 rupees for an hour.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The parking rate is 20 rupees for an hour. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The parking rate is 20 rupees for an hour. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 9501 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 9501 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053171_8822",
@@ -3795,7 +4395,11 @@
       "answer": "3rd floor",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 3rd floor (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 3rd floor (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053171 8822 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053171 8822 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_6621",
@@ -3807,7 +4411,11 @@
       "answer": "Cardiology department",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Cardiology department (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Cardiology department (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 6621 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 6621 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_9197",
@@ -3819,7 +4427,11 @@
       "answer": "Dr. Sen",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sen (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sen (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 9197 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 9197 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_9330",
@@ -3831,7 +4443,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 9330 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 9330 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_8222",
@@ -3843,7 +4459,11 @@
       "answer": "Rs. 500",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Rs. 500 (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Rs. 500 (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 8222 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 8222 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_4437",
@@ -3855,7 +4475,11 @@
       "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 4437 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 4437 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_1963",
@@ -3867,7 +4491,11 @@
       "answer": "Dr. Sameer Kulkarni and Dr. Rajesh Nair",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sameer Kulkarni and Dr. Rajesh Nair (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sameer Kulkarni and Dr. Rajesh Nair (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 1963 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 1963 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_2407",
@@ -3879,7 +4507,11 @@
       "answer": "Dr. Megha Rao",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Megha Rao (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Megha Rao (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 2407 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 2407 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_7579",
@@ -3891,7 +4523,11 @@
       "answer": "Dr. Vikram Shetty and Dr. Manish Tiwari",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Vikram Shetty and Dr. Manish Tiwari (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Vikram Shetty and Dr. Manish Tiwari (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 7579 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 7579 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053230_3790",
@@ -3903,7 +4539,11 @@
       "answer": "On the 5th Floor, Block B, open from 7 AM to 10 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: On the 5th Floor, Block B, open from 7 AM to 10 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: On the 5th Floor, Block B, open from 7 AM to 10 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053230 3790 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053230 3790 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053314_1887",
@@ -3915,7 +4555,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053314 1887 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053314 1887 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053314_7233",
@@ -3927,7 +4571,11 @@
       "answer": "The parking rate is 20 rupees for an hour.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The parking rate is 20 rupees for an hour. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The parking rate is 20 rupees for an hour. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053314 7233 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053314 7233 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053888_3632",
@@ -3939,7 +4587,11 @@
       "answer": "The location of Dr. Sen's clinic was not provided in the transcript.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The location of Dr. Sen's clinic was not provided in the transcript. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The location of Dr. Sen's clinic was not provided in the transcript. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053888 3632 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053888 3632 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053888_8083",
@@ -3951,7 +4603,11 @@
       "answer": "Not specified in the conversation",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Not specified in the conversation (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Not specified in the conversation (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053888 8083 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053888 8083 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053888_9615",
@@ -3963,7 +4619,11 @@
       "answer": "Dr. Sen",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sen (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sen (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053888 9615 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053888 9615 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053990_3012",
@@ -3975,7 +4635,11 @@
       "answer": "Dr. Sen",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sen (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sen (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053990 3012 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053990 3012 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053990_8962",
@@ -3987,7 +4651,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053990 8962 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053990 8962 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053990_1845",
@@ -3999,7 +4667,11 @@
       "answer": "Yes, there is multi-level parking at Basement B1 and B2. Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, there is multi-level parking at Basement B1 and B2. Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, there is multi-level parking at Basement B1 and B2. Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053990 1845 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053990 1845 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780053990_3393",
@@ -4011,7 +4683,11 @@
       "answer": "20 rupees for an hour",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 20 rupees for an hour (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 20 rupees for an hour (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780053990 3393 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780053990 3393 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_1067",
@@ -4023,7 +4699,11 @@
       "answer": "Severe, indicated by fever and headache.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Severe, indicated by fever and headache. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Severe, indicated by fever and headache. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 1067 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 1067 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_6378",
@@ -4035,7 +4715,11 @@
       "answer": "Seeing a doctor today.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Seeing a doctor today. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Seeing a doctor today. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 6378 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 6378 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_4530",
@@ -4047,7 +4731,11 @@
       "answer": "By providing either their patient ID or full name.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: By providing either their patient ID or full name. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: By providing either their patient ID or full name. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 4530 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 4530 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_8463",
@@ -4059,7 +4747,11 @@
       "answer": "Cardiology",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Cardiology (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Cardiology (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 8463 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 8463 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_5182",
@@ -4071,7 +4763,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 5182 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 5182 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_4411",
@@ -4083,7 +4779,11 @@
       "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 4411 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 4411 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054115_2742",
@@ -4095,7 +4795,11 @@
       "answer": "Car parking is Rs. 30 per hour, two-wheelers are Rs. 10 per hour, and the first 2 hours are free with a valid OPD token.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Car parking is Rs. 30 per hour, two-wheelers are Rs. 10 per hour, and the first 2 hours are free with a valid OPD token. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Car parking is Rs. 30 per hour, two-wheelers are Rs. 10 per hour, and the first 2 hours are free with a valid OPD token. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054115 2742 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054115 2742 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_7354",
@@ -4107,7 +4811,11 @@
       "answer": "Yes, Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 7354 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 7354 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_7768",
@@ -4119,7 +4827,11 @@
       "answer": "Yes, Dr. Megha Rao is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, Dr. Megha Rao is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, Dr. Megha Rao is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 7768 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 7768 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_9235",
@@ -4131,7 +4843,11 @@
       "answer": "Yes, Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 9235 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 9235 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_3268",
@@ -4143,7 +4859,11 @@
       "answer": "Yes, multi-level parking is available at Basement B1 and B2.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, multi-level parking is available at Basement B1 and B2. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, multi-level parking is available at Basement B1 and B2. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 3268 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 3268 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_3635",
@@ -4155,7 +4875,11 @@
       "answer": "Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Car parking is Rs. 30 per hour and two-wheelers are Rs. 10 per hour. The first 2 hours are free with a valid OPD token. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 3635 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 3635 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_8423",
@@ -4167,7 +4891,11 @@
       "answer": "Yes, a multi-cuisine food court is available on the 5th Floor, Block B, open from 7 AM to 10 PM.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, a multi-cuisine food court is available on the 5th Floor, Block B, open from 7 AM to 10 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, a multi-cuisine food court is available on the 5th Floor, Block B, open from 7 AM to 10 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 8423 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 8423 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_5461",
@@ -4179,7 +4907,11 @@
       "answer": "No, Dr. Sen's clinic is now on the 3rd floor.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No, Dr. Sen's clinic is now on the 3rd floor. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No, Dr. Sen's clinic is now on the 3rd floor. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 5461 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 5461 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054636_4684",
@@ -4191,7 +4923,11 @@
       "answer": "20 rupees for an hour",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 20 rupees for an hour (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 20 rupees for an hour (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054636 4684 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054636 4684 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054780_9735",
@@ -4203,7 +4939,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054780 9735 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054780 9735 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054780_5792",
@@ -4215,7 +4955,11 @@
       "answer": "Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, Emergency.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, Emergency. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, Emergency. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054780 5792 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054780 5792 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054780_5547",
@@ -4227,7 +4971,11 @@
       "answer": "Rs. 1500.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Rs. 1500. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Rs. 1500. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054780 5547 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054780 5547 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780054780_4686",
@@ -4239,7 +4987,11 @@
       "answer": "Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Vikram Shetty is available Monday through Friday and Dr. Manish Tiwari is available Tuesday, Thursday, and Saturday. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780054780 4686 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780054780 4686 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780055830_3659",
@@ -4251,7 +5003,11 @@
       "answer": "The current bill for the patient has not been specified in the transcript.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: The current bill for the patient has not been specified in the transcript. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: The current bill for the patient has not been specified in the transcript. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780055830 3659 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780055830 3659 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780055830_3341",
@@ -4263,7 +5019,11 @@
       "answer": "Monday to Friday, from 10:00 AM to 02:00 PM",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Monday to Friday, from 10:00 AM to 02:00 PM (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Monday to Friday, from 10:00 AM to 02:00 PM (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780055830 3341 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780055830 3341 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780064092_6678",
@@ -4275,7 +5035,11 @@
       "answer": "No information provided",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No information provided (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No information provided (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780064092 6678 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780064092 6678 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780064092_8551",
@@ -4287,7 +5051,11 @@
       "answer": "Yes",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780064092 8551 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780064092 8551 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780064092_7131",
@@ -4299,7 +5067,11 @@
       "answer": "Yes",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780064092 7131 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780064092 7131 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780064092_5310",
@@ -4311,7 +5083,11 @@
       "answer": "Patient ID or full name",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Patient ID or full name (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Patient ID or full name (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780064092 5310 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780064092 5310 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780064092_5130",
@@ -4323,7 +5099,11 @@
       "answer": "No, there is no 'soil' department.",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No, there is no 'soil' department. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No, there is no 'soil' department. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780064092 5130 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780064092 5130 ke baare me jankari"
     },
     {
       "id": "faq_learned_1780064092_7459",
@@ -4335,7 +5115,244 @@
       "answer": "20 rupees for an hour",
       "tags": [
         "learned"
-      ]
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 20 rupees for an hour (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 20 rupees for an hour (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780064092 7459 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780064092 7459 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941833_1479",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941833_1479",
+      "question_variants": [
+        "What is the main campus address for InDiiServe Healthcare?"
+      ],
+      "answer": "123 Main Street, Suite 400",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: 123 Main Street, Suite 400 (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: 123 Main Street, Suite 400 (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941833 1479 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941833 1479 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941833_6483",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941833_6483",
+      "question_variants": [
+        "Which doctor from the cardiology department is available and when?"
+      ],
+      "answer": "Dr. Sen is available from Monday to Friday, from 10:00 AM to 02:00 PM.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sen is available from Monday to Friday, from 10:00 AM to 02:00 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sen is available from Monday to Friday, from 10:00 AM to 02:00 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941833 6483 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941833 6483 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941833_5686",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941833_5686",
+      "question_variants": [
+        "Is there a 'soil' department available?"
+      ],
+      "answer": "No, there is no department called'soil'. The available departments are Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No, there is no department called'soil'. The available departments are Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No, there is no department called'soil'. The available departments are Cardiology, Neurology, Orthopedics, Pediatrics, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, ENT, Dermatology, and Emergency. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941833 5686 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941833 5686 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941833_5318",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941833_5318",
+      "question_variants": [
+        "Is there any parking available at InDiiServe Healthcare?"
+      ],
+      "answer": "Yes, there is multi-level parking available at Basement B1 and B2. The parking charges are Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, there is multi-level parking available at Basement B1 and B2. The parking charges are Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, there is multi-level parking available at Basement B1 and B2. The parking charges are Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941833 5318 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941833 5318 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941833_9267",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941833_9267",
+      "question_variants": [
+        "Is there a cafeteria available at InDiiServe Healthcare?"
+      ],
+      "answer": "Yes, there is a multi-cuisine food court available on the 5th Floor, Block B, open from 7 AM to 10 PM.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, there is a multi-cuisine food court available on the 5th Floor, Block B, open from 7 AM to 10 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, there is a multi-cuisine food court available on the 5th Floor, Block B, open from 7 AM to 10 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941833 9267 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941833 9267 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_6030",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_6030",
+      "question_variants": [
+        "What are the parking rates at InDiiServe Healthcare?"
+      ],
+      "answer": "Not mentioned in the transcript",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Not mentioned in the transcript (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Not mentioned in the transcript (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 6030 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 6030 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_4046",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_4046",
+      "question_variants": [
+        "Which languages can Asha speak?"
+      ],
+      "answer": "Hindi, Hinglish, and English",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Hindi, Hinglish, and English (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Hindi, Hinglish, and English (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 4046 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 4046 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_3018",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_3018",
+      "question_variants": [
+        "What are the services Asha can assist with?"
+      ],
+      "answer": "Booking appointments, checking doctor availability, getting report status, and providing hospital information such as departments, timings, and facilities.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Booking appointments, checking doctor availability, getting report status, and providing hospital information such as departments, timings, and facilities. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Booking appointments, checking doctor availability, getting report status, and providing hospital information such as departments, timings, and facilities. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 3018 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 3018 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_5474",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_5474",
+      "question_variants": [
+        "Is Dr. Sen from the Cardiology department available on weekends?"
+      ],
+      "answer": "No, Dr. Sen is available only from Monday to Friday.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: No, Dr. Sen is available only from Monday to Friday. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: No, Dr. Sen is available only from Monday to Friday. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 5474 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 5474 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_1364",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_1364",
+      "question_variants": [
+        "Which doctors are available in Cardiology for tomorrow?"
+      ],
+      "answer": "Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Sameer Kulkarni is available Monday through Saturday and Dr. Rajesh Nair is available Monday, Wednesday, and Friday. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 1364 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 1364 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_3591",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_3591",
+      "question_variants": [
+        "Which doctor is available in Neurology for tomorrow and at what times?"
+      ],
+      "answer": "Dr. Megha Rao in Neurology is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Dr. Megha Rao in Neurology is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Dr. Megha Rao in Neurology is available Monday, Wednesday, and Friday at 3:00 PM, 3:30 PM, and 4:00 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 3591 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 3591 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_1993",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_1993",
+      "question_variants": [
+        "Is there parking available?"
+      ],
+      "answer": "Yes, multi-level parking is available at Basement B1 and B2 with charges of Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, multi-level parking is available at Basement B1 and B2 with charges of Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, multi-level parking is available at Basement B1 and B2 with charges of Rs. 30 per hour for cars and Rs. 10 per hour for two-wheelers. The first 2 hours are free with a valid OPD token. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 1993 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 1993 ke baare me jankari"
+    },
+    {
+      "id": "faq_learned_1780941877_8500",
+      "category": "Learned Fact",
+      "intent": "learned_fact_1780941877_8500",
+      "question_variants": [
+        "Is there a cafeteria?"
+      ],
+      "answer": "Yes, there is a multi-cuisine food court on the 5th Floor, Block B, open from 7 AM to 10 PM.",
+      "tags": [
+        "learned"
+      ],
+      "answer_hi": "हमारी जानकारी के अनुसार: Yes, there is a multi-cuisine food court on the 5th Floor, Block B, open from 7 AM to 10 PM. (अधिक सहायता के लिए हमारे मुख्य डेस्क से संपर्क करें।)",
+      "answer_hinglish": "Humari information ke according: Yes, there is a multi-cuisine food court on the 5th Floor, Block B, open from 7 AM to 10 PM. (Zyaada help ke liye humare main desk se contact karein.)",
+      "question_hi": "learned fact 1780941877 8500 के बारे में जानकारी",
+      "question_hinglish": "learned fact 1780941877 8500 ke baare me jankari"
+    },
+    {
+      "intent": "hospital_operating_hours",
+      "category": "general",
+      "question": "Is the hospital open 24/7? What are the operating hours?",
+      "question_variants": [
+        "hospital timings",
+        "what time does the hospital open",
+        "is it open 24 hours",
+        "hospital open 24/7",
+        "hospital khula rehta hai",
+        "hospital timings kya hai",
+        "24/7 open",
+        "24 hours open",
+        "emergency hours",
+        "ट्वेंटी फोर इंटर सेवन",
+        "चौबीस घंटे",
+        "24 घंटे",
+        "ट्वेंटी फोर सेवन",
+        "खुला रहता है",
+        "timings"
+      ],
+      "answer": "Our Emergency Department and Pharmacy are open 24/7. General OPD is open from 8:00 AM to 7:00 PM (Monday to Friday) and 8:00 AM to 1:00 PM on Saturdays. General OPD is closed on Sundays.",
+      "answer_hi": "हमारा इमरजेंसी विभाग और फार्मेसी 24 घंटे (24/7) खुले रहते हैं। सामान्य ओपीडी (OPD) सोमवार से शुक्रवार सुबह 8:00 बजे से शाम 7:00 बजे तक और शनिवार को सुबह 8:00 बजे से दोपहर 1:00 बजे तक खुली रहती है। रविवार को ओपीडी बंद रहती है।",
+      "answer_hinglish": "Humara Emergency Department aur Pharmacy 24/7 open rehte hain. General OPD Monday se Friday subah 8:00 AM se shaam 7:00 PM tak aur Saturday ko subah 8:00 AM se dopahar 1:00 PM tak open rehti hai. Sunday ko OPD closed rehti hai."
     }
   ],
   "insurance_tpa": [
@@ -4343,37 +5360,49 @@
       "provider": "Star Health",
       "status": "empanelled",
       "discount": "20%",
-      "desk_location": "Ground Floor near billing counter"
+      "desk_location": "Ground Floor near billing counter",
+      "answer_hi": "हमारे पास Insurance के साथ कैशलेस इंश्योरेंस सुविधा उपलब्ध है। टीपीए डेस्क ग्राउंड फ्लोर पर सुबह 9 से शाम 6 बजे तक खुला रहता है।",
+      "answer_hinglish": "Humare paas Insurance ke saath cashless insurance facility available hai. TPA desk Ground Floor pe morning 9 AM se 6 PM tak open rehta hai."
     },
     {
       "provider": "HDFC Ergo",
       "status": "empanelled",
       "discount": "15%",
-      "desk_location": "Ground Floor near billing counter"
+      "desk_location": "Ground Floor near billing counter",
+      "answer_hi": "हमारे पास Insurance के साथ कैशलेस इंश्योरेंस सुविधा उपलब्ध है। टीपीए डेस्क ग्राउंड फ्लोर पर सुबह 9 से शाम 6 बजे तक खुला रहता है।",
+      "answer_hinglish": "Humare paas Insurance ke saath cashless insurance facility available hai. TPA desk Ground Floor pe morning 9 AM se 6 PM tak open rehta hai."
     },
     {
       "provider": "ICICI Lombard",
       "status": "empanelled",
       "discount": "18%",
-      "desk_location": "Ground Floor near billing counter"
+      "desk_location": "Ground Floor near billing counter",
+      "answer_hi": "हमारे पास Insurance के साथ कैशलेस इंश्योरेंस सुविधा उपलब्ध है। टीपीए डेस्क ग्राउंड फ्लोर पर सुबह 9 से शाम 6 बजे तक खुला रहता है।",
+      "answer_hinglish": "Humare paas Insurance ke saath cashless insurance facility available hai. TPA desk Ground Floor pe morning 9 AM se 6 PM tak open rehta hai."
     },
     {
       "provider": "Bajaj Allianz",
       "status": "empanelled",
       "discount": "15%",
-      "desk_location": "Ground Floor near billing counter"
+      "desk_location": "Ground Floor near billing counter",
+      "answer_hi": "हमारे पास Insurance के साथ कैशलेस इंश्योरेंस सुविधा उपलब्ध है। टीपीए डेस्क ग्राउंड फ्लोर पर सुबह 9 से शाम 6 बजे तक खुला रहता है।",
+      "answer_hinglish": "Humare paas Insurance ke saath cashless insurance facility available hai. TPA desk Ground Floor pe morning 9 AM se 6 PM tak open rehta hai."
     },
     {
       "provider": "New India Assurance",
       "status": "empanelled",
       "discount": "12%",
-      "desk_location": "Ground Floor near billing counter"
+      "desk_location": "Ground Floor near billing counter",
+      "answer_hi": "हमारे पास Insurance के साथ कैशलेस इंश्योरेंस सुविधा उपलब्ध है। टीपीए डेस्क ग्राउंड फ्लोर पर सुबह 9 से शाम 6 बजे तक खुला रहता है।",
+      "answer_hinglish": "Humare paas Insurance ke saath cashless insurance facility available hai. TPA desk Ground Floor pe morning 9 AM se 6 PM tak open rehta hai."
     },
     {
       "provider": "Max Bupa",
       "status": "empanelled",
       "discount": "20%",
-      "desk_location": "Ground Floor near billing counter"
+      "desk_location": "Ground Floor near billing counter",
+      "answer_hi": "हमारे पास Insurance के साथ कैशलेस इंश्योरेंस सुविधा उपलब्ध है। टीपीए डेस्क ग्राउंड फ्लोर पर सुबह 9 से शाम 6 बजे तक खुला रहता है।",
+      "answer_hinglish": "Humare paas Insurance ke saath cashless insurance facility available hai. TPA desk Ground Floor pe morning 9 AM se 6 PM tak open rehta hai."
     }
   ],
   "appointment_booking": {
