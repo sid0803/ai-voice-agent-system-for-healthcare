@@ -394,6 +394,14 @@ HINDI_ALIAS_MAP = {
     "समय": "time",
     "टाइम": "time",
     "टाइमिंग": "timing",
+    # Additional Hindi/Hinglish Query Terms
+    "अवेलेबल": "available",
+    "उपलब्ध": "available",
+    "डिपार्टमेंट": "department",
+    "डिपार्टमेन्ट": "department",
+    "डिपार्टमेंट्स": "departments",
+    "कौन": "which",
+    "कौन-कौन": "which",
 }
 
 
@@ -434,8 +442,7 @@ STOP_WORDS = {
     "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", 
     "will", "just", "don", "should", "now", "d", "ll", "m", "o", "re", "ve", "y", "ain", 
     "aren", "couldn", "didn", "doesn", "hadn", "hasn", "haven", "isn", "ma", "mightn", 
-    "mustn", "needn", "shan", "shouldn", "wasn", "weren", "won", "wouldn", "tell", "want", 
-    "know", "please", "would", "like", "actually", "available",
+    "mustn", "needn", "shan", "shouldn", "wasn", "weren", "won", "wouldn", "please", "would", "like", "actually",
     
     # Hinglish/Hindi stop words
     "hai", "haan", "naam", "ko", "se", "ka", "ki", "ke", "mein", "me", "par", "bhi", "hi", 
@@ -828,7 +835,15 @@ def _format_doctor_answer(matches: list[dict], query: str) -> str:
     parts = []
     for doc, day_label, slots in available[:5]:
         slot_text = ", ".join(slots[:2]) if slots else day_label
-        parts.append(f"{doc.get('name')} ({slot_text})")
+        dept = _doctor_department(doc)
+        fee = _format_price(doc.get("fee"))
+        entry = f"{doc.get('name')} ({dept}"
+        if fee:
+            entry += f", Fee: {fee}"
+        if slot_text:
+            entry += f", Slots: {slot_text}"
+        entry += ")"
+        parts.append(entry)
     return f"We have {len(available)} matching specialists: " + ", ".join(parts) + ". Who would you like to consult?"
 
 
