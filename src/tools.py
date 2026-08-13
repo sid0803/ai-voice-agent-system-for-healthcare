@@ -420,6 +420,17 @@ HINDI_ALIAS_MAP = {
     "दवा की दुकान": "pharmacy",
     "farmacy": "pharmacy",
     "cigratte": "pharmacy",
+    # MRI & Imaging ASR Garble Mappings
+    "मआरटी": "mri",
+    "मआरआई": "mri",
+    "एमआरआइ": "mri",
+    "एम आर टी": "mri",
+    "mrt": "mri",
+    "mri scan": "mri",
+    "mriscan": "mri",
+    "एमआरआई स्कैन": "mri",
+    "सिटी स्कैन": "ct scan",
+    "एक्सरे": "xray",
     # Doctor ASR Garble Mappings
     "डाक्टर": "doctor",
     "डॉक्टर": "doctor",
@@ -897,6 +908,17 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
     raw_query = args.get("query", "")
     query = _normalize_query(raw_query)
     core = loader.get_core_info()
+
+    # Dedicated MRI & Imaging Scan Handler
+    if _has_any_word(query, ["mri", "mrt", "scan", "imaging"]):
+        devanagari_count = sum(1 for ch in raw_query if '\u0900' <= ch <= '\u097F')
+        is_hinglish = any(w in raw_query.lower() for w in ["hai", "hain", "kya", "kitna", "rate", "kharcha", "ka", "batao", "bataiye"])
+        
+        if devanagari_count >= 1:
+            return {"answer": "हमारे अस्पताल में 3 प्रकार के एमआरआई (MRI) स्कैन उपलब्ध हैं: ब्रेन एमआरआई (₹8,500), स्पाइन एमआरआई (₹9,000), और फुल एब्डोमेन एमआरआई (₹12,000)। हमारा एमआरआई सेंटर 24 घंटे खुला रहता है।"}
+        elif is_hinglish:
+            return {"answer": "Humare hospital mein 3 types ke MRI scans available hain: Brain MRI (₹8,500), Spine MRI (₹9,000), aur Full Abdomen MRI (₹12,000). Humara MRI center 24/7 open hai."}
+        return {"answer": "We offer 3 MRI scans: Brain MRI (₹8,500), Spine MRI (₹9,000), and Full Abdomen MRI (₹12,000). Our imaging center is open 24/7."}
 
     # Early guard to route visiting hours queries before room matching (Fixes routing bug for "ward visiting hours")
     VISITING_KEYWORDS = [
@@ -1691,7 +1713,7 @@ available_tools: list[dict] = [
     {
         "toolSpec": {
             "name": "hospitalInfoTool",
-            "description": "MUST be called when the caller asks about hospital location, address, directions, where to go, contact details, pharmacy hours, visiting hours, parking details/charges/availability, diagnostic or scan pricing (e.g. MRI, CT, thyroid, blood tests, ultrasound, PET scan, x-ray costs), room rent/charges (e.g. ICU, deluxe, general ward rent), cafeteria, ATM, Wi-Fi, wheelchair, or any general hospital information/facilities/prices. Do NOT answer from memory — always call this tool.",
+            "description": "MUST be called when the caller asks about MRI scans (Brain MRI, Spine MRI, Abdomen MRI), CT scans, X-Rays, Ultrasound, diagnostic test costs, lab tests, hospital location, pharmacy, visiting hours, or room charges. ALWAYS call this tool for ANY MRI or scan query. Do NOT answer from memory — always call this tool.",
             "inputSchema": {"json": _hospital_info_schema},
         }
     },
