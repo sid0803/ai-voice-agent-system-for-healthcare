@@ -140,6 +140,67 @@ class AgentCoreMemoryManager:
             logger.info("[MEMORY] Cleaned up session %s for %s", session_id[:8], aid)
 
 
+class LocalFileMemoryManager:
+    """Local JSON-file backed memory manager for persistent caller history when MEMORY_ID is unset."""
+    def __init__(self, filepath: str = "data/patient_memory.json"):
+        self.filepath = filepath
+        self._sessions: dict[str, str] = {}  # session_id -> aid
+        self._load()
+
+    def _load(self):
+        try:
+            if os.path.exists(self.filepath):
+                with open(self.filepath, "r", encoding="utf-8") as f:
+                    self._data = json.load(f)
+            else:
+                self._data = {}
+        except Exception as e:
+            logger.warning("[LOCAL-MEMORY] Could not load memory file: %s", e)
+            self._data = {}
+
+    def _save(self):
+        try:
+            os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
+            with open(self.filepath, "w", encoding="utf-8") as f:
+                json.dump(self._data, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.warning("[LOCAL-MEMORY] Could not save memory file: %s", e)
+
+    def register_session(self, session_id: str, caller_phone: str) -> str:
+        aid = _actor_id(caller_phone)
+        self._sessions[session_id] = aid
+        logger.info("[LOCAL-MEMORY] Registered session %s for %s (phone: %s)", session_id[:8], aid, caller_phone)
+        return aid
+
+    async def retrieve_context(self, session_id: str) -> str:
+        aid = self._sessions.get(session_id)
+        if not aid:
+            return ""
+        history = self._data.get(aid, [])
+        if not history:
+            return ""
+        lines = []
+        for item in history[-6:]:
+            lines.append(f"User: {item.get('user', '')}\nAsha: {item.get('assistant', '')}")
+        logger.info("[LOCAL-MEMORY] Got %d records for %s", len(lines), aid)
+        return "\n".join(lines)
+
+    async def save_interaction(self, session_id: str, user_text: str, assistant_text: str) -> bool:
+        aid = self._sessions.get(session_id)
+        if not aid:
+            return False
+        if aid not in self._data:
+            self._data[aid] = []
+        self._data[aid].append({"user": user_text, "assistant": assistant_text, "timestamp": datetime.now().isoformat()})
+        self._data[aid] = self._data[aid][-20:]
+        await asyncio.to_thread(self._save)
+        logger.info("[LOCAL-MEMORY] Saved interaction for %s", aid)
+        return True
+
+    def cleanup_session(self, session_id: str) -> None:
+        self._sessions.pop(session_id, None)
+
+
 def build_system_prompt_with_memory(base_prompt: str, memory_context: str = "") -> str:
     if not memory_context:
         return base_prompt
@@ -148,8 +209,8 @@ def build_system_prompt_with_memory(base_prompt: str, memory_context: str = "") 
         "## PREVIOUS CONVERSATION CONTEXT (CRITICAL - USE THIS)\n"
         "The following is context from previous calls with this same caller. "
         "You MUST use this information:\n"
-        "- Greet the caller by name if their name is in the context below\n"
+        "- Greet the caller warmly by name if their name is in the context below\n"
         "- Do NOT ask for information you already have from this context\n"
-        "- If the caller asks if you remember them, confirm what you know\n\n"
+        "- If the caller asks if you remember them, confirm what you know warmly\n\n"
         f"{memory_context}\n"
     )
