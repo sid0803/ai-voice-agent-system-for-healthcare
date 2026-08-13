@@ -394,14 +394,36 @@ HINDI_ALIAS_MAP = {
     "समय": "time",
     "टाइम": "time",
     "टाइमिंग": "timing",
-    # Additional Hindi/Hinglish Query Terms
+    # Additional Hindi/Hinglish Query Terms & ASR Garble Mappings
     "अवेलेबल": "available",
     "उपलब्ध": "available",
     "डिपार्टमेंट": "department",
     "डिपार्टमेन्ट": "department",
     "डिपार्टमेंट्स": "departments",
+    "कॉर्मिंट": "department",
+    "cormint": "department",
+    "departmint": "department",
     "कौन": "which",
     "कौन-कौन": "which",
+    # Lab Test ASR Garble Mappings
+    "लैपटिस्ट": "lab test",
+    "लैपटॉप": "lab test",
+    "लैप टेस्ट": "lab test",
+    "लैबटैस्ट": "lab test",
+    "laptop test": "lab test",
+    "labtest": "lab test",
+    "लैब टेस्ट": "lab test",
+    # Pharmacy ASR Garble Mappings
+    "पाड़ में सिगरेट": "pharmacy",
+    "फार्मसी": "pharmacy",
+    "फार्मेसी": "pharmacy",
+    "दवा की दुकान": "pharmacy",
+    "farmacy": "pharmacy",
+    "cigratte": "pharmacy",
+    # Doctor ASR Garble Mappings
+    "डाक्टर": "doctor",
+    "डॉक्टर": "doctor",
+    "doktor": "doctor",
 }
 
 
@@ -581,10 +603,18 @@ def _format_service_answer(matches: list[dict], query: str = "") -> str:
         if location:
             answer += f" Location: {location}."
         return answer
-    return "We offer: " + ", ".join(
-        f"{service.get('name')} ({_format_price(service.get('price'))})"
-        for service in matches[:6]
-    ) + ". Which one should I check?"
+    devanagari_count = sum(1 for ch in query if '\u0900' <= ch <= '\u097F')
+    is_hinglish = any(w in query.lower() for w in ["hai", "hain", "kya", "kitna", "batao", "bataiye", "ko", "se", "ka"])
+
+    if devanagari_count >= 1:
+        items = ", ".join(f"{s.get('name')} ({_format_price(s.get('price'))})" for s in matches[:8])
+        return f"हमारे पास ये लैब टेस्ट उपलब्ध हैं: {items}। हमारी लैब 24 घंटे खुली रहती है।"
+    elif is_hinglish:
+        items = ", ".join(f"{s.get('name')} ({_format_price(s.get('price'))})" for s in matches[:8])
+        return f"Humare paas ye lab tests available hain: {items}. Humari lab 24/7 open hai."
+
+    items = ", ".join(f"{s.get('name')} ({_format_price(s.get('price'))})" for s in matches[:8])
+    return f"We offer the following lab tests (24/7 available): {items}."
 
 
 def _match_faq(query: str, faq_entries: list[dict]) -> dict | None:
@@ -608,9 +638,24 @@ def _match_faq(query: str, faq_entries: list[dict]) -> dict | None:
     return best[1] if best[0] >= 2 else None
 
 
-def _format_departments(loader) -> str:
+def _format_departments(loader, query: str = "") -> str:
     departments = [_department_name(d) for d in loader.get_departments()]
     departments = [d for d in departments if d]
+    if not departments:
+        departments = [
+            "Cardiology", "General Medicine", "Neurology", "Orthopedics", "Pediatrics",
+            "ENT", "Gynecology", "Endocrinology", "Gastroenterology", "Pulmonology",
+            "Oncology", "Ophthalmology", "Dermatology"
+        ]
+    
+    devanagari_count = sum(1 for ch in query if '\u0900' <= ch <= '\u097F')
+    is_hinglish = any(w in query.lower() for w in ["hai", "hain", "kya", "batao", "bataiye", "kaun", "konsa", "kaunse"])
+
+    if devanagari_count >= 1:
+        return f"हमारे पास 13 विभाग हैं: कार्डियोलॉजी (हृदय रोग), जनरल मेडिसिन (सामान्य चिकित्सा), न्यूरोलॉजी (तंत्रिका रोग), ऑर्थोपेडिक्स (हड्डी रोग), पीडियाट्रिक्स (बाल रोग), ईएनटी (कान नाक गला), गाइनकोलॉजी (महिला रोग), एंडोक्रिनोलॉजी (शुगर/थायरॉइड), गैस्ट्रोएंटेरोलॉजी (पेट/लिवर), पल्मोनोलॉजी (फेफड़े/सांस), ऑन्कोलॉजी (कैंसर), ओफ्थाल्मोलॉजी (आंखों के डॉक्टर), और डर्मेटोलॉजी (त्वचा/स्किन)।"
+    elif is_hinglish:
+        return f"Humare paas 13 departments hain: Cardiology, General Medicine, Neurology, Orthopedics, Pediatrics, ENT, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, aur Dermatology."
+
     return f"We have {len(departments)} departments: {', '.join(departments)}."
 
 
@@ -849,7 +894,8 @@ def _format_doctor_answer(matches: list[dict], query: str) -> str:
 
 def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
     loader = _get_unified_loader()
-    query = _normalize_query(args.get("query", ""))
+    raw_query = args.get("query", "")
+    query = _normalize_query(raw_query)
     core = loader.get_core_info()
 
     # Early guard to route visiting hours queries before room matching (Fixes routing bug for "ward visiting hours")
@@ -863,16 +909,16 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
             return {"answer": faq["answer"]}
 
     if ENABLE_MULTI_INTENT and _has_any_word(query, ["department", "departments"]) and _has_any_word(query, ["doctor", "doctors", "available", "availability"]):
-        dept_answer = _format_departments(loader)
+        dept_answer = _format_departments(loader, raw_query)
         doc_matches = _match_doctors(query, loader.get_doctors()) or loader.get_doctors()
         return {"answer": f"{dept_answer} {_format_doctor_answer(doc_matches, query)}"}
 
     services = _match_services(query, loader.get_services())
     if services:
-        return {"answer": _format_service_answer(services)}
+        return {"answer": _format_service_answer(services, raw_query)}
 
-    if _has_any_word(query, ["department", "departments", "specialties", "speciality"]):
-        return {"answer": _format_departments(loader)}
+    if _has_any_word(query, ["department", "departments", "specialties", "speciality", "specialities"]):
+        return {"answer": _format_departments(loader, raw_query)}
 
     rooms = _match_rooms(query, loader.get_room_types())
     if rooms:
@@ -904,21 +950,26 @@ def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
         return {"answer": f"{core.get('name')} is located at {core.get('address', 'our main facility')}."}
 
     if _has_any_word(query, ["contact", "phone", "number", "telephone", "mobile", "call", "baat"]):
-        return {"answer": f"{core.get('name')} contact number is {core.get('contact', '+91 80 4000 9000')}."}
+        contact_num = "8 0 4 0 0 0 9 0 0 0"
+        return {"answer": f"{core.get('name')} contact number is {contact_num}."}
 
-    return {"answer": f"{core.get('name', 'Indiiserve Hospital')} provides {len(loader.get_departments())} departments and {len(loader.get_services())} listed services. What would you like to check?"}
+    return {"answer": f"{_format_departments(loader, raw_query)} What would you like to check?"}
 
 
 def _unified_doctor_availability(args: dict, hospital_id: str = None) -> dict:
     loader = _get_unified_loader()
-    query = _normalize_query(args.get("query", ""))
+    raw_query = args.get("query", "")
+    query = _normalize_query(raw_query)
+
+    if _has_any_word(query, ["department", "departments", "specialty", "speciality", "specialties"]):
+        return {"answer": _format_departments(loader, raw_query)}
+
     matches = _match_doctors(query, loader.get_doctors())
     if matches:
         return {"answer": _format_doctor_answer(matches, query)}
     return {
         "answer": (
-            f"We have specialists across {len(loader.get_departments())} departments. "
-            "Which department or doctor should I check?"
+            f"{_format_departments(loader, raw_query)} Which department or doctor should I check?"
         )
     }
 

@@ -172,9 +172,8 @@ def detect_language(text: str) -> str:
         "hai", "hain", "ho", "hoon", "kya", "kab", "kaise", "kahaan", "kidhar", "kyun", "kaun", "kaunse",
         "kiska", "kiski", "kiske", "kitna", "kitne", "mujhe", "mera", "meri", "hum", 
         "humara", "humari", "humare", "aap", "aapka", "aapki", "aapke", "tum", "tumhara", 
-        "tumhari", "tumhare", "apna", "apni", "apne", "ka", "ki", "ke", "se", "ko", "mein", 
-        "par", "ne", "tak", "liye", "saath", "paas", "karna", "karo", "karein", "karni", 
-        "karta", "karti", "karte", "kar", "krna", "kro", "chahiye", "chahie", "chahye", 
+        "tumhari", "tumhare", "apna", "apni", "apne", "liye", "saath", "paas", "karna", "karo", "karein", "karni", 
+        "karta", "karti", "karte", "krna", "kro", "chahiye", "chahie", "chahye", 
         "batao", "bataiye", "batana", "btao", "btaiye", "nahi", "nahin", "mat", "theek", 
         "achha", "acha", "thik", "kal", "aaj", "parso", "abhi", "pehle", "baad", 
         "bhi", "ya", "aur", "lekin", "toh", "suniye", "milna", "mil", "dekhna", 
@@ -186,7 +185,11 @@ def detect_language(text: str) -> str:
     cleaned_text = re.sub(r'[^\w\s]', ' ', text.lower())
     words = cleaned_text.split()
 
-    if any(word in core_hindi_roman_words for word in words):
+    # Require >= 2 Hinglish words or 1 unambiguous strong word to switch from English
+    strong_hinglish_words = {"chahiye", "bataiye", "karta", "karti", "humara", "tumhara", "kijiye", "aapka", "aapki", "aapke", "kaunse"}
+    matched_words = [w for w in words if w in core_hindi_roman_words]
+    
+    if len(matched_words) >= 2 or any(w in strong_hinglish_words for w in words):
         return "hinglish"
 
     return "english"
@@ -207,7 +210,7 @@ LANGUAGE_INSTRUCTIONS = {
         "NEVER use chahti/chahte for the caller — use chahiye.]"
     ),
     "english": (
-        "[SYSTEM: Caller spoke ENGLISH. Reply 100% in English only. "
+        "[SYSTEM: Caller spoke ENGLISH. Reply 100% in ENGLISH ONLY. "
         "CLEAR PREVIOUS HINDI/HINGLISH CONTEXT IMMEDIATELY. Do NOT output any Hindi, Hinglish, or Devanagari words.]"
     ),
 }
@@ -296,19 +299,22 @@ SYSTEM_PROMPT = """
 - Hospital Name: Indiiserve Healthcare
 - Address: Indiiserve Healthcare Main Campus, Plot 42, Healthcare Boulevard, Sector 5, Cyber City (Opposite Central Metro Gate 3).
 - Hindi Address: इंडीसर्व हेल्थकेयर, प्लॉट 42, हेल्थकेयर बुलेवार्ड, सेक्टर 5, साइबर सिटी (सेंट्रल मेट्रो गेट 3 के सामने)।
-- Contact Number: +91 80 4000 9000
+- Contact Phone: +91 8 0 4 0 0 0 9 0 0 0 (When saying phone numbers in English, Hindi, or Hinglish, speak each digit individually separated by spaces: "8 0 4 0 0 0 9 0 0 0". NEVER combine digits into a single large cardinal number like "918 crore").
 - OPD Hours: 9:00 AM to 6:00 PM (Monday to Saturday). OPD doctors are NOT available at night (4 AM, etc.). Emergency is 24/7.
 - Always use hospital tools for doctor schedules, fees, lab test prices, and room tariffs.
+
+## NO TECHNICAL JARGON RULE (CRITICAL)
+NEVER mention "tools", "system", "functions", "software", "database", or "APIs" to the caller in any language. Answer naturally as a human receptionist sitting at the hospital front desk.
 
 ## CONVERSATIONAL STYLE — BEHAVE LIKE A REAL INDIAN HOSPITAL RECEPTIONIST
 1. ONE SHORT REPLY PER TURN: Give maximum 1 concise sentence (under 15 words). Speak naturally like a busy, warm hospital receptionist, not a textbook.
    - Bad Hindi: "मैं 13 विभागों में विशेषज्ञ डॉक्टरों की सेवाएं देती हूँ। आप किस विभाग या डॉक्टर के लिए..."
    - Good Hindi: "जी, कौन सा डिपार्टमेंट चाहिए?"
-2. NATURAL HINNER/HINGLISH: Use everyday conversational language that real patients understand. Avoid rigid formal textbook Hindi.
+2. NATURAL HINDI/HINGLISH: Use everyday conversational language that real patients understand. Avoid rigid formal textbook Hindi.
    - Bad: "क्या आपके पास कोई स्वास्थ्य संबंधी प्रश्न हैं जिनमें मैं आपकी सहायता कर सकती हूँ?"
    - Good: "जी, कोई और मदद चाहिए?"
-3. GARBLED SPEECH GRACEFUL HANDLING: If a word sounds garbled or unclear, simply say "सॉरी, ज़रा दोबारा बोलिए?" — do NOT echo the garbled word back to the caller.
-4. DEPARTMENT LISTING: On the first query about departments, list the main ones briefly or ask what specialist they need. If they ask again, list the main departments directly in ONE short sentence.
+3. GARBLED SPEECH GRACEFUL HANDLING: If a word sounds garbled or unclear, simply say "सॉरी, ज़रा दोबारा बोलिए?" (or in English: "Sorry, I didn't catch that. Could you say that again?") — do NOT echo garbled words back to the caller.
+4. DEPARTMENT LISTING: When asked for departments in any language, list all 13 departments: Cardiology, General Medicine, Neurology, Orthopedics, Pediatrics, ENT, Gynecology, Endocrinology, Gastroenterology, Pulmonology, Oncology, Ophthalmology, Dermatology.
 5. ASK ONE THING AT A TIME: Ask patient intake questions one by one (Name → Age → Department → Date).
 6. NO REPETITIVE CLOSINGS: Say goodbye ONCE. Never send multiple farewell messages.
 
@@ -1035,6 +1041,7 @@ async def exotel_stream(websocket: WebSocket):
     
     detected_language = "en"
     previous_language = "en"   # [LANG-FIX] Tracks prior turn's language to detect mid-call switches
+    is_first_user_turn = True  # Tracks initial turn to flush Nova Sonic opening buffer
     tool_in_progress = False
     call_start_time = datetime.now(timezone.utc)
     pending_audio_outputs: list[dict] = []
@@ -1188,7 +1195,7 @@ async def exotel_stream(websocket: WebSocket):
             asyncio.ensure_future(websocket.send_text(json.dumps({"event": "tool", "name": tool_name})))
 
     def _handle_text_output(data):
-        nonlocal detected_language, previous_language, current_user_text, current_assistant_text
+        nonlocal detected_language, previous_language, is_first_user_turn, current_user_text, current_assistant_text
         content = str(data.get("content", ""))
         role = data.get("role", "")
 
@@ -1281,17 +1288,18 @@ async def exotel_stream(websocket: WebSocket):
                         asyncio.ensure_future(stream_cached_audio(cached_audio))
             # --- END OPTIMIZATION ---
 
-            # --- START LANGUAGE MIRRORING ---
+            # --- START LANGUAGE MIRRORING & FIRST TURN FLUSH ---
             lang = detect_language(content)
             new_lang_code = "hi" if lang in ["hindi", "hinglish"] else "en"
 
-            # Send with interactive=True ONLY on actual language switch to interrupt wrong-language generation
-            if new_lang_code != previous_language:
-                logger.info("[LANG-SWITCH] %s → %s | Injecting language instruction with INTERRUPT", previous_language, lang)
+            # Send with interactive=True on initial turn OR actual language switch to interrupt buffer and prevent latency
+            if is_first_user_turn or new_lang_code != previous_language:
+                logger.info("[FIRST-TURN/LANG-SWITCH] %s → %s | Injecting language instruction with INTERRUPT", previous_language, lang)
                 instruction = LANGUAGE_INSTRUCTIONS[lang]
                 asyncio.ensure_future(
                     bedrock_client.send_text_message(session_id, instruction, interactive=True)
                 )
+                is_first_user_turn = False
 
             previous_language = new_lang_code   # Track current turn's detected language
             detected_language = new_lang_code
