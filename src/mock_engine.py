@@ -43,7 +43,7 @@ class MockS2SStream:
 
     async def start_processing(self):
         """Background loop that simulates AI 'Thinking' and 'Responding'."""
-        asyncio.create_task(self._process_loop())
+        self._task = asyncio.create_task(self._process_loop())
 
     async def _process_loop(self):
         while self._is_active:
@@ -57,7 +57,7 @@ class MockS2SStream:
                 
                 # 1. Hospital Info
                 if any(k in patient_text for k in ["where", "address", "location", "pharmacy"]):
-                    await self._simulate_text("Apollo Metro is located at the city center. Is there anything else you need?")
+                    await self._simulate_text("Indiiserve Healthcare is located at Sector 5, Cyber City. Is there anything else you need?")
                     await self._simulate_tool_call(
                         "hospitalInfoTool", 
                         {"query": patient_text}
@@ -65,11 +65,10 @@ class MockS2SStream:
                 
                 # 2. Emergency Trigger
                 elif any(k in patient_text for k in ["emergency", "ambulance", "accident", "chest pain", "bleeding"]):
-                    # AI first acknowledges distress
-                    await self._simulate_text("I understand this is an emergency. Please stay calm, I am connecting you to our emergency desk right now.")
+                    await self._simulate_text("This sounds urgent. Please stay on the line, I am connecting you to our emergency desk immediately.")
                     await self._simulate_tool_call(
                         "handoffTool", 
-                        {"reason": "Emergency distress detected by AI."}
+                        {"reason": "Emergency distress detected."}
                     )
 
                 # 3. Triage / Symptom Check
@@ -86,25 +85,23 @@ class MockS2SStream:
 
                 # 4. Billing Inquiry
                 elif any(k in patient_text for k in ["billing", "bill", "payment", "how much", "cost"]):
-                    await self._simulate_text("Let me check your current billing status and the breakdown for you.")
+                    await self._simulate_text("Let me check your current billing breakdown for you.")
                     await self._simulate_tool_call(
                         "getBillingInfoTool",
-                        {"patient_name": "Test Patient", "query": patient_text}
+                        {"patient_name": "Patient", "query": patient_text}
                     )
                 
-                # 5. OT Scheduling / Surgery prediction
-                elif any(k in patient_text for k in ["surgery", "operation", "angioplasty", "procedure"]):
-                    await self._simulate_text("I can predict the total OT block time for that procedure based on our clinical data.")
-                    await self._simulate_tool_call(
-                        "predictOTScheduleTool",
-                        {"procedure_name": "Angioplasty", "doctor_name": "Dr. Sameer Kulkarni"}
-                    )
+                # 5. OT / Surgery consultation
+                elif any(k in patient_text for k in ["surgery", "operation", "procedure", " ot "]):
+                    await self._simulate_text("Operation Theatre and surgical scheduling require direct clinical evaluation by our surgeons. Please call our hospital desk at 8 0 4 0 0 0 9 0 0 0.")
 
                 # 6. Default Greeting / Info
                 else:
-                    await self._simulate_text("Hello, this is Asha from Apollo Metro. How can I help you today?")
+                    await self._simulate_text("Hello, this is Asha at Indiiserve Healthcare. How can I help you?")
                 
                 self.queue.task_done()
+            except asyncio.CancelledError:
+                break
             except Exception as e:
                 logger.error(f"[MOCK] Error in processing loop: {e}")
                 await asyncio.sleep(1)
@@ -116,7 +113,7 @@ class MockS2SStream:
             "role": "ASSISTANT",
             "content": text
         })
-        # [LOW FIX] Simulate audio output so Exotel stream gets media (even if empty PCM)
+        # Simulate audio output so Exotel stream gets media (even if empty PCM)
         import base64
         self.client._dispatch_event(self.session_id, "audioOutput", {
             "content": base64.b64encode(b'\x00' * 8000).decode("utf-8")
@@ -125,8 +122,6 @@ class MockS2SStream:
     async def _simulate_tool_call(self, tool_name: str, args: dict):
         """Dispatch a tool invocation back to the client."""
         call_id = f"mock-call-{random.randint(1000, 9999)}"
-        # [FIX HIGH-06] Use 'content' key (not 'input') to match nova_client.py
-        # tool_processor reads session.tool_use_content.get("content", "{}")
         self.client._dispatch_event(self.session_id, "toolUse", {
             "toolUseId": call_id,
             "name": tool_name,
@@ -135,3 +130,5 @@ class MockS2SStream:
 
     def close(self):
         self._is_active = False
+        if hasattr(self, "_task") and self._task and not self._task.done():
+            self._task.cancel()

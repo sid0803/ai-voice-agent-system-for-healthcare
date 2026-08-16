@@ -889,18 +889,17 @@ def _format_doctor_answer(matches: list[dict], query: str) -> str:
         return answer + ". Should I go ahead and book this slot for you?"
 
     parts = []
-    for doc, day_label, slots in available[:5]:
+    for doc, day_label, slots in available[:3]:
         slot_text = ", ".join(slots[:2]) if slots else day_label
         dept = _doctor_department(doc)
         fee = _format_price(doc.get("fee"))
-        entry = f"{doc.get('name')} ({dept}"
+        entry = f"{doc.get('name')} in {dept}"
         if fee:
-            entry += f", Fee: {fee}"
+            entry += f" for {fee}"
         if slot_text:
-            entry += f", Slots: {slot_text}"
-        entry += ")"
+            entry += f" at {slot_text}"
         parts.append(entry)
-    return f"We have {len(available)} matching specialists: " + ", ".join(parts) + ". Who would you like to consult?"
+    return f"We have specialists available: " + ", and ".join(parts) + ". Which one would you prefer?"
 
 
 def _unified_hospital_info(args: dict, hospital_id: str = None) -> dict:
@@ -1580,46 +1579,23 @@ def get_billing_info(args: dict, hospital_id: str = None) -> dict:
 
 
 def predict_ot_schedule(args: dict, hospital_id: str = None) -> dict:
-    """Requirement: Hospital OS Layer - OT Intelligence.
-    Predicts duration breakdown and suggests nearest available slot.
+    """Requirement: Hospital OS Layer - OT & Surgical Consultation Guidance.
+    Explains procedure assessment flow without fabricating speculative slot reservations.
     """
-    procedure = args.get("procedure_name", "General Surgery").title()
+    procedure = args.get("procedure_name", "Surgery").title()
     doctor = args.get("doctor_name", "the attending specialist")
     
-    # Mock Clinical OT Data
-    durations = {
-        "Angioplasty": {"prep": 30, "proc": 90, "rec": 60},
-        "Appendectomy": {"prep": 30, "proc": 60, "rec": 60},
-        "Knee Replacement": {"prep": 60, "proc": 120, "rec": 90},
-        "Cataract": {"prep": 20, "proc": 30, "rec": 30},
-        "General Surgery": {"prep": 30, "proc": 60, "rec": 60}
-    }
-    
-    timing = durations.get(procedure, durations["General Surgery"])
-    total_block = timing["prep"] + timing["proc"] + timing["rec"]
-    
-    # Mock scheduling intelligence: "Nearest available slot"
-    # In production, this would bridge to an OT Management System (OMS)
-    import datetime
-    tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
-    slot_time = tomorrow.replace(hour=11, minute=0, second=0, microsecond=0)
-    slot_str = slot_time.strftime("%Y-%m-%d %I:%M %p")
-    
     response = (
-        f"The predicted OT block for {procedure} with {doctor} is {total_block} minutes. "
-        f"This includes {timing['prep']} minutes for prep, {timing['proc']} minutes for the procedure, "
-        f"and {timing['rec']} minutes for recovery. "
-        f"The nearest available OT slot is tomorrow, {slot_str}. Would you like me to reserve it?"
+        f"Operation Theatre OT procedures and surgical scheduling for {procedure} require direct clinical evaluation by our specialist surgeons. "
+        f"Please visit our OPD or call our hospital desk at 8 0 4 0 0 0 9 0 0 0 to schedule a surgical consultation."
     )
     
     return {
         "answer": response,
         "procedure": procedure,
-        "prep_time": timing["prep"],
-        "procedure_time": timing["proc"],
-        "recovery_time": timing["rec"],
-        "total_time": total_block,
-        "next_available_slot": slot_str,
+        "doctor": doctor,
+        "requires_opd_consultation": True,
+        "contact": "8 0 4 0 0 0 9 0 0 0",
         "success": True
     }
 

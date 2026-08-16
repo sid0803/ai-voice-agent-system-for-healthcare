@@ -446,7 +446,7 @@ class S2SBidirectionalStreamClient:
                             "temperature": session.inference_config.temperature,
                         },
                         "turnDetectionConfiguration": {
-                            "endpointingSensitivity": "HIGH",
+                            "endpointingSensitivity": "MEDIUM",
                         },
                     }
                 }
@@ -477,13 +477,12 @@ class S2SBidirectionalStreamClient:
         session.is_active = True
         
         # [D-07] Signal stream ready so server.py doesn't wait 30s and time out.
-        # Mock mode IS ready immediately after MockS2SStream.start_processing().
         session._stream_ready.set()
         
-        # Notify of fallback
+        # Dispatch polite human fallback utterance instead of technical system string
         self._dispatch_event(session_id, "textOutput", {
             "role": "ASSISTANT", 
-            "content": "[SYSTEM] Bedrock Offline. Clinical Mock Mode Active."
+            "content": "I apologize, I am experiencing a brief connection issue. Please give me a moment, or call our hospital desk at 8 0 4 0 0 0 9 0 0 0."
         })
         # --- END MOCK MODE ---
 

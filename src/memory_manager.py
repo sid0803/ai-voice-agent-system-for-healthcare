@@ -5,6 +5,7 @@ One retrieve call per connect, one save call per turn. No legacy lookups.
 """
 
 import asyncio
+import json
 import logging
 import os
 import re
