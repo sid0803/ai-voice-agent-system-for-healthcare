@@ -1,0 +1,71 @@
+﻿name: InDiiServe Asha - CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run pytest suite
+    runs-on: ubuntu-latest
+    env:
+      EXOTEL_WS_SECRET: test_secret_for_ci
+      ENVIRONMENT: test
+      AWS_REGION: ap-south-1
+      BEDROCK_REGION: us-east-1
+      ADMIN_JWT_SECRET: ci_jwt_secret_not_real
+      HOSPITAL_ID: default_tier2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run test suite
+        run: python -m pytest tests/ -v --tb=short
+
+  deploy:
+    name: Deploy to EC2
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "$EC2_KEY" > ~/.ssh/deploy_key.pem
+          chmod 600 ~/.ssh/deploy_key.pem
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+        env:
+          EC2_KEY: ${{ secrets.EC2_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+      - name: Sync src/ to EC2
+        run: |
+          rsync -avz --delete \
+            --exclude '__pycache__' --exclude '*.pyc' \
+            -e "ssh -i ~/.ssh/deploy_key.pem" \
+            ./src/ $EC2_USER@$EC2_HOST:/home/ubuntu/indiiserve/src/
+        env:
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+      - name: Sync data/ to EC2
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key.pem" \
+            ./data/ $EC2_USER@$EC2_HOST:/home/ubuntu/indiiserve/data/
+        env:
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+      - name: Restart service and health check
+        run: |
+          ssh -i ~/.ssh/deploy_key.pem $EC2_USER@$EC2_HOST \
+            "sudo systemctl restart indiiserve.service && sleep 10 && curl -sf http://localhost:9000/health | python3 -c \"import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('status')=='healthy' else 1)\""
+        env:
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}

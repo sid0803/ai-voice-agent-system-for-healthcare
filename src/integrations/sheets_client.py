@@ -9,7 +9,20 @@ class GoogleSheetsClient:
     
     def __init__(self):
         self.spreadsheet_id = os.environ.get("GOOGLE_SHEET_ID")
-        self.creds_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "credentials.json")
+        # [AI-08] In production, GOOGLE_APPLICATION_CREDENTIALS must be set explicitly.
+        # Silently falling back to "credentials.json" hides misconfiguration.
+        _creds_env = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+        _is_production = os.environ.get("ENVIRONMENT", "development").lower() in ("production", "prod")
+
+        if _is_production and not _creds_env:
+            logger.error(
+                "[SECURITY CRITICAL] GOOGLE_APPLICATION_CREDENTIALS is not set in production. "
+                "Google Sheets integration will be DISABLED. Set the env var to a valid service account JSON path."
+            )
+            self.creds_path = None
+        else:
+            self.creds_path = _creds_env or "credentials.json"  # fallback only in dev
+
         self.service = None
         self._init_service()
 
@@ -17,6 +30,10 @@ class GoogleSheetsClient:
         """Initialize the Google Sheets API service."""
         if not self.spreadsheet_id:
             logger.warning("[SHEETS] GOOGLE_SHEET_ID not set. Sheets integration disabled.")
+            return
+
+        if self.creds_path is None:
+            # Production guard already logged the error in __init__ — skip silently here.
             return
 
         if not os.path.exists(self.creds_path):

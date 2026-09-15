@@ -1,0 +1,3170 @@
+[
+  {
+    "notification_id": "NOTIF-1788674700",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "status": "DISPATCHED",
+    "timestamp": "2026-09-06T06:05:00.333207+00:00",
+    "booking_ref": "IS-APP-113500-8354",
+    "message_text": "🏥 SarvoDaya Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1,200\n• Booking Reference: IS-APP-113500-8354\n\n📍 Hospital Navigation: https://maps.google.com/?q=SarvoDaya+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674821",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:07:01.775300+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674870",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:07:50.243093+00:00",
+    "booking_ref": "IS-APP-113750-1D15",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113750-1D15\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674870",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:07:50.257997+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674897",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:17.888989+00:00",
+    "booking_ref": "IS-APP-113817-26BB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113817-26BB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674897",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:17.904400+00:00",
+    "booking_ref": "IS-APP-113817-274F",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-113817-274F\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674897",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:17.939799+00:00",
+    "booking_ref": "IS-APP-113817-75BB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113817-75BB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674897",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:17.956011+00:00",
+    "booking_ref": "IS-APP-113817-1F1D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113817-1F1D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674897",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:17.972168+00:00",
+    "booking_ref": "IS-APP-113817-C8DF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113817-C8DF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674898",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:18.711685+00:00",
+    "booking_ref": "IS-APP-113818-648C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113818-648C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674898",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:18.722940+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.290577+00:00",
+    "booking_ref": "IS-APP-113823-2E47",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-113823-2E47\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.326896+00:00",
+    "booking_ref": "IS-APP-113823-B4D4",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113823-B4D4\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.344968+00:00",
+    "booking_ref": "IS-APP-113823-990D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajesh Nair (Cardiology)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1500\n• Booking Reference: IS-APP-113823-990D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.367677+00:00",
+    "booking_ref": "IS-APP-113823-2DD6",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Megha Rao (Neurology)\n• Date & Time: 2026-09-07 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1500\n• Booking Reference: IS-APP-113823-2DD6\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.384613+00:00",
+    "booking_ref": "IS-APP-113823-96ED",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-113823-96ED\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.400908+00:00",
+    "booking_ref": "IS-APP-113823-DBA4",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-07 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-113823-DBA4\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.416697+00:00",
+    "booking_ref": "IS-APP-113823-63DB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-113823-63DB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.433003+00:00",
+    "booking_ref": "IS-APP-113823-50EF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Sharma (Gynecology)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113823-50EF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.450003+00:00",
+    "booking_ref": "IS-APP-113823-DE0C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-07 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-113823-DE0C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.465075+00:00",
+    "booking_ref": "IS-APP-113823-2F5A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-07 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-113823-2F5A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.477234+00:00",
+    "booking_ref": "IS-APP-113823-1AC5",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Neeraj Kapoor (Pulmonology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1100\n• Booking Reference: IS-APP-113823-1AC5\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.489987+00:00",
+    "booking_ref": "IS-APP-113823-7D4A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-07 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-113823-7D4A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.504345+00:00",
+    "booking_ref": "IS-APP-113823-5C69",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-113823-5C69\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.519274+00:00",
+    "booking_ref": "IS-APP-113823-5B14",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-07 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-113823-5B14\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.532253+00:00",
+    "booking_ref": "IS-APP-113823-A626",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-07 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-113823-A626\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.545645+00:00",
+    "booking_ref": "IS-APP-113823-ED66",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-113823-ED66\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.558002+00:00",
+    "booking_ref": "IS-APP-113823-2394",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-113823-2394\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.571741+00:00",
+    "booking_ref": "IS-APP-113823-BB69",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-113823-BB69\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.586755+00:00",
+    "booking_ref": "IS-APP-113823-554C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113823-554C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.604300+00:00",
+    "booking_ref": "IS-APP-113823-F49D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113823-F49D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674903",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:23.617248+00:00",
+    "booking_ref": "IS-APP-113823-726B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113823-726B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674904",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:24.848065+00:00",
+    "booking_ref": "IS-APP-113824-218B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113824-218B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674904",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:24.863566+00:00",
+    "booking_ref": "IS-APP-113824-D8AC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-113824-D8AC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674906",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:26.558766+00:00",
+    "booking_ref": "IS-APP-113826-079E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-113826-079E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674906",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:26.574277+00:00",
+    "booking_ref": "IS-APP-113826-6863",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-113826-6863\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788674906",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:08:26.592807+00:00",
+    "booking_ref": "IS-APP-113826-995B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-113826-995B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677437",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:37.251076+00:00",
+    "booking_ref": "IS-APP-122037-FA62",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122037-FA62\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677437",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:37.268611+00:00",
+    "booking_ref": "IS-APP-122037-9B80",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122037-9B80\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677437",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:37.301651+00:00",
+    "booking_ref": "IS-APP-122037-EF94",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122037-EF94\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677437",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:37.316681+00:00",
+    "booking_ref": "IS-APP-122037-C329",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122037-C329\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677437",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:37.334536+00:00",
+    "booking_ref": "IS-APP-122037-78C5",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122037-78C5\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677438",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:38.196922+00:00",
+    "booking_ref": "IS-APP-122038-438C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122038-438C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677438",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:38.208134+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.659384+00:00",
+    "booking_ref": "IS-APP-122042-DC17",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-122042-DC17\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.690771+00:00",
+    "booking_ref": "IS-APP-122042-B722",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122042-B722\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.710049+00:00",
+    "booking_ref": "IS-APP-122042-B15E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajesh Nair (Cardiology)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1500\n• Booking Reference: IS-APP-122042-B15E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.722120+00:00",
+    "booking_ref": "IS-APP-122042-C7AF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Megha Rao (Neurology)\n• Date & Time: 2026-09-07 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1500\n• Booking Reference: IS-APP-122042-C7AF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.735209+00:00",
+    "booking_ref": "IS-APP-122042-7621",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122042-7621\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.747769+00:00",
+    "booking_ref": "IS-APP-122042-F8CC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-07 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122042-F8CC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.761867+00:00",
+    "booking_ref": "IS-APP-122042-87BB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-122042-87BB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.776669+00:00",
+    "booking_ref": "IS-APP-122042-C764",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Sharma (Gynecology)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122042-C764\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.789272+00:00",
+    "booking_ref": "IS-APP-122042-834D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-07 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-122042-834D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.802924+00:00",
+    "booking_ref": "IS-APP-122042-F148",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-07 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-122042-F148\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.815400+00:00",
+    "booking_ref": "IS-APP-122042-56E0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Neeraj Kapoor (Pulmonology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1100\n• Booking Reference: IS-APP-122042-56E0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.829251+00:00",
+    "booking_ref": "IS-APP-122042-B0FC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-07 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-122042-B0FC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.843105+00:00",
+    "booking_ref": "IS-APP-122042-00D2",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-122042-00D2\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.857232+00:00",
+    "booking_ref": "IS-APP-122042-4D43",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-07 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-122042-4D43\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.879798+00:00",
+    "booking_ref": "IS-APP-122042-B920",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-07 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122042-B920\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.900101+00:00",
+    "booking_ref": "IS-APP-122042-9137",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-122042-9137\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.916538+00:00",
+    "booking_ref": "IS-APP-122042-6970",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-122042-6970\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.938569+00:00",
+    "booking_ref": "IS-APP-122042-8CDE",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122042-8CDE\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.958656+00:00",
+    "booking_ref": "IS-APP-122042-9696",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122042-9696\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.976393+00:00",
+    "booking_ref": "IS-APP-122042-CD1D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122042-CD1D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677442",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:42.990376+00:00",
+    "booking_ref": "IS-APP-122042-8CE2",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122042-8CE2\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677444",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:44.218098+00:00",
+    "booking_ref": "IS-APP-122044-6099",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122044-6099\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677444",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:44.233984+00:00",
+    "booking_ref": "IS-APP-122044-3211",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122044-3211\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677445",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:45.648616+00:00",
+    "booking_ref": "IS-APP-122045-4A27",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122045-4A27\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677445",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:45.665595+00:00",
+    "booking_ref": "IS-APP-122045-6A3A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122045-6A3A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677445",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:50:45.684432+00:00",
+    "booking_ref": "IS-APP-122045-61C5",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122045-61C5\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677592",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:12.073272+00:00",
+    "booking_ref": "IS-APP-122312-96D0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122312-96D0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677592",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:12.090616+00:00",
+    "booking_ref": "IS-APP-122312-F7B9",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122312-F7B9\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677592",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:12.128046+00:00",
+    "booking_ref": "IS-APP-122312-F598",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122312-F598\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677592",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:12.146342+00:00",
+    "booking_ref": "IS-APP-122312-BECA",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122312-BECA\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677592",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:12.162944+00:00",
+    "booking_ref": "IS-APP-122312-FAAD",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122312-FAAD\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677593",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:13.052505+00:00",
+    "booking_ref": "IS-APP-122313-B05C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122313-B05C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677593",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:13.063524+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.560497+00:00",
+    "booking_ref": "IS-APP-122317-2E3D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-122317-2E3D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.596655+00:00",
+    "booking_ref": "IS-APP-122317-FCCE",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122317-FCCE\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.613295+00:00",
+    "booking_ref": "IS-APP-122317-5F91",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajesh Nair (Cardiology)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1500\n• Booking Reference: IS-APP-122317-5F91\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.627396+00:00",
+    "booking_ref": "IS-APP-122317-C781",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Megha Rao (Neurology)\n• Date & Time: 2026-09-07 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1500\n• Booking Reference: IS-APP-122317-C781\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.645568+00:00",
+    "booking_ref": "IS-APP-122317-C5CC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122317-C5CC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.658681+00:00",
+    "booking_ref": "IS-APP-122317-EB19",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-07 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122317-EB19\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.672709+00:00",
+    "booking_ref": "IS-APP-122317-7B8A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-122317-7B8A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.685628+00:00",
+    "booking_ref": "IS-APP-122317-922B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Sharma (Gynecology)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122317-922B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.699400+00:00",
+    "booking_ref": "IS-APP-122317-FF0E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-07 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-122317-FF0E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.713569+00:00",
+    "booking_ref": "IS-APP-122317-D40A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-07 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-122317-D40A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.727584+00:00",
+    "booking_ref": "IS-APP-122317-0CFC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Neeraj Kapoor (Pulmonology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1100\n• Booking Reference: IS-APP-122317-0CFC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.742197+00:00",
+    "booking_ref": "IS-APP-122317-7BEA",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-07 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-122317-7BEA\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.757169+00:00",
+    "booking_ref": "IS-APP-122317-7F0A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-122317-7F0A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.772394+00:00",
+    "booking_ref": "IS-APP-122317-D9EB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-07 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-122317-D9EB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.787449+00:00",
+    "booking_ref": "IS-APP-122317-1540",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-07 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122317-1540\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.804093+00:00",
+    "booking_ref": "IS-APP-122317-711F",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-122317-711F\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.817510+00:00",
+    "booking_ref": "IS-APP-122317-9B89",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-07 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-122317-9B89\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.831174+00:00",
+    "booking_ref": "IS-APP-122317-FB97",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-07 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122317-FB97\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.848025+00:00",
+    "booking_ref": "IS-APP-122317-00CF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122317-00CF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.865575+00:00",
+    "booking_ref": "IS-APP-122317-F15D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122317-F15D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677597",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:17.881118+00:00",
+    "booking_ref": "IS-APP-122317-DF7D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122317-DF7D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677599",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:19.108683+00:00",
+    "booking_ref": "IS-APP-122319-050E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122319-050E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677599",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:19.124215+00:00",
+    "booking_ref": "IS-APP-122319-1C76",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-122319-1C76\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677600",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:20.600291+00:00",
+    "booking_ref": "IS-APP-122320-D8FA",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122320-D8FA\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677600",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:20.629966+00:00",
+    "booking_ref": "IS-APP-122320-96BF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122320-96BF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677600",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:53:20.652284+00:00",
+    "booking_ref": "IS-APP-122320-ADC6",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-122320-ADC6\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677821",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:57:01.166980+00:00",
+    "booking_ref": "IS-APP-122701-56ED",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-122701-56ED\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1788677821",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-06T06:57:01.182064+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502667",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:27.654714+00:00",
+    "booking_ref": "IS-APP-013427-404B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013427-404B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502667",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:27.674477+00:00",
+    "booking_ref": "IS-APP-013427-46DE",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-013427-46DE\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502667",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:27.759199+00:00",
+    "booking_ref": "IS-APP-013427-42CE",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013427-42CE\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502667",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:27.787653+00:00",
+    "booking_ref": "IS-APP-013427-DF05",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013427-DF05\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502667",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:27.813967+00:00",
+    "booking_ref": "IS-APP-013427-4218",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013427-4218\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502668",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:28.656222+00:00",
+    "booking_ref": "IS-APP-013428-F325",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013428-F325\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502668",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:28.669272+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.119004+00:00",
+    "booking_ref": "IS-APP-013433-DFE8",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-013433-DFE8\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.188022+00:00",
+    "booking_ref": "IS-APP-013433-165E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013433-165E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.224433+00:00",
+    "booking_ref": "IS-APP-013433-1B9E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Sood (Neurosurgery)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1800\n• Booking Reference: IS-APP-013433-1B9E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.259201+00:00",
+    "booking_ref": "IS-APP-013433-7399",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-013433-7399\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.296162+00:00",
+    "booking_ref": "IS-APP-013433-F790",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-013433-F790\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.342455+00:00",
+    "booking_ref": "IS-APP-013433-1274",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-013433-1274\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.400960+00:00",
+    "booking_ref": "IS-APP-013433-B10C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-013433-B10C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.437711+00:00",
+    "booking_ref": "IS-APP-013433-B71C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-013433-B71C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.479510+00:00",
+    "booking_ref": "IS-APP-013433-91D0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-17 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-013433-91D0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.527360+00:00",
+    "booking_ref": "IS-APP-013433-45BB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-013433-45BB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.564180+00:00",
+    "booking_ref": "IS-APP-013433-9200",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-013433-9200\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.614685+00:00",
+    "booking_ref": "IS-APP-013433-0BCB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-17 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-013433-0BCB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.671148+00:00",
+    "booking_ref": "IS-APP-013433-AE86",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-013433-AE86\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.737437+00:00",
+    "booking_ref": "IS-APP-013433-96B5",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-17 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-013433-96B5\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.829670+00:00",
+    "booking_ref": "IS-APP-013433-5641",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-013433-5641\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.892664+00:00",
+    "booking_ref": "IS-APP-013433-ACA3",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013433-ACA3\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502673",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:33.976268+00:00",
+    "booking_ref": "IS-APP-013433-A60A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013433-A60A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502674",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:34.031405+00:00",
+    "booking_ref": "IS-APP-013434-AD0E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013434-AD0E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502675",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:35.498986+00:00",
+    "booking_ref": "IS-APP-013435-ABD5",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013435-ABD5\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502675",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:35.554257+00:00",
+    "booking_ref": "IS-APP-013435-3A73",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-013435-3A73\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502678",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:38.120916+00:00",
+    "booking_ref": "IS-APP-013438-70DA",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-013438-70DA\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502678",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:38.171012+00:00",
+    "booking_ref": "IS-APP-013438-7457",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-013438-7457\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789502678",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:04:38.212667+00:00",
+    "booking_ref": "IS-APP-013438-519E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-013438-519E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.143504+00:00",
+    "booking_ref": "IS-APP-014042-39B1",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014042-39B1\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.153185+00:00",
+    "booking_ref": "IS-APP-014042-B161",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-014042-B161\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.195170+00:00",
+    "booking_ref": "IS-APP-014042-CAFF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014042-CAFF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.213013+00:00",
+    "booking_ref": "IS-APP-014042-0312",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014042-0312\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.234315+00:00",
+    "booking_ref": "IS-APP-014042-5863",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014042-5863\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.971750+00:00",
+    "booking_ref": "IS-APP-014042-67B6",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014042-67B6\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503042",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:42.987927+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.337422+00:00",
+    "booking_ref": "IS-APP-014047-606D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-014047-606D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.394862+00:00",
+    "booking_ref": "IS-APP-014047-A1A7",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014047-A1A7\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.444536+00:00",
+    "booking_ref": "IS-APP-014047-4284",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Sood (Neurosurgery)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1800\n• Booking Reference: IS-APP-014047-4284\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.488078+00:00",
+    "booking_ref": "IS-APP-014047-B0F7",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-014047-B0F7\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.545151+00:00",
+    "booking_ref": "IS-APP-014047-F6A9",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014047-F6A9\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.594181+00:00",
+    "booking_ref": "IS-APP-014047-F7DF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-014047-F7DF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.632869+00:00",
+    "booking_ref": "IS-APP-014047-6A4B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-014047-6A4B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.712960+00:00",
+    "booking_ref": "IS-APP-014047-046D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-014047-046D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.803864+00:00",
+    "booking_ref": "IS-APP-014047-7778",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-17 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-014047-7778\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.847211+00:00",
+    "booking_ref": "IS-APP-014047-0F02",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-014047-0F02\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.926915+00:00",
+    "booking_ref": "IS-APP-014047-88C0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-014047-88C0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503047",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:47.966441+00:00",
+    "booking_ref": "IS-APP-014047-524A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-17 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014047-524A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503048",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:48.006675+00:00",
+    "booking_ref": "IS-APP-014047-2863",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-014047-2863\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503048",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:48.065171+00:00",
+    "booking_ref": "IS-APP-014048-FEB6",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-17 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-014048-FEB6\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503048",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:48.117318+00:00",
+    "booking_ref": "IS-APP-014048-0652",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014048-0652\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503048",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:48.172110+00:00",
+    "booking_ref": "IS-APP-014048-7E05",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014048-7E05\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503048",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:48.212433+00:00",
+    "booking_ref": "IS-APP-014048-5B1B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014048-5B1B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503048",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:48.244149+00:00",
+    "booking_ref": "IS-APP-014048-3845",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014048-3845\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503049",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:49.523639+00:00",
+    "booking_ref": "IS-APP-014049-1657",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014049-1657\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503049",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:49.576621+00:00",
+    "booking_ref": "IS-APP-014049-A61E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014049-A61E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503051",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:51.947659+00:00",
+    "booking_ref": "IS-APP-014051-2137",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-014051-2137\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503051",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:51.989797+00:00",
+    "booking_ref": "IS-APP-014051-27DB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014051-27DB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503052",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:10:52.077485+00:00",
+    "booking_ref": "IS-APP-014052-D77D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-014052-D77D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.139597+00:00",
+    "booking_ref": "IS-APP-014751-1DFB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014751-1DFB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.148736+00:00",
+    "booking_ref": "IS-APP-014751-A8C1",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Sood (Neurosurgery)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1800\n• Booking Reference: IS-APP-014751-A8C1\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.203205+00:00",
+    "booking_ref": "IS-APP-014751-998E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-014751-998E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.220602+00:00",
+    "booking_ref": "IS-APP-014751-025E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014751-025E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.237303+00:00",
+    "booking_ref": "IS-APP-014751-4A57",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-014751-4A57\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.258909+00:00",
+    "booking_ref": "IS-APP-014751-EB63",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-014751-EB63\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.276635+00:00",
+    "booking_ref": "IS-APP-014751-5A12",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-014751-5A12\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.293450+00:00",
+    "booking_ref": "IS-APP-014751-B78B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-17 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-014751-B78B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.309867+00:00",
+    "booking_ref": "IS-APP-014751-B3CA",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-014751-B3CA\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.329169+00:00",
+    "booking_ref": "IS-APP-014751-0972",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-014751-0972\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.345508+00:00",
+    "booking_ref": "IS-APP-014751-7333",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-17 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014751-7333\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.363616+00:00",
+    "booking_ref": "IS-APP-014751-921D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-014751-921D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.382097+00:00",
+    "booking_ref": "IS-APP-014751-F66B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-17 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-014751-F66B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.403151+00:00",
+    "booking_ref": "IS-APP-014751-D208",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014751-D208\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.427256+00:00",
+    "booking_ref": "IS-APP-014751-5C15",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014751-5C15\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.448163+00:00",
+    "booking_ref": "IS-APP-014751-045E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014751-045E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503471",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:51.465516+00:00",
+    "booking_ref": "IS-APP-014751-E630",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014751-E630\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503472",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:52.694182+00:00",
+    "booking_ref": "IS-APP-014752-DF33",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-014752-DF33\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503472",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:17:52.717295+00:00",
+    "booking_ref": "IS-APP-014752-646C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-014752-646C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503780",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:00.134696+00:00",
+    "booking_ref": "IS-APP-015300-D831",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015300-D831\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503780",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:00.145242+00:00",
+    "booking_ref": "IS-APP-015300-080B",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-015300-080B\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503780",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:00.201779+00:00",
+    "booking_ref": "IS-APP-015300-5366",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015300-5366\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503780",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:00.221294+00:00",
+    "booking_ref": "IS-APP-015300-C396",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015300-C396\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503780",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:00.239394+00:00",
+    "booking_ref": "IS-APP-015300-AA18",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015300-AA18\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503781",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:01.055706+00:00",
+    "booking_ref": "IS-APP-015301-A958",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015301-A958\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503781",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:01.071374+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.447364+00:00",
+    "booking_ref": "IS-APP-015305-47C2",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-015305-47C2\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.508856+00:00",
+    "booking_ref": "IS-APP-015305-3B81",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015305-3B81\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.583170+00:00",
+    "booking_ref": "IS-APP-015305-8A26",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Sood (Neurosurgery)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1800\n• Booking Reference: IS-APP-015305-8A26\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.821973+00:00",
+    "booking_ref": "IS-APP-015305-513F",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-015305-513F\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.860872+00:00",
+    "booking_ref": "IS-APP-015305-D1E2",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-015305-D1E2\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.916251+00:00",
+    "booking_ref": "IS-APP-015305-C646",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-015305-C646\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503785",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:05.976497+00:00",
+    "booking_ref": "IS-APP-015305-D188",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-015305-D188\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.039596+00:00",
+    "booking_ref": "IS-APP-015306-7591",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-015306-7591\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.119726+00:00",
+    "booking_ref": "IS-APP-015306-687A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-17 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-015306-687A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.211505+00:00",
+    "booking_ref": "IS-APP-015306-666F",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-015306-666F\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.281424+00:00",
+    "booking_ref": "IS-APP-015306-BBA7",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-015306-BBA7\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.348583+00:00",
+    "booking_ref": "IS-APP-015306-934A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-17 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-015306-934A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.405588+00:00",
+    "booking_ref": "IS-APP-015306-E470",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-015306-E470\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.458676+00:00",
+    "booking_ref": "IS-APP-015306-E4B7",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-17 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-015306-E4B7\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.521309+00:00",
+    "booking_ref": "IS-APP-015306-B8BC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-015306-B8BC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.590320+00:00",
+    "booking_ref": "IS-APP-015306-0937",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015306-0937\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.791660+00:00",
+    "booking_ref": "IS-APP-015306-7EA2",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015306-7EA2\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503786",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:06.864861+00:00",
+    "booking_ref": "IS-APP-015306-5AA0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015306-5AA0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503788",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:08.175084+00:00",
+    "booking_ref": "IS-APP-015308-76D0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015308-76D0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503788",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:08.308084+00:00",
+    "booking_ref": "IS-APP-015308-2D88",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-015308-2D88\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503791",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:11.566037+00:00",
+    "booking_ref": "IS-APP-015311-E573",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-015311-E573\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503791",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:11.624804+00:00",
+    "booking_ref": "IS-APP-015311-30D1",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-015311-30D1\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789503791",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:23:11.704577+00:00",
+    "booking_ref": "IS-APP-015311-EAC3",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-015311-EAC3\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504300",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:40.241301+00:00",
+    "booking_ref": "IS-APP-020140-6FAF",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020140-6FAF\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504300",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:40.252711+00:00",
+    "booking_ref": "IS-APP-020140-E44A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-020140-E44A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504300",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:40.331795+00:00",
+    "booking_ref": "IS-APP-020140-82AB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020140-82AB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504300",
+    "recipient_phone": "06297546142",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:40.353357+00:00",
+    "booking_ref": "IS-APP-020140-C7FA",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: tomorrow at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020140-C7FA\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504300",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:40.373657+00:00",
+    "booking_ref": "IS-APP-020140-8047",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sandipan,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-21 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020140-8047\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504301",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:41.137109+00:00",
+    "booking_ref": "IS-APP-020141-2292",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Sanjay Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-11-20 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020141-2292\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504301",
+    "recipient_phone": "+919876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:41.154290+00:00",
+    "booking_ref": "APT-TEST-992",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Anita Roy,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Rao (Pediatrics)\n• Date & Time: Tomorrow, 10:30 AM\n• Location: Gate 1 (Main Wing), Child Care OPD 102\n• Consultation Fee: ₹700\n• Booking Reference: APT-TEST-992\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504305",
+    "recipient_phone": "N/A",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:45.577414+00:00",
+    "booking_ref": "IS-APP-020145-22EB",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: tomorrow at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-020145-22EB\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504305",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:45.639153+00:00",
+    "booking_ref": "IS-APP-020145-6EFC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020145-6EFC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504305",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:45.719049+00:00",
+    "booking_ref": "IS-APP-020145-2B93",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Sood (Neurosurgery)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1800\n• Booking Reference: IS-APP-020145-2B93\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504305",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:45.802223+00:00",
+    "booking_ref": "IS-APP-020145-D8D7",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-020145-D8D7\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504305",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:45.863596+00:00",
+    "booking_ref": "IS-APP-020145-08D2",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sunita Pillai (Pediatrics)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-020145-08D2\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504305",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:45.915557+00:00",
+    "booking_ref": "IS-APP-020145-22B7",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Ananya Reddy (Gynecology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-020145-22B7\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.002461+00:00",
+    "booking_ref": "IS-APP-020145-BC5E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Prateek Jain (Endocrinology)\n• Date & Time: 2026-09-17 at 08:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-020145-BC5E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.071879+00:00",
+    "booking_ref": "IS-APP-020146-2795",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Suresh Balaji (Gastroenterology)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1400\n• Booking Reference: IS-APP-020146-2795\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.134340+00:00",
+    "booking_ref": "IS-APP-020146-1F30",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Kavitha Menon (Oncology)\n• Date & Time: 2026-09-17 at 11:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1600\n• Booking Reference: IS-APP-020146-1F30\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.209859+00:00",
+    "booking_ref": "IS-APP-020146-824A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Rajini Kumar (Ophthalmology)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-020146-824A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.265371+00:00",
+    "booking_ref": "IS-APP-020146-FF30",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Anil Sharma (ENT)\n• Date & Time: 2026-09-17 at 10:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹1000\n• Booking Reference: IS-APP-020146-FF30\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.331066+00:00",
+    "booking_ref": "IS-APP-020146-0C55",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-09-17 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-020146-0C55\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.402418+00:00",
+    "booking_ref": "IS-APP-020146-7559",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Arjun Mehta (General Medicine)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹700\n• Booking Reference: IS-APP-020146-7559\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.456956+00:00",
+    "booking_ref": "IS-APP-020146-6B8D",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Priya Nair (General Medicine)\n• Date & Time: 2026-09-17 at 14:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹800\n• Booking Reference: IS-APP-020146-6B8D\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.524454+00:00",
+    "booking_ref": "IS-APP-020146-9E9E",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Test Patient,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Shalini Verma (Radiology & Diagnostic Imaging)\n• Date & Time: 2026-09-17 at 09:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-020146-9E9E\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9111111111",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.586477+00:00",
+    "booking_ref": "IS-APP-020146-B803",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Caller A,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020146-B803\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9333333333",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.666813+00:00",
+    "booking_ref": "IS-APP-020146-F7E0",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient X,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 09:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020146-F7E0\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504306",
+    "recipient_phone": "9444444444",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:46.736591+00:00",
+    "booking_ref": "IS-APP-020146-620A",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Patient Y,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-25 at 10:30 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020146-620A\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504308",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:48.040162+00:00",
+    "booking_ref": "IS-APP-020148-904C",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Rohan Gupta,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-28 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020148-904C\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504308",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:48.107007+00:00",
+    "booking_ref": "IS-APP-020148-F3C8",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Ananya Sen,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Meera Singh (Dermatology)\n• Date & Time: 2026-08-29 at 15:00\n• Location: Gate 1 (Main Wing), Room 105, 1st Floor\n• Consultation Fee: ₹900\n• Booking Reference: IS-APP-020148-F3C8\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504310",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:50.844598+00:00",
+    "booking_ref": "IS-APP-020150-28BC",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 10:00 AM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-020150-28BC\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504311",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:51.334688+00:00",
+    "booking_ref": "IS-APP-020151-4970",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Sameer Kulkarni (Cardiology)\n• Date & Time: 2026-08-22 at 11:00 AM\n• Location: Gate 2 (OPD Entrance), Room 204, 2nd Floor\n• Consultation Fee: ₹1200\n• Booking Reference: IS-APP-020151-4970\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  },
+  {
+    "notification_id": "NOTIF-1789504311",
+    "recipient_phone": "9876543210",
+    "channel": "SMS_WHATSAPP",
+    "channels": [
+      "sms",
+      "whatsapp"
+    ],
+    "status": "dispatched",
+    "timestamp": "2026-09-15T20:31:51.475454+00:00",
+    "booking_ref": "IS-APP-020151-D864",
+    "message_text": "🏥 Apollo Metro Hospital — OPD Appointment Pass\n\nDear Arun Adhikari,\nYour OPD appointment has been confirmed with:\n• Doctor: Dr. Vikram Shetty (Orthopedics)\n• Date & Time: 2026-08-22 at 12:00 PM\n• Location: Gate 2 (OPD Entrance), Room 105, 1st Floor\n• Consultation Fee: ₹1300\n• Booking Reference: IS-APP-020151-D864\n\n📍 Hospital Navigation: https://maps.google.com/?q=Apollo+Metro+Hospital\n⚠️ Please arrive 15 minutes before your scheduled time. Wishing you good health!"
+  }
+]

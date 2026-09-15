@@ -57,7 +57,7 @@ class MockS2SStream:
                 
                 # 1. Hospital Info
                 if any(k in patient_text for k in ["where", "address", "location", "pharmacy"]):
-                    await self._simulate_text("Indiiserve Healthcare is located at Sector 5, Cyber City. Is there anything else you need?")
+                    await self._simulate_text("SarvoDaya Hospital is located at Sector 5, Cyber City. Is there anything else you need?")
                     await self._simulate_tool_call(
                         "hospitalInfoTool", 
                         {"query": patient_text}
@@ -77,8 +77,8 @@ class MockS2SStream:
                         "clinicalTriageTool",
                         {
                             "symptoms": patient_text,
-                            "pain_intensity": 7 if "severe" in patient_text else 4,
-                            "onset_duration": "since today",
+                            "pain_intensity": None,
+                            "onset_duration": None,
                             "decision_reason": "Patient mentioned clinical symptoms."
                         }
                     )
@@ -97,7 +97,7 @@ class MockS2SStream:
 
                 # 6. Default Greeting / Info
                 else:
-                    await self._simulate_text("Hello, this is Asha at Indiiserve Healthcare. How can I help you?")
+                    await self._simulate_text("Hello, this is Asha at SarvoDaya Hospital. How can I help you?")
                 
                 self.queue.task_done()
             except asyncio.CancelledError:

@@ -34,7 +34,8 @@ class AnalyticsProcessor:
     async def process_call(self, session_id: str, phone: str, hospital_id: str, transcript: list, duration: int, token_usage: dict = None):
         """Analyze the transcript using AI and save results to DynamoDB."""
         import asyncio
-        if not transcript:
+        if not transcript or len(transcript) < 4 or duration < 15:
+            logger.info(f"[ANALYTICS] Skipping analytics for session {session_id} - call too short (turns={len(transcript) if transcript else 0}, duration={duration}s)")
             return
 
         formatted_transcript = "\n".join([f"{m['role']}: {m['content']}" for m in transcript])

@@ -2,31 +2,17 @@ import os
 import sys
 import boto3
 
+from dotenv import load_dotenv
+
 LOCAL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENV_FILE = os.path.join(LOCAL_DIR, ".env")
+if os.path.exists(ENV_FILE):
+    load_dotenv(ENV_FILE)
 
-if not os.path.exists(ENV_FILE):
-    print("[ERROR] .env file not found")
-    sys.exit(1)
-
-aws_access_key = None
-aws_secret_key = None
-
-with open(ENV_FILE, "r") as f:
-    for line in f:
-        if line.startswith("AWS_ACCESS_KEY_ID="):
-            aws_access_key = line.split("=")[1].strip()
-        elif line.startswith("AWS_SECRET_ACCESS_KEY="):
-            aws_secret_key = line.split("=")[1].strip()
-
-session = boto3.Session(
-    aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_key,
-    region_name="us-east-1"
-)
+session = boto3.Session(region_name=os.environ.get("AWS_REGION_VIRGINIA", "us-east-1"))
 ec2 = session.client("ec2")
 
-instance_id = "i-050fe50ea149ab8ef"
+instance_id = os.environ.get("TARGET_VIRGINIA_INSTANCE_ID", "")
 
 print(f"[RUNNING] Terminating old Virginia instance {instance_id}...")
 try:

@@ -16,10 +16,10 @@ TextMediaType = Literal["text/plain", "application/json"]
 
 @dataclass(frozen=True)
 class InferenceConfig:
-    # 150 tokens = ~100-120 words, optimal for 1-2 conversational sentences without chunking
-    max_tokens: int = 150
-    top_p: float = 0.9
-    temperature: float = 0.7
+    # 120 tokens = ~85 words, optimal for crisp reception responses and lowest time-to-first-audio-token
+    max_tokens: int = 120
+    top_p: float = 0.85
+    temperature: float = 0.5
 
 
 @dataclass(frozen=True)
@@ -31,7 +31,7 @@ class AudioConfiguration:
     channel_count: int = 1
     encoding: str = "base64"
     voice_id: Optional[str] = None
-    endpointing_sensitivity: Optional[str] = "MEDIUM"
+    endpointing_sensitivity: Optional[str] = "HIGH"
 
 
 @dataclass(frozen=True)
@@ -49,7 +49,7 @@ class ToolConfiguration:
 # Default configuration instances matching TypeScript consts.ts values
 DEFAULT_INFERENCE_CONFIG = InferenceConfig()
 
-DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="MEDIUM")
+DEFAULT_AUDIO_INPUT_CONFIG = AudioConfiguration(endpointing_sensitivity="HIGH")
 
 DEFAULT_AUDIO_OUTPUT_CONFIG = AudioConfiguration(
     voice_id=os.getenv("NOVA_VOICE_ID", "kiara")

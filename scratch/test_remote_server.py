@@ -4,11 +4,16 @@ import os
 import sys
 import websockets
 from uuid import uuid4
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 async def test_remote():
-    # Production server WebSocket URL
-    uri = f"wss://voice.indiiserve.ai/exotel-stream?hospital_id=apollo_metro&CallSid={uuid4()}"
-    print(f"Connecting to live production server: {uri}")
+    # Load .env variables
+    token = os.environ.get("EXOTEL_WS_SECRET", "")
+    uri = f"wss://voice.indiiserve.ai/exotel-stream?hospital_id=apollo_metro&CallSid={uuid4()}&token={token}"
+    print(f"Connecting to live production server: wss://voice.indiiserve.ai/exotel-stream?...(auth token appended)")
     
     try:
         async with websockets.connect(uri) as websocket:

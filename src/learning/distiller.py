@@ -2,18 +2,20 @@ import json
 import logging
 import os
 import pathlib
+import re
+import time
+import random
+import tempfile
+from datetime import datetime, timezone
 import boto3
 
 logger = logging.getLogger(__name__)
 
 class KnowledgeDistiller:
-    """The 'Brain' extension: Learns from user conversations and system events."""
+    """The 'Brain' extension: Extracts candidate facts from calls for human review."""
     
     def __init__(self):
         from botocore.config import Config
-        # [A1.8-FIX] Raised read_timeout from 2s → 30s. Bedrock Nova Lite calls frequently
-        # take 3–10 seconds under load; 2s caused 30–40% timeout failures with no retry.
-        # max_attempts=2 adds one automatic retry on transient network errors.
         boto_config = Config(
             connect_timeout=5,
             read_timeout=30,
@@ -24,12 +26,13 @@ class KnowledgeDistiller:
         self.table_name = os.getenv("DYNAMODB_TABLE_NAME", "InDiiServe_Call_Transcript_1")
         
         self.knowledge_file = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "unified_hospital_kb.json"
+        self.pending_file = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "pending_facts.json"
+        self._last_processed_session_ids: set[str] = set()
 
     def _get_recent_transcripts(self, limit=10):
         """Fetch the latest call transcripts from DynamoDB."""
         try:
             table = self.dynamo.Table(self.table_name)
-            # Simplified scan for the demo/pilot (ideally should be a GSI on timestamp)
             response = table.scan(Limit=limit)
             return response.get("Items", [])
         except Exception as e:
@@ -44,11 +47,14 @@ class KnowledgeDistiller:
             content = msg.get("content", "")
             transcript_text += f"{role}: {content}\n"
 
+        # SEC-3: Truncate transcript text to prevent huge payloads or prompt injection
+        transcript_text = transcript_text[:2000]
+
         prompt = f"""
         Analyze the following call transcript between a Hospital AI Assistant (Asha) and a Patient.
         Your goal is to extract 'New Facts' or 'Knowledge Corrections' that the AI should LEARN for future calls.
         
-        Example Learing Moments:
+        Example Learning Moments:
         - Patient says: "No, Dr. Sen's clinic is on the 3rd floor now." (The AI should learn the new floor).
         - AI says: "I don't know the parking rates." Patient says: "It's 20 rupees for an hour." (AI should learn parking rate).
         
@@ -70,7 +76,6 @@ class KnowledgeDistiller:
                 "inferenceConfig": {"maxTokens": 500}
             })
             
-            # Use Nova Lite instead of deprecated Claude models
             model_id = os.getenv(
                 "DISTILLER_MODEL_ID",
                 "us.amazon.nova-lite-v1:0"
@@ -90,14 +95,25 @@ class KnowledgeDistiller:
                       .get("text", "[]")
             )
             
-            import re
             match = re.search(r'\[.*\]', output_text, re.DOTALL)
             if match:
                 extracted = json.loads(match.group(0))
             else:
                 extracted = []
+            
+            # SEC-3: Validate each extracted fact
+            valid_facts = []
+            for fact in extracted:
+                q = str(fact.get("question", "")).strip()
+                a = str(fact.get("answer", "")).strip()
+                if not q or not a or len(q) > 300 or len(a) > 500:
+                    continue
+                # Reject suspicious URLs, scripts, or non-medical instructions
+                if re.search(r"(http://|https://|<script|javascript:|eval\()", a, re.IGNORECASE):
+                    continue
+                valid_facts.append({"question": q, "answer": a})
                 
-            return extracted
+            return valid_facts
         except Exception as e:
             logger.error(f"[LEARNING] Distillation failed: {e}")
             return []
@@ -106,105 +122,170 @@ class KnowledgeDistiller:
         """Main loop for the learning worker."""
         logger.info("[LEARNING] Starting knowledge distillation cycle...")
         items = self._get_recent_transcripts()
+        if not items:
+            logger.info("[LEARNING] No transcripts returned from store.")
+            return False
+
+        # COST-1: Check if any items are new to avoid calling LLM on identical transcripts
+        current_session_ids = {item.get("session_id", "") for item in items if item.get("session_id")}
+        new_items = [item for item in items if item.get("session_id") not in self._last_processed_session_ids]
         
+        if not new_items and self._last_processed_session_ids:
+            logger.info("[LEARNING] No new transcripts since last cycle. Skipping LLM invocation.")
+            return False
+
         all_new_facts = []
-        for item in items:
+        for item in new_items or items:
             facts = self.distill_knowledge_from_transcript(item)
             if facts:
                 all_new_facts.extend(facts)
         
+        self._last_processed_session_ids = current_session_ids
+
         if all_new_facts:
-            self._save_knowledge(all_new_facts)
-            logger.info(f"[LEARNING] Discovered {len(all_new_facts)} new facts from recent calls.")
+            added = self._save_pending_knowledge(all_new_facts)
+            logger.info(f"[LEARNING] Discovered {len(all_new_facts)} candidates ({added} queued for review).")
             return True
         return False
 
-    def _save_knowledge(self, new_facts):
-        if not self.knowledge_file.exists():
-            logger.error(f"[LEARNING] KB file does not exist at {self.knowledge_file}")
-            return
-            
-        try:
-            with open(self.knowledge_file, "r", encoding="utf-8") as f:
-                kb_data = json.load(f)
-        except Exception as e:
-            logger.error(f"[LEARNING] Failed to read unified KB file: {e}")
-            return
-            
-        if "faq" not in kb_data:
-            kb_data["faq"] = []
-            
-        import time
-        import random
-        from datetime import datetime, timezone
+    def _save_pending_knowledge(self, new_facts: list[dict]) -> int:
+        """HIGH-6: Save discovered facts to pending review queue instead of modifying production KB."""
+        pending_list = self.get_pending_facts()
         
         added_count = 0
         for fact in new_facts:
-            q = fact.get("question", "")
-            a = fact.get("answer", "")
-            if isinstance(q, dict):
-                q = q.get("text", str(q))
-            elif not isinstance(q, str):
-                q = str(q) if q is not None else ""
-            if isinstance(a, dict):
-                a = a.get("text", str(a))
-            elif not isinstance(a, str):
-                a = str(a) if a is not None else ""
-            q = q.strip()
-            a = a.strip()
+            q = fact.get("question", "").strip()
+            a = fact.get("answer", "").strip()
             if not q or not a:
                 continue
                 
-            # Check for duplicate in existing question_variants
-            duplicate = False
-            for entry in kb_data["faq"]:
-                variants = [v.lower().strip() for v in entry.get("question_variants", [])]
-                if q.lower().strip() in variants:
-                    duplicate = True
-                    break
-                    
-            if not duplicate:
-                timestamp = int(time.time())
-                rand_id = random.randint(1000, 9999)
-                new_faq = {
-                    "id": f"faq_learned_{timestamp}_{rand_id}",
-                    "category": "Learned Fact",
-                    "intent": f"learned_fact_{timestamp}_{rand_id}",
-                    "question_variants": [q],
-                    "answer": a,
-                    "tags": ["learned"]
-                }
-                kb_data["faq"].append(new_faq)
-                added_count += 1
+            # Avoid duplicate questions in pending queue
+            if any(p.get("question", "").lower().strip() == q.lower().strip() for p in pending_list):
+                continue
                 
+            timestamp = int(time.time())
+            rand_id = random.randint(1000, 9999)
+            fact_entry = {
+                "fact_id": f"fact_{timestamp}_{rand_id}",
+                "question": q,
+                "answer": a,
+                "status": "PENDING_REVIEW",
+                "submitted_at": datetime.now(timezone.utc).isoformat()
+            }
+            pending_list.append(fact_entry)
+            added_count += 1
+
         if added_count > 0:
+            self._write_pending_file(pending_list)
+            logger.info(f"[LEARNING] Queued {added_count} new candidate facts for human review.")
+        return added_count
+
+    def get_pending_facts(self) -> list[dict]:
+        """Fetch all facts waiting for human/admin review."""
+        if not self.pending_file.exists():
+            return []
+        try:
+            with open(self.pending_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"[LEARNING] Failed to read pending facts file: {e}")
+            return []
+
+    def _write_pending_file(self, data: list[dict]):
+        """Atomic write to pending facts file."""
+        self.pending_file.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode='w',
+                dir=self.pending_file.parent,
+                suffix='.tmp',
+                delete=False,
+                encoding='utf-8'
+            ) as tmp:
+                json.dump(data, tmp, indent=2, ensure_ascii=False)
+                tmp_path = tmp.name
+            os.replace(tmp_path, self.pending_file)
+        except Exception as e:
+            logger.error(f"[LEARNING] Failed to write pending facts: {e}")
+            if tmp_path and os.path.exists(tmp_path):
+                try:
+                    os.unlink(tmp_path)
+                except Exception:
+                    pass
+
+    def approve_pending_fact(self, fact_id: str) -> bool:
+        """Approve a fact from pending queue and commit it to production KB."""
+        pending_list = self.get_pending_facts()
+        target_fact = None
+        remaining = []
+        for f in pending_list:
+            if f.get("fact_id") == fact_id:
+                target_fact = f
+            else:
+                remaining.append(f)
+
+        if not target_fact:
+            logger.warning(f"[LEARNING] Fact {fact_id} not found in pending review queue.")
+            return False
+
+        # Append to production KB
+        try:
+            if not self.knowledge_file.exists():
+                logger.error(f"[LEARNING] KB file does not exist at {self.knowledge_file}")
+                return False
+                
+            with open(self.knowledge_file, "r", encoding="utf-8") as f:
+                kb_data = json.load(f)
+                
+            if "faq" not in kb_data:
+                kb_data["faq"] = []
+
+            timestamp = int(time.time())
+            rand_id = random.randint(1000, 9999)
+            new_faq = {
+                "id": f"faq_approved_{timestamp}_{rand_id}",
+                "category": "Approved Fact",
+                "intent": f"approved_fact_{timestamp}_{rand_id}",
+                "question_variants": [target_fact["question"]],
+                "answer": target_fact["answer"],
+                "tags": ["reviewed", "approved"]
+            }
+            kb_data["faq"].append(new_faq)
+
             if "metadata" in kb_data:
                 kb_data["metadata"]["last_updated"] = datetime.now(timezone.utc).isoformat()
-                
-            # [A1.9-FIX] Atomic write: write to a temp file first, then rename.
-            # This prevents unified_hospital_kb.json from being corrupted if the process
-            # crashes or a JSON parse error occurs mid-write. os.replace() is atomic on Linux.
-            import tempfile
+
+            # Atomic write to production KB
             tmp_path = None
-            try:
-                with tempfile.NamedTemporaryFile(
-                    mode='w',
-                    dir=self.knowledge_file.parent,
-                    suffix='.tmp',
-                    delete=False,
-                    encoding='utf-8'
-                ) as tmp:
-                    json.dump(kb_data, tmp, indent=2, ensure_ascii=False)
-                    tmp_path = tmp.name
-                os.replace(tmp_path, self.knowledge_file)  # Atomic rename
-                logger.info(f"[LEARNING] Appended {added_count} learned facts directly to {self.knowledge_file}")
-            except Exception as e:
-                logger.error(f"[LEARNING] Failed to write updated unified KB file: {e}")
-                if tmp_path:
-                    try:
-                        os.unlink(tmp_path)
-                    except Exception:
-                        pass
+            with tempfile.NamedTemporaryFile(
+                mode='w',
+                dir=self.knowledge_file.parent,
+                suffix='.tmp',
+                delete=False,
+                encoding='utf-8'
+            ) as tmp:
+                json.dump(kb_data, tmp, indent=2, ensure_ascii=False)
+                tmp_path = tmp.name
+            os.replace(tmp_path, self.knowledge_file)
+
+            # Update pending file
+            self._write_pending_file(remaining)
+            logger.info(f"[LEARNING] Approved and committed fact {fact_id} to {self.knowledge_file}")
+            return True
+        except Exception as e:
+            logger.error(f"[LEARNING] Error approving fact {fact_id}: {e}")
+            return False
+
+    def reject_pending_fact(self, fact_id: str) -> bool:
+        """Reject and remove a fact from the pending review queue."""
+        pending_list = self.get_pending_facts()
+        new_list = [f for f in pending_list if f.get("fact_id") != fact_id]
+        if len(new_list) == len(pending_list):
+            return False
+        self._write_pending_file(new_list)
+        logger.info(f"[LEARNING] Rejected fact {fact_id} from pending review queue.")
+        return True
 
 # Global Instance
 learning_distiller = KnowledgeDistiller()

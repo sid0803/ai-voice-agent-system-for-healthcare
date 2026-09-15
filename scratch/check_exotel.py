@@ -1,12 +1,19 @@
+import os
+import sys
 import requests
 import json
 from datetime import datetime
 
-api_key = "d341b12bf96f67d419047f72e7d0fdd142d3e80b2ecc7236"
-api_token = "c8a271d43bd6878fb25b2d7a8641416b75d466cb24692280"
-sid = "indiiserve1"
+api_key = os.environ.get("EXOTEL_API_KEY")
+api_token = os.environ.get("EXOTEL_API_TOKEN")
+sid = os.environ.get("EXOTEL_SID", "indiiserve1")
+subdomain = os.environ.get("EXOTEL_SUBDOMAIN", "api.exotel.com")
 
-url = f"https://{api_key}:{api_token}@api.exotel.com/v1/Accounts/{sid}/Calls.json"
+if not api_key or not api_token:
+    print("[ERROR] Missing EXOTEL_API_KEY or EXOTEL_API_TOKEN in environment variables.")
+    sys.exit(1)
+
+url = f"https://{api_key}:{api_token}@{subdomain}/v1/Accounts/{sid}/Calls.json"
 
 try:
     # Query recent call log list

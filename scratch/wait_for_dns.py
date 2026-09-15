@@ -1,10 +1,15 @@
+import os
 import time
 import socket
 import sys
 
-TARGET_IP = "15.206.93.221"
-DOMAIN = "voice.indiiserve.ai"
+TARGET_IP = os.environ.get("TARGET_DNS_IP", "")
+DOMAIN = os.environ.get("TARGET_DOMAIN", "voice.indiiserve.ai")
 MAX_ATTEMPTS = 60  # 30 minutes max (60 * 30 seconds)
+
+if not TARGET_IP:
+    print("[ERROR] TARGET_DNS_IP environment variable must be set.")
+    sys.exit(1)
 
 print(f"[RUNNING] Waiting for {DOMAIN} to resolve to {TARGET_IP}...")
 for attempt in range(1, MAX_ATTEMPTS + 1):

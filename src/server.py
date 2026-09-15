@@ -1,12 +1,7 @@
 """FastAPI server with Exotel integration for Nova Sonic speech-to-speech AI."""
 
 import os
-import platform
-from collections import namedtuple
-# [FIX] Bypass WMI hang in Python 3.13+ / botocore on Windows subprocesses
-if os.name == 'nt':
-    _uname_tuple = namedtuple('uname_result', ['system', 'node', 'release', 'version', 'machine', 'processor'])
-    platform.uname = lambda: _uname_tuple('Windows', '', '10', '10.0.0', 'AMD64', '')
+import src.compat  # Applies platform patches (e.g. Windows WMI deadlock fix) idempotently
 
 import asyncio
 import base64
@@ -16,19 +11,24 @@ import json
 import logging
 import time
 from contextlib import asynccontextmanager
-from uuid import uuid4
+from dataclasses import dataclass, field
 from datetime import datetime, timezone, timedelta
+from typing import Any, Optional
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from uuid import uuid4
+import re
 
 import httpx
+import numpy as np
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from src.diagnostics.latency_tracker import latency_telemetry
 
 load_dotenv()
 
@@ -65,10 +65,70 @@ from src.analytics.dynamodb_client import dynamodb_analytics
 from src.analytics.processor import analytics_processor
 from src.transcript_store import save_transcript
 
+# ---------------------------------------------------------------------------
+# [AI-04] Known consultation fees & Spoken Fact Gate (Delegated to src.guards)
+# ---------------------------------------------------------------------------
+from src.guards import (
+    _KNOWN_CONSULTATION_FEES,
+    sanitize_spoken_text,
+    apply_spoken_fact_gate,
+)
+from src.idle_monitor import IdleMonitorSession
+
+# ---------------------------------------------------------------------------
+# [AI-22] KB version logging and staleness check — runs at startup
+# ---------------------------------------------------------------------------
+def _check_kb_version():
+    try:
+        import json as _json
+        from datetime import datetime, timezone, timedelta
+        kb_path = _PROJECT_ROOT / "data" / "unified_hospital_kb.json"
+        if not kb_path.exists():
+            return
+        meta = _json.loads(kb_path.read_text(encoding="utf-8")).get("metadata", {})
+        version     = meta.get("version", "unknown")
+        last_updated = meta.get("last_updated", "")
+        logger = logging.getLogger(__name__)
+        logger.info("[KB] Loaded unified_hospital_kb.json version=%s last_updated=%s", version, last_updated)
+        if last_updated:
+            try:
+                updated_dt = datetime.fromisoformat(last_updated.replace("Z", "+00:00"))
+                age_days = (datetime.now(timezone.utc) - updated_dt).days
+                if age_days > 30:
+                    logger.warning(
+                        "[KB-STALE] unified_hospital_kb.json is %d days old (version=%s). "
+                        "Consider refreshing doctor schedules and tariffs.",
+                        age_days, version
+                    )
+            except ValueError:
+                pass  # Unrecognised date format — skip staleness check
+    except Exception:
+        pass
+
+_check_kb_version()
+
+
 logger = logging.getLogger(__name__)
 
-# Track active background tasks to ensure safe shutdown
+# Track active background tasks to ensure safe shutdown and prevent garbage collection
 _background_tasks = set()
+
+
+def safe_background_task(coro, name: Optional[str] = None, on_error_msg: str = "Background task failed") -> asyncio.Task:
+    """Schedules a coroutine safely, retains reference in _background_tasks, and logs any unhandled exceptions."""
+    task = asyncio.create_task(coro, name=name)
+    _background_tasks.add(task)
+
+    def _done_cb(t: asyncio.Task) -> None:
+        _background_tasks.discard(t)
+        if not t.cancelled():
+            exc = t.exception()
+            if exc:
+                logger.error("%s (task=%s): %s", on_error_msg, name or t.get_name(), exc, exc_info=exc)
+
+    task.add_done_callback(_done_cb)
+    return task
+
 
 # ---------------------------------------------------------------------------
 # Rate Limiter (CRIT-05)
@@ -100,11 +160,37 @@ def _is_exotel_ip(client_ip: str) -> bool:
     """Check if the connecting IP is from a known Exotel IP range."""
     return any(client_ip.startswith(prefix) for prefix in _EXOTEL_IP_PREFIXES)
 
-def _verify_exotel_ws_token(token: str) -> bool:
-    """Verify the shared WS token passed as a query param by Exotel."""
+def _verify_exotel_ws_token(token: str, call_sid: str = "") -> bool:
+    """Verify the time-limited HMAC nonce appended to the WebSocket URL.
+
+    [AI-03] The raw EXOTEL_WS_SECRET is never sent over the wire. Instead,
+    /incoming-call generates a HMAC-SHA256(secret, "exotel:<call_sid>:<minute_bucket>")
+    nonce. The nonce is valid for the current 2-minute bucket and the previous one
+    (to cover clock skew between Exotel and our server).
+    """
     if not _EXOTEL_WS_SECRET:
         return False
-    return hmac.compare_digest(token, _EXOTEL_WS_SECRET)
+    import time as _time
+    secret_bytes = _EXOTEL_WS_SECRET.encode()
+    current_bucket = int(_time.time()) // 120
+    for delta in (0, 1):  # Accept current and previous bucket
+        bucket = current_bucket - delta
+        msg = f"exotel:{call_sid}:{bucket}".encode()
+        expected = hmac.new(secret_bytes, msg, "sha256").hexdigest()
+        if hmac.compare_digest(token, expected):
+            return True
+    return False
+
+def _generate_exotel_ws_nonce(call_sid: str = "") -> str:
+    """Generate the HMAC nonce that /incoming-call appends to the WebSocket URL.
+
+    [AI-03] Replaces the previous approach of appending the raw secret.
+    The nonce is a 64-char hex string valid for 2 minutes.
+    """
+    import time as _time
+    bucket = int(_time.time()) // 120
+    msg = f"exotel:{call_sid}:{bucket}".encode()
+    return hmac.new(_EXOTEL_WS_SECRET.encode(), msg, "sha256").hexdigest()
 
 def _append_query_params(url: str, params: list[tuple[str, str]]) -> str:
     """Append URL-encoded query params while preserving any existing query string."""
@@ -157,67 +243,18 @@ def _get_websocket_client_ip(websocket: WebSocket) -> str:
         return real_ip.strip()
     return websocket.client.host if websocket.client else ""
 
-def detect_language(text: str) -> str:
-    """
-    Returns 'hindi', 'hinglish', or 'english' based on the caller's text.
-    Called on every user utterance for per-turn language mirroring.
-    """
-    # Check for Devanagari script characters (Unicode range U+0900–U+097F)
-    devanagari_count = sum(1 for ch in text if '\u0900' <= ch <= '\u097F')
-    if devanagari_count >= 1:
-        return "hindi"
+# ── Multilingual & Persona Handling (Delegated to src.language) ──────────────
+from src.language import (
+    detect_language,
+    LANGUAGE_INSTRUCTIONS,
+    _apply_gender_guard,
+    _is_liveness_check,
+    _ALL_LIVENESS_PHRASES,
+    _FILLER_PHRASES,
+    _FILLER_COOLDOWN_SEC,
+)
 
-    # Hinglish = Roman script but contains Hindi/Urdu words or ASR phonetic variations
-    core_hindi_roman_words = {
-        "hai", "hain", "ho", "hoon", "kya", "kab", "kaise", "kahaan", "kidhar", "kyun", "kaun", "kaunse",
-        "kiska", "kiski", "kiske", "kitna", "kitne", "mujhe", "mera", "meri", "hum", 
-        "humara", "humari", "humare", "aap", "aapka", "aapki", "aapke", "tum", "tumhara", 
-        "tumhari", "tumhare", "apna", "apni", "apne", "liye", "saath", "paas", "karna", "karo", "karein", "karni", 
-        "karta", "karti", "karte", "krna", "kro", "chahiye", "chahie", "chahye", 
-        "batao", "bataiye", "batana", "btao", "btaiye", "nahi", "nahin", "mat", "theek", 
-        "achha", "acha", "thik", "kal", "aaj", "parso", "abhi", "pehle", "baad", 
-        "bhi", "ya", "aur", "lekin", "toh", "suniye", "milna", "mil", "dekhna", 
-        "dikhana", "dikhao", "chalega", "bataye", "dopahar", "dupahar", "dufair",
-        "subah", "shaam", "sam", "raat", "dikhao", "bol", "bolo", "sakta", "sakti"
-    }
 
-    import re
-    cleaned_text = re.sub(r'[^\w\s]', ' ', text.lower())
-    words = cleaned_text.split()
-
-    # Require >= 2 Hinglish words or 1 unambiguous strong word to switch from English
-    strong_hinglish_words = {"chahiye", "bataiye", "karta", "karti", "humara", "tumhara", "kijiye", "aapka", "aapki", "aapke", "kaunse"}
-    matched_words = [w for w in words if w in core_hindi_roman_words]
-    
-    if len(matched_words) >= 2 or any(w in strong_hinglish_words for w in words):
-        return "hinglish"
-
-    return "english"
-
-# Language injection messages — injected into Nova Sonic on language switch
-LANGUAGE_INSTRUCTIONS = {
-    "hindi": (
-        "[SYSTEM: Caller spoke HINDI. Reply 100% in Hindi Devanagari script ONLY. "
-        "When speaking about YOURSELF (Asha), use feminine verbs: करती हूँ, बताती हूँ, देखूंगी. "
-        "When ADDRESSING the caller, use respectful gender-neutral आप forms: "
-        "चाहिए, बताइए, कीजिए, बोलिए. NEVER use चाहती/चाहते for the caller — use चाहिए. "
-        "Do NOT assume the caller's gender.]"
-    ),
-    "hinglish": (
-        "[SYSTEM: Caller spoke HINGLISH. Reply 100% in Hinglish Roman script ONLY. "
-        "For YOURSELF (Asha): karti hoon, batati hoon, dekhungi. "
-        "For CALLER: use gender-neutral forms: chahiye, bataiye, kijiye, boliye. "
-        "NEVER use chahti/chahte for the caller — use chahiye.]"
-    ),
-    "english": (
-        "[SYSTEM: Caller spoke ENGLISH. Reply 100% in ENGLISH ONLY. "
-        "CLEAR PREVIOUS HINDI/HINGLISH CONTEXT IMMEDIATELY. Do NOT output any Hindi, Hinglish, or Devanagari words.]"
-    ),
-}
-
-# hello_audio_bytes: digital silence — greeting is handled entirely by Nova Sonic dynamically.
-# The hello.pcm file is no longer used. Keeping variable for backward compatibility only.
-hello_audio_bytes = b'\x00' * 24000  # 1.5 seconds of 8kHz 16-bit PCM silence
 
 nova_voice = os.environ.get("NOVA_VOICE_ID", "")
 if not nova_voice:
@@ -271,75 +308,183 @@ exotel_http = httpx.AsyncClient(
 )
 
 # ---------------------------------------------------------------------------
-# System prompt
+# Session State Model (Phase 2 & Conversational Grounding)
+# ---------------------------------------------------------------------------
+@dataclass
+class SessionState:
+    session_id: str
+    caller_phone: str
+    
+    # 1. REQUESTED (In-flight proposals, unverified)
+    requested_doctor: Optional[str] = None
+    requested_dept: Optional[str] = None
+    requested_date: Optional[str] = None
+    requested_time: Optional[str] = None
+    
+    # 2. VALIDATED (Tool / Doctor Master verified candidates)
+    validated_doctor_id: Optional[str] = None
+    validated_doctor_name: Optional[str] = None
+    validated_date_iso: Optional[str] = None
+    validated_time_24h: Optional[str] = None
+    candidate_patient_id: Optional[str] = None
+    
+    # 3. CONFIRMED_BY_CALLER (Explicit caller confirmation)
+    confirmed_doctor: Optional[str] = None
+    confirmed_date: Optional[str] = None
+    confirmed_time: Optional[str] = None
+    confirmed_patient: Optional[str] = None
+    
+    # 4. COMMITTED_BY_BACKEND (Authoritative backend state)
+    current_appointment: Optional[dict] = None
+    authorized_patient_id: Optional[str] = None
+    confirmed_doctor_id: Optional[str] = None
+    confirmed_doctor_name: Optional[str] = None
+    confirmed_department_id: Optional[str] = None
+    confirmed_department_name: Optional[str] = None
+    confirmed_date_iso: Optional[str] = None
+    confirmed_time_24h: Optional[str] = None
+    confirmed_fee: Optional[int] = None
+    last_authoritative_facts: Optional[dict] = None
+    
+    identity_status: str = "UNKNOWN"
+    patient_name: Optional[str] = None
+    patient_name_verified: bool = False
+    pending_confirmation: Optional[dict] = None
+    current_language: str = "en"
+    previous_language: str = "en"
+    language_confidence: float = 1.0
+    active_doctor_candidates: Optional[list] = None
+    current_intent: str = "general_query"
+    intent_confidence: float = 1.0
+    pending_action: Optional[str] = None
+    last_tool_name: Optional[str] = None
+    last_tool_result: Optional[dict] = None
+
+
+# ---------------------------------------------------------------------------
+# System prompt: ASHA Human Receptionist & Grounded Voice Architecture
 # ---------------------------------------------------------------------------
 
 SYSTEM_PROMPT = """
-## ABSOLUTE LANGUAGE RULE (CRITICAL — READ FIRST)
-1. DYNAMIC LANGUAGE MIRRORING: You must detect and mirror the caller's language on EVERY SINGLE TURN.
-2. Your DEFAULT language on call startup is ENGLISH. Your first turn MUST be 100% in English.
-3. Switch language immediately if the caller changes language.
-   - If the caller speaks Hindi, you must immediately switch to 100% Hindi Devanagari script.
-   - If the caller speaks Hinglish, you must immediately switch to 100% Hinglish in Roman script.
-   - If the caller speaks English, you must immediately switch back to 100% English.
-4. STRICT LANGUAGE ISOLATION: Never mix languages in a single response. Always respond 100% in the exact language the user used in their most recent turn.
+## INTENT TO TOOL ROUTING & CONTEXTUAL SCOPE
+1. APPOINTMENT HISTORY vs BILLING:
+   - For past consultations, visits, or medical history: ALWAYS call `appointmentHistoryTool`. NEVER call `getBillingInfoTool`.
+   - For outstanding balance, charges, or invoices: Call `getBillingInfoTool`.
+   - For active / upcoming appointments: Call `appointmentLookupTool`.
+   - For booking new slots: Call `appointmentBookingTool`.
+   - For rescheduling existing appointments: Call `appointmentRescheduleTool`.
+   - For cancelling appointments: Call `appointmentCancelTool`.
+2. CONTEXTUAL RESOLUTION & OTHER DOCTOR:
+   - When asked "Who is the other doctor?" or "What about the other specialist?": Answer ONLY with the unmentioned doctor from the current department. Do NOT repeat already-discussed doctors.
+   - When asked "What is his fee?" or "What time is her slot?": Answer ONLY the specific fact for the currently discussed doctor.
+3. FACT PRUNING & ANTI-DUMPING:
+   - When answering a specific question (e.g. fee, timing, address), provide ONLY that specific fact in 1 concise sentence. Do NOT recite the entire tool result or roster.
 
-## IDENTITY, GENDER & HUMAN RECEPTIONIST PERSONA
-1. You are Asha, a warm, polite, empathetic human receptionist at Indiiserve Healthcare.
-2. For YOURSELF (Asha), use feminine verbs when speaking about yourself ("मैं बताती हूँ", "मैं देखूंगी", "karti hoon").
-3. For ADDRESSING THE CALLER, ALWAYS use gender-neutral respectful forms ("आप + चाहिए / बताइए / कीजिए", "aap + chahiye / bataiye"). NEVER use "चाहती/चाहते".
-4. SPEAK LIKE A REAL HUMAN RECEPTIONIST:
-   - Use warm conversational bridges: "जी बिल्कुल", "अरे हाँ", "sure thing", "एक सेकंड दीजिये मैं देख लेती हूँ".
-   - Address the caller warmly by name if they share their name ("जी रोहन जी").
-   - NEVER sound like a textbook, IVR menu, or database lookup tool.
+## ABSOLUTE LANGUAGE RULE (CRITICAL — READ FIRST)
+1. DYNAMIC LANGUAGE MIRRORING: Detect and mirror the caller's language on EVERY SINGLE TURN.
+2. Default language on call startup is ENGLISH. Your first turn MUST be 100% in English.
+3. Switch language immediately when the caller speaks in a different language:
+   - If caller speaks Hindi, switch to 100% Hindi Devanagari script.
+   - If caller speaks Hinglish, switch to 100% Hinglish in Roman Latin script.
+   - If caller speaks English, switch to 100% English Latin script.
+4. STRICT SCRIPT ISOLATION: Never mix conversational scripts in a single response.
+   - Factual entity names (e.g. "Dr. Sameer Kulkarni", "IS-APP-085649", "MRI", "12:00 PM") may remain intact.
+5. NO LANGUAGE RESET ON STATE: Switching language must NEVER reset active appointment, doctor, or patient state.
+
+## BEHAVIORAL ACKNOWLEDGMENT POLICY & HUMAN RECEPTIONIST PERSONA
+1. You are Asha, a professional, calm, concise, warm female receptionist at SarvoDaya Hospital.
+2. NO AUTOMATIC PREPENDED ACKNOWLEDGMENTS:
+   - NEVER use robotic cheerleading or fake enthusiasm words.
+   - BAN: "Perfect!", "Great news!", "Good news!", "Sure thing!", "Wonderful!", "Certainly!", "Absolutely!", "Of course!", "बेहतरीन!", "बिल्कुल सही!", "शानदार!", "बढ़िया!", "वाह!", "ज़बरदस्त!".
+3. ABSOLUTE BAN ON IVR MENU STYLE (CRITICAL):
+   - NEVER say "Press 1 for X, Press 2 for Y" — you are NOT an IVR machine, you are a human receptionist.
+   - NEVER use numbered options: "Option 1:", "Option 2:", "Say 1 for...", "For appointments press 1", "For billing press 2" etc.
+   - When presenting choices, speak conversationally: "Would you like to book an appointment, or did you have a question?" — NEVER as a numbered list.
+3. ANSWER THE QUESTION FIRST (ANSWER FIRST):
+   - Answer the caller's specific question immediately in 1 short sentence before offering next steps (e.g. Caller: "What is the hospital name?" -> "SarvoDaya Hospital.").
+4. RESPONSE CONTRACT ADHERENCE:
+   - When response_contract is EXACT_SLOT_UNAVAILABLE: State clearly that the requested time is not available in that department. Offer to check the nearest open times. NEVER claim any doctor is available at that time.
+   - When response_contract is DEPARTMENT_REQUIRED: Say: "Which department would you like me to check?"
+   - When state is UNKNOWN/ERROR: Say: "I'm sorry, I couldn't confirm that slot right now. Let me check again." NEVER guess or speculate.
+5. RESPONSE LENGTH POLICY:
+   - Simple factual answers: 1 short sentence.
+   - Normal transactional/booking turns: 1–2 short conversational sentences.
+   - Clarifications: 1 concise question.
+   - Safety/Emergency: direct, calm handoff instruction.
+6. DYNAMIC SINGLE-FIELD INTAKE:
+   - Collect exactly ONE missing required field per turn.
+   - Dynamically ask for whichever field is missing based on what the caller already provided:
+     - If patient, doctor, and date are known -> ask for time: "What time would you prefer?"
+     - If doctor and time are known -> ask for patient name: "Could you please share the patient's full name?"
+     - If booking details are known -> confirm contact number: "Shall I confirm this with the number you are calling from?"
+   - NEVER ask for full name, doctor, department, date, time, and phone all in one turn!
+7. PHONETIC ENTITY CONFIRMATION GATE:
+   - When ASR hears an uncertain or approximate doctor name (e.g. "Samil Kulkarni" for Dr. Sameer Kulkarni), ask: "Did you mean Dr. Sameer Kulkarni?" before booking.
+   - When ASR hears an approximate patient name (e.g. "Barun" for Arun), ask: "I have your name as Arun. Is that correct?".
+8. NO PARAPHRASING & OPTIONAL ACKNOWLEDGMENT:
+   - NEVER repeat or paraphrase the caller's request (BAN: "I understand you need...", "I understand you want...", "I understand you are audible").
+   - If caller asks "Hello? Are you there?" -> answer: "Yes, I'm here. Please go ahead."
+   - If caller asks "Am I audible?" -> answer: "Yes, I'm right here. Please go ahead."
+9. PROACTIVE NEXT-SLOT ASSISTANCE (NO DEAD ENDS):
+   - When a requested slot or date is unavailable and the tool result includes 'proactive_next_slot', ALWAYS offer that alternative in the same turn.
+10. NO SCRIPTED FAQ ENDINGS:
+   - NEVER append "Is there anything else you would like to know about our services?" during active tasks or booking flows.
+11. COMPREHENSIVE BAN ON INTERNAL JARGON:
+   - NEVER mention: "tools", "systems", "databases", "APIs", "backend", "functions", "models", "AI", "prompts", "knowledge base", "memory", "processing", "internal records", or "algorithms".
+   - NEVER say "I need to use the official tool" or "According to database records". Speak naturally as a human receptionist.
+12. AVAILABILITY != BOOKING != RESCHEDULING:
+    - Checking open slots does NOT confirm a booking or move an existing appointment until the caller explicitly confirms.
+13. GENDER-NEUTRAL RESPECTFUL FORMS:
+    - For Asha: use feminine verbs ("मैं बताती हूँ", "karti hoon").
+    - For Caller: ALWAYS use gender-neutral respectful forms ("आप + चाहिए / बताइए / कीजिए", "aap + chahiye / bataiye"). NEVER use "चाहती/चाहते".
 
 ## HOSPITAL CORE DATA & GROUND TRUTH
-- Hospital Name: Indiiserve Healthcare
-- Address: Indiiserve Healthcare Main Campus, Plot 42, Healthcare Boulevard, Sector 5, Cyber City (Opposite Central Metro Gate 3).
-- Hindi Address: इंडीसर्व हेल्थकेयर, प्लॉट 42, हेल्थकेयर बुलेवार्ड, सेक्टर 5, साइबर सिटी (सेंट्रल मेट्रो गेट 3 के सामने)।
-- Contact Phone: +91 8 0 4 0 0 0 9 0 0 0 (Speak each digit individually: "8 0 4 0 0 0 9 0 0 0").
+- Hospital Name: SarvoDaya Hospital
+- Address: SarvoDaya Hospital Main Campus, Plot 42, Healthcare Boulevard, Sector 5, Cyber City (Opposite Central Metro Gate 3).
+- Hindi Address: सर्वोदय हॉस्पिटल, प्लॉट 42, हेल्थकेयर बुलेवार्ड, सेक्टर 5, साइबर सिटी (सेंट्रल मेट्रो गेट 3 के सामने)।
+- Contact Phone: +91 8 0 4 0 0 9 0 0 0 (Speak each digit individually: "8 0 4 0 0 9 0 0 0").
 - OPD Hours: 9:00 AM to 6:00 PM (Monday to Saturday). Emergency is 24/7.
-- Always use hospital tools for doctor schedules, fees, lab test prices, and room tariffs.
+- Always use hospital tools for authoritative doctor schedules, fees, lab test prices, and room tariffs.
 
-## NO TECHNICAL JARGON & ANTI-ROBOTIC RULES (CRITICAL)
-1. NEVER mention "tools", "system", "functions", "software", "database", "APIs", or "internal data" to the caller in any language.
-2. STRICTLY BANNED PHRASES:
-   - NEVER say "I understand your concern", "I understand you'd like", "I understand you want", "This will help me", or "The system is currently showing...".
-   - Replace with warm, human responses: "Of course!", "Sure thing", "जी बिल्कुल", "अरे हाँ".
-3. NO NUMBERED LISTS: NEVER use numbered lists like "1.", "2.", "firstly" in spoken speech. Offer choices in natural sentences: "We can check Cardiology, or would you like to see another department?"
+## CLARIFY WHEN UNSURE (UNDERSTAND -> VALIDATE -> ACT)
+1. If caller intent or ASR transcription is ambiguous, NEVER guess. Ask a short, specific clarification question.
+2. For ambiguous lab requests ("I need a lab test"), ask: "Would you like information about test prices or would you like to schedule a visit?"
+3. If ASR mishears a non-hospital term (e.g. "laptop"), ask: "Sorry, did you mean a lab test?"
 
-## APPOINTMENT BOOKING & CALLER PHONE FLOW
-1. When booking an appointment:
-   - Collect Patient Name.
-   - Confirm Doctor / Department and preferred Date & Time.
-   - PHONE NUMBER CONFIRMATION: You already know the caller is calling from their phone number. NEVER say "I don't have your phone number on record".
-   - In English, ask: "Shall I confirm this appointment with the number you are calling from, or would you like to provide a different mobile number?"
-   - In Hindi: "क्या मैं इसी नंबर पर अपॉइंटमेंट बुक कर दूँ जिससे आप कॉल कर रहे हैं, या आप कोई दूसरा नंबर देना चाहेंगे?"
-   - In Hinglish: "Kya main isi number par appointment book kar doon jisse aap call kar rahe hain, ya aap koi doosra number dena chahenge?"
-   - If they confirm the same number, proceed. If they provide another number, use the provided number.
+## CALLER CORRECTION & GRACIOUS PIVOTING
+1. The caller's latest statement always has priority. If they clarify or change their request, pivot immediately.
 
-## ALL-DEPARTMENTS & BROAD INQUIRIES (NO LOOPS)
-1. If the caller asks for "all departments" or "all doctors", do NOT get stuck in a repetitive loop or dump an overwhelming list.
-2. Acknowledge our 13 departments and offer to guide them: "We have 13 departments available including Cardiology, Orthopedics, Neurology, and ENT. Which specialty would you like me to check first?"
+## PATIENT IDENTITY, PRIVACY & AUTHORIZATION
+1. A phone number is ONLY an identity signal, NOT permanent patient identity.
+2. NEVER disclose prior medical records, doctors, or lab reports to a caller based solely on a phone number match.
+3. If an existing patient calls from a new number or gives their name, call `searchPatientTool` to locate their candidate profile.
+4. UNLINKED PHONE VERIFICATION: If calling from an unlinked phone, ask for their prior Appointment Reference ID before disclosing past records.
+5. IDENTITY MISMATCH & CAREGIVERS: If a caller gives a different name than the registered patient, do NOT disclose the patient's records. Caregivers must provide the patient's Appointment Reference ID to view existing records.
+
+## APPOINTMENT BOOKING & AUTHORITATIVE FEE GROUNDING
+1. When booking: Collect missing details dynamically (Doctor/Dept, Date, Time, Patient Name, Phone).
+2. ANTI-HALLUCINATION GATE: NEVER say an appointment is "booked" or generate any reference ID unless `appointmentBookingTool` has executed successfully.
+3. AUTHORITATIVE FEE: Use strictly the exact fee returned by `appointmentBookingTool` (e.g. Dr. Sameer Kulkarni = ₹1,200). Never guess or alter the fee.
+4. CROSS-QUESTIONING GROUNDING: If the caller asks "Who did I book?", "Which department?", "What time?", or "What is my reference number?", answer in 1 short direct sentence using the exact details returned by `appointmentBookingTool`.
 
 ## SURGERY & OPERATION THEATRE (OT) SAFETY
-1. Operation Theatre (OT) slots, surgeries, and ICU admissions require direct clinical evaluation by our specialist surgeons during OPD consultations.
-2. NEVER fabricate surgery slot dates, times (like "tomorrow at 11:00 AM"), or duration breakdowns.
-3. State: "For OT and surgical procedures, our surgeons evaluate patients during OPD consultations. Please call our hospital desk at 8 0 4 0 0 0 9 0 0 0 or visit the OPD to schedule a surgical assessment."
+1. Operation Theatre (OT) slots and surgeries require clinical evaluation by specialist surgeons during OPD consultations.
+2. NEVER fabricate surgery slot dates or times. State: "For surgical procedures, our specialist surgeons evaluate patients during OPD consultations. Please visit our OPD or call our hospital desk at 8 0 4 0 0 9 0 0 0 to schedule a consultation."
 
-## CLINICAL SAFETY & EMERGENCY
-If caller mentions red-flag symptoms (chest pain, severe breathing difficulty, profuse bleeding, stroke, unconsciousness):
-1. Say immediately: "This sounds urgent. Please stay on the line, I am connecting you to our emergency desk immediately."
-2. Execute handoffTool immediately. Do NOT offer medical advice.
-3. Non-emergency symptoms: Offer standard appointment booking.
+## CLINICAL SAFETY & APPROVED TRIAGE POLICY
+1. Follow hospital-approved clinical triage policy. NEVER invent or infer medical routing logic.
+2. If caller mentions red-flag symptoms (severe crushing chest pain, radiating pain, breathlessness, loss of consciousness, stroke symptoms, profuse bleeding):
+   - Say immediately: "This sounds urgent. Please stay on the line, I am connecting you to our emergency desk immediately."
+   - Execute handoffTool immediately. Do NOT offer medical advice.
+3. For non-emergency symptoms: call `clinicalTriageTool` to log symptoms and route to the approved hospital department.
 
-## ANTI-HALLUCINATION & GROUNDING (MRI & SCANS CRITICAL RULE)
-1. Rely STRICTLY on facts returned by hospital tools.
-2. ALWAYS call `hospitalInfoTool` when the caller asks about ANY MRI, CT scan, X-Ray, Ultrasound, or scan pricing.
-3. NEVER say an MRI or scan is unavailable without executing a tool call first.
-4. Our hospital provides 3 MRI scans (Brain MRI ₹8,500, Spine MRI ₹9,000, Full Abdomen MRI ₹12,000) open 24/7.
+## HANG-UP & CALL DISCONNECT
+If caller says "hang up", "disconnect", "that's all", or "end the call":
+Say once: "Thank you for calling SarvoDaya Hospital. Take care." and end the call.
 Current Date: {{TODAY_DATE}}.
 """
+
+
 
 # ---------------------------------------------------------------------------
 # AWS Bedrock client
@@ -369,10 +514,11 @@ else:
 IDLE_TIMEOUT_SECONDS = 25  # Send idle check after 25s of silence
 HANGUP_GRACE_SECONDS = 15 # Hang up if no response within 15s after follow-up
 
-# ---------------------------------------------------------------------------
-# Session map
-# ---------------------------------------------------------------------------
+# [AI-05] Hard cap on concurrent sessions. Protects against OOM under traffic spike.
+# New connections arriving when the cap is full receive WS close code 1013 (Try Again Later).
+MAX_CONCURRENT_SESSIONS: int = int(os.environ.get("MAX_CONCURRENT_SESSIONS", "200"))
 session_map: dict = {}
+
 
 # ---------------------------------------------------------------------------
 # FastAPI lifespan: startup tasks + SIGTERM graceful shutdown
@@ -404,6 +550,32 @@ async def run_async_startup_checks():
         logger.info(f"{'='*40}\n")
     except Exception:
         logger.exception("[STARTUP] Health diagnostic failed to run")
+
+    # [LATENCY-01] Pre-warm Unified KB cache and common queries to eliminate cold-start latency
+    try:
+        from src.tools import _unified_hospital_info
+        _PREWARM_QUERIES = [
+            "startup warmup",
+            "Dr. Amit Sharma timing",
+            "Dr. Priya Patel OPD fee",
+            "MRI brain with contrast cost",
+            "CT scan price",
+            "emergency number",
+            "cashless mediclaim accepted",
+            "hospital address location",
+            "blood test timing",
+            "Dr. Sameer Kulkarni cardiology appointment",
+            "X-ray charges",
+            "ultrasound cost",
+        ]
+        for q in _PREWARM_QUERIES:
+            try:
+                _unified_hospital_info({"query": q})
+            except Exception:
+                pass
+        logger.info("[STARTUP] ✅ Unified KB cache and common queries pre-warmed successfully.")
+    except Exception as e:
+        logger.warning("[STARTUP] KB pre-warm skipped: %s", e)
 
     # Warm up FAISS cache with distilled facts (skip in unified KB mode)
     from src.kb_config import KB_SYSTEM
@@ -466,6 +638,19 @@ async def run_async_startup_checks():
             else:
                 logger.info("[STARTUP] DynamoDB Analytics table '%s' already exists. ✅", analytics_table_name)
 
+            def _seed_tenant_sync(hospital_id: str, seed_file: str):
+                try:
+                    from src.analytics.dynamodb_client import dynamodb_analytics
+                    if not dynamodb_analytics.get_tenant(hospital_id):
+                        seed_path = pathlib.Path(__file__).parent.parent / "data" / "seeds" / seed_file
+                        if seed_path.exists():
+                            with open(seed_path, "r", encoding="utf-8") as f:
+                                seed_data = json.load(f)
+                            dynamodb_analytics.save_tenant(seed_data)
+                            logger.info("[STARTUP] Seeded tenant '%s' from %s", hospital_id, seed_file)
+                except Exception as e:
+                    logger.error("[STARTUP] Error seeding tenant %s: %s", hospital_id, e)
+
             # Check Tenants Table
             tenants_table_name = os.environ.get("DYNAMODB_TENANTS_TABLE", "InDiiServe_Tenants")
             if tenants_table_name not in existing:
@@ -478,176 +663,13 @@ async def run_async_startup_checks():
                 logger.info("[STARTUP] DynamoDB table '%s' created.", tenants_table_name)
                 try:
                     dynamo.get_waiter("table_exists").wait(TableName=tenants_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
-                    from src.analytics.dynamodb_client import dynamodb_analytics
-                    apollo_data = {
-                        "hospital_id": "apollo_metro",
-                        "hospital_name": "Apollo Metro Super-Specialty",
-                        "status": "live",
-                        "ingestion_strategy": "hybrid",
-                        "sync_interval_mins": 10,
-                        "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
-                        "created_at": "2026-04-18T21:25:34.512531",
-                        "hospital_data_normalized": {
-                            "id": "apollo_metro",
-                            "name": "Apollo Metro Super-Specialty",
-                            "status": "live",
-                            "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
-                            "contact": "+91 80 4000 9000",
-                            "departments": ["Cardiology", "Neurology", "Diabetes Clinic", "Physiotherapy", "Emergency"],
-                            "doctors": [
-                                {
-                                    "id": "doc_001",
-                                    "name": "Dr. Sameer Kulkarni",
-                                    "dept": "Cardiology",
-                                    "experience": "12 years",
-                                    "languages": ["English", "Hindi"],
-                                    "consultation_type": ["OPD", "Follow-up"],
-                                    "fee": 1200,
-                                    "location": "Block A, 1st Floor",
-                                    "availability": {
-                                        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                                        "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
-                                    }
-                                },
-                                {
-                                    "id": "doc_002",
-                                    "name": "Dr. Megha Rao",
-                                    "dept": "Neurology",
-                                    "experience": "10 years",
-                                    "languages": ["English"],
-                                    "consultation_type": ["OPD"],
-                                    "fee": 1500,
-                                    "location": "Neuro Wing, 4th Floor",
-                                    "availability": {
-                                        "days": ["Mon", "Wed", "Fri"],
-                                        "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
-                                    }
-                                },
-                                {
-                                    "id": "doc_003",
-                                    "name": "Dr. Prateek Jain",
-                                    "dept": "Diabetes Clinic",
-                                    "experience": "8 years",
-                                    "languages": ["English", "Hindi"],
-                                    "consultation_type": ["OPD", "Routine Check"],
-                                    "fee": 800,
-                                    "location": "OPD Block G",
-                                    "availability": {
-                                        "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                                        "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
-                                    }
-                                }
-                            ],
-                            "services": [
-                                {"name": "Cardiac Checkup", "price": 2500, "duration": "2 hours"},
-                                {"name": "Brain MRI", "price": 12000, "duration": "45 mins"},
-                                {"name": "Blood Sugar (HbA1c)", "price": 650, "duration": "15 mins"},
-                                {"name": "Physiotherapy Session", "price": 1000, "duration": "30 mins"}
-                            ],
-                            "emergency": {
-                                "available": True,
-                                "contact": "1066",
-                                "instruction": "Immediate assistance available. Connecting to emergency desk."
-                            },
-                            "faq": [
-                                {"intent": "pharmacy_location", "questions": ["Where is pharmacy?", "Pharmacy location?", "Is pharmacy open?"], "answer": "Our pharmacy is near the main exit and is open 24/7."},
-                                {"parking": True, "questions": ["Is parking available?", "Where to park?"], "answer": "Multi-level parking is available for all visitors."},
-                                {"faq_cafeteria": True, "questions": ["Is there food?", "Any cafeteria?"], "answer": "The food court is on the 5th floor with healthy meal options."}
-                            ],
-                            "integration": {"spreadsheet_id": "APOLLO_METRO_LIVE_SINK", "crm_enabled": True, "api_enabled": True},
-                            "ai_settings": {"default_language": "English", "fallback_language": "Hindi", "confidence_threshold": 0.7, "enable_memory": True}
-                        }
-                    }
-                    dynamodb_analytics.save_tenant(apollo_data)
-                    logger.info("[STARTUP] Seeded default tenant 'apollo_metro'.")
+                    _seed_tenant_sync("apollo_metro", "apollo_metro_seed.json")
                 except Exception as e:
                     logger.error("[STARTUP] Failed to seed default tenant: %s", e)
             else:
                 logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", tenants_table_name)
                 try:
-                    from src.analytics.dynamodb_client import dynamodb_analytics
-                    if not dynamodb_analytics.get_tenant("apollo_metro"):
-                        apollo_data = {
-                            "hospital_id": "apollo_metro",
-                            "hospital_name": "Apollo Metro Super-Specialty",
-                            "status": "live",
-                            "ingestion_strategy": "hybrid",
-                            "sync_interval_mins": 10,
-                            "spreadsheet_id": "APOLLO_METRO_LIVE_SINK",
-                            "created_at": "2026-04-18T21:25:34.512531",
-                            "hospital_data_normalized": {
-                                "id": "apollo_metro",
-                                "name": "Apollo Metro Super-Specialty",
-                                "status": "live",
-                                "address": "12/B, MG Road, Residency Area, Bengaluru-560025",
-                                "contact": "+91 80 4000 9000",
-                                "departments": ["Cardiology", "Neurology", "Diabetes Clinic", "Physiotherapy", "Emergency"],
-                                "doctors": [
-                                    {
-                                        "id": "doc_001",
-                                        "name": "Dr. Sameer Kulkarni",
-                                        "dept": "Cardiology",
-                                        "experience": "12 years",
-                                        "languages": ["English", "Hindi"],
-                                        "consultation_type": ["OPD", "Follow-up"],
-                                        "fee": 1200,
-                                        "location": "Block A, 1st Floor",
-                                        "availability": {
-                                            "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                                            "time_slots": ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"]
-                                        }
-                                    },
-                                    {
-                                        "id": "doc_002",
-                                        "name": "Dr. Megha Rao",
-                                        "dept": "Neurology",
-                                        "experience": "10 years",
-                                        "languages": ["English"],
-                                        "consultation_type": ["OPD"],
-                                        "fee": 1500,
-                                        "location": "Neuro Wing, 4th Floor",
-                                        "availability": {
-                                            "days": ["Mon", "Wed", "Fri"],
-                                            "time_slots": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
-                                        }
-                                    },
-                                    {
-                                        "id": "doc_003",
-                                        "name": "Dr. Prateek Jain",
-                                        "dept": "Diabetes Clinic",
-                                        "experience": "8 years",
-                                        "languages": ["English", "Hindi"],
-                                        "consultation_type": ["OPD", "Routine Check"],
-                                        "fee": 800,
-                                        "location": "OPD Block G",
-                                        "availability": {
-                                            "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                                            "time_slots": ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]
-                                        }
-                                    }
-                                ],
-                                "services": [
-                                    {"name": "Cardiac Checkup", "price": 2500, "duration": "2 hours"},
-                                    {"name": "Brain MRI", "price": 12000, "duration": "45 mins"},
-                                    {"name": "Blood Sugar (HbA1c)", "price": 650, "duration": "15 mins"},
-                                    {"name": "Physiotherapy Session", "price": 1000, "duration": "30 mins"}
-                                ],
-                                "emergency": {
-                                    "available": True,
-                                    "contact": "1066",
-                                    "instruction": "Immediate assistance available. Connecting to emergency desk."
-                                },
-                                "faq": [
-                                    {"intent": "pharmacy_location", "questions": ["Where is pharmacy?", "Pharmacy location?", "Is pharmacy open?"], "answer": "Our pharmacy is near the main exit and is open 24/7."},
-                                    {"parking": True, "questions": ["Is parking available?", "Where to park?"], "answer": "Multi-level parking is available for all visitors."},
-                                    {"faq_cafeteria": True, "questions": ["Is there food?", "Any cafeteria?"], "answer": "The food court is on the 5th floor with healthy meal options."}
-                                ],
-                                "integration": {"spreadsheet_id": "APOLLO_METRO_LIVE_SINK", "crm_enabled": True, "api_enabled": True},
-                                "ai_settings": {"default_language": "English", "fallback_language": "Hindi", "confidence_threshold": 0.7, "enable_memory": True}
-                            }
-                        }
-                        dynamodb_analytics.save_tenant(apollo_data)
-                        logger.info("[STARTUP] Seeded missing default tenant 'apollo_metro'.")
+                    _seed_tenant_sync("apollo_metro", "apollo_metro_seed.json")
                 except Exception as e:
                     logger.error("[STARTUP] Failed to verify/seed default tenant: %s", e)
 
@@ -664,9 +686,17 @@ async def run_async_startup_checks():
                 try:
                     dynamo.get_waiter("table_exists").wait(TableName=users_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
                     from src.analytics.dynamodb_client import dynamodb_analytics
-                    admin_hash = os.environ.get("ADMIN_PASSWORD_HASH", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu")
-                    dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
-                    logger.info("[STARTUP] Seeded default user 'admin_metro'.")
+                    is_prod = os.environ.get("ENVIRONMENT", "development").lower() == "production"
+                    admin_hash = os.environ.get("ADMIN_PASSWORD_HASH")
+                    if is_prod and not admin_hash:
+                        logger.error("[SECURITY CRITICAL] ADMIN_PASSWORD_HASH is required in production. Refusing to seed default admin user.")
+                    else:
+                        if not admin_hash:
+                            import bcrypt
+                            admin_hash = bcrypt.hashpw(b"dev_ephemeral_test_secret_2026", bcrypt.gensalt(rounds=10)).decode()
+                            logger.warning("[SECURITY] ADMIN_PASSWORD_HASH not set in development. Using ephemeral dev hash.")
+                        dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
+                        logger.info("[STARTUP] Seeded user 'admin_metro'.")
                 except Exception as e:
                     logger.error("[STARTUP] Failed to seed default user: %s", e)
             else:
@@ -674,9 +704,17 @@ async def run_async_startup_checks():
                 try:
                     from src.analytics.dynamodb_client import dynamodb_analytics
                     if not dynamodb_analytics.get_user("admin_metro"):
-                        admin_hash = os.environ.get("ADMIN_PASSWORD_HASH", "$2b$12$yR/MslXD5e/A/UH1oLLU6eFPCoe6MkhOekURMmeaqezJVHvnR5Gtu")
-                        dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
-                        logger.info("[STARTUP] Seeded missing default user 'admin_metro'.")
+                        is_prod = os.environ.get("ENVIRONMENT", "development").lower() == "production"
+                        admin_hash = os.environ.get("ADMIN_PASSWORD_HASH")
+                        if is_prod and not admin_hash:
+                            logger.error("[SECURITY CRITICAL] ADMIN_PASSWORD_HASH is required in production. Refusing to seed missing admin user.")
+                        else:
+                            if not admin_hash:
+                                import bcrypt
+                                admin_hash = bcrypt.hashpw(b"dev_ephemeral_test_secret_2026", bcrypt.gensalt(rounds=10)).decode()
+                                logger.warning("[SECURITY] ADMIN_PASSWORD_HASH not set in development. Using ephemeral dev hash.")
+                            dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
+                            logger.info("[STARTUP] Seeded missing user 'admin_metro'.")
                 except Exception as e:
                     logger.error("[STARTUP] Failed to verify/seed default user: %s", e)
         
@@ -694,6 +732,33 @@ async def run_async_startup_checks():
         logger.warning("[STARTUP] Initial background tasks failed - system may be partially functional.")
 
 
+async def _session_watchdog():
+    """Periodic watchdog to evict zombie sessions (>10 mins) and free memory."""
+    while True:
+        try:
+            await asyncio.sleep(120)  # Check every 2 minutes
+            now = time.time()
+            stale_sids = []
+            async with _session_lock:
+                for sid, sess in list(session_map.items()):
+                    created_at = getattr(sess, "_created_at", None)
+                    if created_at and (now - created_at > 600):  # 10 minutes max call duration
+                        stale_sids.append(sid)
+            for sid in stale_sids:
+                logger.warning("[WATCHDOG] Evicting zombie session %s (>10m old)", sid[:8])
+                async with _session_lock:
+                    sess = session_map.pop(sid, None)
+                if sess:
+                    try:
+                        await sess.close()
+                    except Exception:
+                        pass
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.warning("[WATCHDOG] Session watchdog error: %s", e)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handle server startup and graceful shutdown (SIGTERM from Docker/ECS)."""
@@ -704,6 +769,11 @@ async def lifespan(app: FastAPI):
     startup_task = asyncio.create_task(run_async_startup_checks())
     _background_tasks.add(startup_task)
     startup_task.add_done_callback(_background_tasks.discard)
+
+    # Launch session watchdog
+    watchdog_task = asyncio.create_task(_session_watchdog())
+    _background_tasks.add(watchdog_task)
+    watchdog_task.add_done_callback(_background_tasks.discard)
 
     yield  # Server is running and handling requests
 
@@ -758,13 +828,39 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
 # [CRIT-05] Rate limiter error handler
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# ---------------------------------------------------------------------------
+# Admin API Router Mount (/api/v1)
+# ---------------------------------------------------------------------------
+from src.admin.routes.auth import router as admin_auth_router
+from src.admin.routes.dashboard import router as admin_dashboard_router
+from src.admin.routes.calls import router as admin_calls_router
+from src.admin.routes.appointments import router as admin_appointments_router
+from src.admin.routes.triage import router as admin_triage_router
+from src.admin.routes.events import router as admin_events_router
+from src.admin.routes.knowledge import router as admin_knowledge_router
+from src.admin.routes.telephony import router as admin_telephony_router
+from src.admin.routes.sandbox import router as admin_sandbox_router
+from src.admin.routes.analytics import router as admin_analytics_router
+
+app.include_router(admin_auth_router, prefix="/api/v1")
+app.include_router(admin_dashboard_router, prefix="/api/v1")
+app.include_router(admin_calls_router, prefix="/api/v1")
+app.include_router(admin_appointments_router, prefix="/api/v1")
+app.include_router(admin_triage_router, prefix="/api/v1")
+app.include_router(admin_events_router, prefix="/api/v1")
+app.include_router(admin_knowledge_router, prefix="/api/v1")
+app.include_router(admin_telephony_router, prefix="/api/v1")
+app.include_router(admin_sandbox_router, prefix="/api/v1")
+app.include_router(admin_analytics_router, prefix="/api/v1")
+
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -773,9 +869,27 @@ async def favicon():
     return Response(status_code=204)
 
 
-@app.get("/")
-async def root():
-    """Root route returning JSON status message."""
+# [AI-02] Serve the admin portal SPA at root and all non-API paths.
+# portal/dist is built by `npm run build` inside the portal/ directory.
+_PORTAL_DIST = pathlib.Path(__file__).resolve().parent.parent / "portal" / "dist"
+
+if _PORTAL_DIST.exists():
+    from fastapi.staticfiles import StaticFiles
+    _assets_dir = _PORTAL_DIST / "assets"
+    if _assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(_assets_dir)), name="portal-assets")
+    logger.info("[SPA] Portal dist found at %s — serving SPA at /", _PORTAL_DIST)
+else:
+    logger.warning("[SPA] portal/dist not found. Root / will return JSON status only.")
+
+
+@app.get("/", include_in_schema=False)
+async def spa_root():
+    """Serve the React portal SPA index at /. Falls back to JSON if dist is not built."""
+    index = _PORTAL_DIST / "index.html"
+    if index.exists():
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=index.read_text(encoding="utf-8"))
     return {"message": "Exotel Media Stream Server is running!"}
 
 
@@ -826,7 +940,9 @@ async def incoming_call(request: Request):
     # PII can contain reserved URL characters.
     params = []
     if _EXOTEL_WS_SECRET:
-        params.append(("token", _EXOTEL_WS_SECRET))
+        # [AI-03] Send a time-limited HMAC nonce, NOT the raw secret.
+        # This prevents the secret from appearing in Nginx/Exotel access logs.
+        params.append(("token", _generate_exotel_ws_nonce(call_sid)))
     if call_sid:
         params.append(("CallSid", call_sid))
     if call_from:
@@ -939,6 +1055,10 @@ async def failover(
         return PlainTextResponse("Internal server error", status_code=500)
 
 
+# [AI-06] Distiller Fact Review Endpoints moved to /api/v1/knowledge/review-facts
+# They are now in src/admin/routes/knowledge.py with proper JWT auth middleware.
+# Old paths /admin/review-facts → new paths /api/v1/knowledge/review-facts
+
 @app.websocket("/exotel-stream")
 async def exotel_stream(websocket: WebSocket):
     """WebSocket route for Exotel voice bot applet connections.
@@ -950,6 +1070,8 @@ async def exotel_stream(websocket: WebSocket):
     # [CRIT-02] WebSocket Authentication: verify caller identity before accepting
     client_ip = _get_websocket_client_ip(websocket)
     ws_token = websocket.query_params.get("token", "")
+    # [AI-03] Extract call_sid early so the HMAC nonce verifier can use it
+    ws_call_sid = websocket.query_params.get("CallSid", "")
 
     if not _EXOTEL_WS_SECRET:
         logger.error("[AUTH] EXOTEL_WS_SECRET is not configured/empty. Rejecting WebSocket connection.")
@@ -957,7 +1079,7 @@ async def exotel_stream(websocket: WebSocket):
         return
 
     # Allow connection if client provides correct token OR comes from a verified Exotel/AWS IP
-    is_valid_token = ws_token and _verify_exotel_ws_token(ws_token)
+    is_valid_token = ws_token and _verify_exotel_ws_token(ws_token, call_sid=ws_call_sid)
     is_verified_exotel = client_ip and _is_exotel_ip(client_ip)
 
     if not is_valid_token and not is_verified_exotel:
@@ -974,7 +1096,6 @@ async def exotel_stream(websocket: WebSocket):
 
     # Extract call metadata from WebSocket URL query params
     # (passed from /incoming-call endpoint)
-    ws_call_sid = websocket.query_params.get("CallSid", "")
     encrypted_call_from = websocket.query_params.get("CallFrom", "")
     
     # Decrypt phone number (PII Hardening P1)
@@ -997,8 +1118,24 @@ async def exotel_stream(websocket: WebSocket):
         await websocket.close(code=1008) # Policy Violation
         return
 
+    # [AI-05] Enforce session cap — reject new connections when limit is reached
+    if len(session_map) >= MAX_CONCURRENT_SESSIONS:
+        logger.warning(
+            "[CAP] Session map full (%d/%d). Rejecting new WebSocket connection from %s.",
+            len(session_map), MAX_CONCURRENT_SESSIONS, client_ip
+        )
+        await websocket.close(code=1013)  # 1013 = Try Again Later
+        return
+
     session = bedrock_client.create_stream_session(session_id)
+    session._created_at = time.time()
     session.hospital_id = hospital_id # Inject for downstream use
+    session.call_sid = ws_call_sid or ""
+    session.state = SessionState(
+        session_id=session_id,
+        caller_phone=ws_call_from or "",
+        identity_status="UNKNOWN",
+    )
     
     # Audit: Log connection start
     audit_logger.log_event(session_id, "SESSION_START", hospital_id, {"caller": mask_phone(ws_call_from)})
@@ -1034,6 +1171,7 @@ async def exotel_stream(websocket: WebSocket):
     current_assistant_text = ""
     transcript_saved = False
     call_start_time = None
+    turn_index = 1
 
     # -----------------------------------------------------------------------
     # Refined Silence Thresholds (Requirement: Clinical Safety)
@@ -1054,10 +1192,17 @@ async def exotel_stream(websocket: WebSocket):
     
     detected_language = "en"
     previous_language = "en"   # [LANG-FIX] Tracks prior turn's language to detect mid-call switches
+    active_language = "en"
+    pending_lang_code = "en"
+    pending_lang_streak = 0
     is_first_user_turn = True  # Tracks initial turn to flush Nova Sonic opening buffer
     tool_in_progress = False
     call_start_time = datetime.now(timezone.utc)
     pending_audio_outputs: list[dict] = []
+
+    # ── Acoustic Filler Tracking ──────────────────
+    _filler_index: dict[str, int] = {"en": 0, "hi": 0, "hi-en": 0, "bn": 0}
+    _last_filler_time = 0.0
 
     async def flush_pending_audio_outputs() -> None:
         if not session.stream_sid:
@@ -1068,44 +1213,6 @@ async def exotel_stream(websocket: WebSocket):
         while pending_audio_outputs:
             data = pending_audio_outputs.pop(0)
             await _send_nova_audio_output(data)
-
-    def reset_idle_timer():
-        nonlocal last_activity_time, idle_prompt_sent
-        last_activity_time = time.time()
-        idle_prompt_sent = False
-
-    async def send_idle_followup(is_escalation: bool = False):
-        """Send follow-up or trigger emergency escalation on silence."""
-        nonlocal idle_prompt_sent, escalation_triggered
-        if not call_sid:
-            return
-            
-        if is_escalation:
-            if escalation_triggered:
-                return
-            escalation_triggered = True
-            logger.warning("[SAFETY] Silence escalation triggered for call %s", call_sid)
-            # Audit: Log automatic silence-based escalation
-            audit_logger.log_event(session_id, "SILENCE_ESCALATION", hospital_id, {"caller": mask_phone(caller_phone)})
-            
-            await bedrock_client.send_text_message(
-                session_id,
-                "[The caller has been silent for too long during a clinical inquiry. They may be unable to speak. Say a reassuring message and connect them to the emergency desk immediately.]"
-            )
-            return
-
-        if idle_prompt_sent:
-            return
-            
-        idle_prompt_sent = True
-        logger.info("Soft silence follow-up for call %s", call_sid)
-        try:
-            await bedrock_client.send_text_message(
-                session_id,
-                "[The caller has been silent for a few seconds. Gently check if they are still there or if they need a moment.]"
-            )
-        except Exception:
-            logger.exception("Error sending soft idle follow-up")
 
     async def hangup_call():
         """Terminate the call by closing the WebSocket connection.
@@ -1122,31 +1229,41 @@ async def exotel_stream(websocket: WebSocket):
         except Exception:
             logger.exception("Error closing WebSocket for call %s", call_sid)
 
+    idle_monitor_session = IdleMonitorSession(
+        call_sid=call_sid,
+        session_id=session_id,
+        hospital_id=hospital_id,
+        caller_phone=caller_phone,
+        send_message_fn=lambda prompt: bedrock_client.send_text_message(session_id, prompt),
+        hangup_fn=hangup_call,
+        audit_log_fn=audit_logger.log_event,
+        soft_follow_up_sec=SOFT_FOLLOW_UP_SEC,
+        escalation_sec=ESCALATION_SEC,
+        poll_interval_sec=2.0,
+        is_tool_in_progress_fn=lambda: tool_in_progress,
+        mask_phone_fn=mask_phone,
+    )
+
+    def reset_idle_timer():
+        nonlocal last_activity_time, idle_prompt_sent
+        last_activity_time = time.time()
+        idle_prompt_sent = False
+        idle_monitor_session.record_activity()
+
+    async def send_idle_followup(is_escalation: bool = False):
+        """Send follow-up or trigger emergency escalation on silence."""
+        nonlocal idle_prompt_sent, escalation_triggered
+        if not call_sid:
+            return
+        if is_escalation:
+            escalation_triggered = True
+        else:
+            idle_prompt_sent = True
+        await idle_monitor_session.trigger_followup(is_escalation=is_escalation)
+
     async def idle_monitor():
         """Background task: Clinical safety silence monitoring."""
-        try:
-            while True:
-                await asyncio.sleep(2) # Faster polling for clinical safety
-                if tool_in_progress:
-                    # [HIGH FIX] nonlocal required — without it, this creates a NEW local
-                    # variable and the outer last_activity_time is never updated.
-                    nonlocal last_activity_time
-                    last_activity_time = time.time()  # Reset during tool calls
-                    continue
-                    
-                elapsed = time.time() - last_activity_time
-
-                if not idle_prompt_sent and elapsed >= SOFT_FOLLOW_UP_SEC:
-                    await send_idle_followup(is_escalation=False)
-                elif elapsed >= ESCALATION_SEC:
-                    # CRITICAL: Trigger emergency handoff on persistent silence
-                    await send_idle_followup(is_escalation=True)
-                    # After escalation message is sent, hang up to trigger Exotel handoff
-                    await asyncio.sleep(5) # Give Nova time to speak safety message
-                    await hangup_call()
-                    return
-        except asyncio.CancelledError:
-            pass
+        await idle_monitor_session.run()
 
     # -----------------------------------------------------------------------
     # Register Nova Sonic event handlers
@@ -1164,38 +1281,44 @@ async def exotel_stream(websocket: WebSocket):
                 )
                 return
 
-            # Discard chunks if the session has been interrupted
-            session_data = bedrock_client._active_sessions.get(session_id)
-            if session_data and getattr(session_data, "interrupted_content_id", None) == data.get("contentId"):
-                logger.debug("Discarding audio chunk for interrupted contentId %s", data.get("contentId"))
-                return
-
             pcm_bytes = base64.b64decode(data["content"])
             polished_bytes = polisher.process_chunk(pcm_bytes)
             exotel_bytes = pcm_to_exotel(polished_bytes)
             payload_b64 = base64.b64encode(exotel_bytes).decode("utf-8")
-            await websocket.send_text(json.dumps({
+            media_event = {
                 "event": "media",
                 "stream_sid": session.stream_sid,
-                "media": {"payload": payload_b64}
-            }))
+                "media": {"payload": payload_b64},
+            }
+            await websocket.send_text(json.dumps(media_event))
+            
+            # [PILLAR 0] Mark T6 = first audio packet sent to Exotel
+            turn_t = latency_telemetry.get_or_create_turn(session_id, turn_index)
+            turn_t.mark_t6()
             logger.debug("Forwarded Nova audio chunk to Exotel for session %s", session.stream_sid)
+
         except Exception:
             logger.exception("Error sending audio to Exotel")
 
     def _handle_audio_output(data):
         """Decode base64 PCM from Nova, convert via pcm_to_exotel(), send as base64 JSON media event."""
-        asyncio.ensure_future(_send_nova_audio_output(data))
+        # [PILLAR 0] Mark T5 = first audio output chunk generated
+        turn_t = latency_telemetry.get_or_create_turn(session_id, turn_index)
+        turn_t.mark_t5()
+        safe_background_task(_send_nova_audio_output(data), name="send_nova_audio")
 
     def _handle_content_end(data):
         """Send clear event as JSON text frame on interruption."""
         async def _send():
             try:
                 if data.get("stopReason") == "INTERRUPTED":
-                    await websocket.send_text(json.dumps({"event": "clear"}))
+                    clear_payload = {"event": "clear"}
+                    if session.stream_sid:
+                        clear_payload["stream_sid"] = session.stream_sid
+                    await websocket.send_text(json.dumps(clear_payload))
             except Exception:
                 logger.exception("Error sending clear to Exotel")
-        asyncio.ensure_future(_send())
+        safe_background_task(_send(), name="send_clear")
 
     def _handle_tool_use(data):
         """Log tool invocation and pause idle timer."""
@@ -1204,16 +1327,48 @@ async def exotel_stream(websocket: WebSocket):
         tool_name = data.get("name") or data.get("toolName", "unknown")
         tool_args = data.get("content") or data.get("input") or "{}"
         logger.info("Tool called: %s with args: %s", tool_name, tool_args)
+        
+        # [PILLAR 0] Mark T_tool_start
+        turn_t = latency_telemetry.get_or_create_turn(session_id, turn_index)
+        turn_t.mark_tool_start(tool_name)
+        
+        # [DEAD-AIR-FIX] Inject immediate acoustic filler so caller doesn't hear silence
+        safe_background_task(_inject_filler(), name="inject_filler")
+
+        # [AUTO-PHONE-INJECT] Automatically add the caller's phone number to
+        # searchPatientTool queries that only provide a name, avoiding disambiguation loops.
+        if tool_name.lower() in ("searchpatienttool", "search_patient", "findpatient"):
+            try:
+                args_dict = json.loads(tool_args) if isinstance(tool_args, str) else tool_args
+                if isinstance(args_dict, dict) and not args_dict.get("phone") and caller_phone:
+                    args_dict["phone"] = caller_phone
+                    tool_args = json.dumps(args_dict)
+                    data["content"] = tool_args
+                    logger.info("[AUTO-PHONE] Injected caller phone %s into patient search", mask_phone(caller_phone))
+            except Exception:
+                pass
+
+        # [TOOL SCOPE GUARD] Prevent concurrent/speculative tool calls for unrelated departments
+        if tool_name.lower() == "doctoravailabilitytool" and session.state.requested_dept:
+            try:
+                args_dict = json.loads(tool_args) if isinstance(tool_args, str) else tool_args
+                called_dept = args_dict.get("department", "")
+                if called_dept and called_dept.lower() != session.state.requested_dept.lower():
+                    logger.warning("[SCOPE-GUARD] Blocked unsolicited department query: %s (Active scope: %s)", called_dept, session.state.requested_dept)
+                    return
+            except Exception:
+                pass
         if DEMO_MODE:
             asyncio.ensure_future(websocket.send_text(json.dumps({"event": "tool", "name": tool_name})))
 
     def _handle_text_output(data):
         nonlocal detected_language, previous_language, is_first_user_turn, current_user_text, current_assistant_text
+        nonlocal active_language, pending_lang_code, pending_lang_streak
         content = str(data.get("content", ""))
         role = data.get("role", "")
 
-        # [FIX-2] Skip empty/whitespace-only text output events — prevents dead air
-        if not content.strip():
+        # [FIX-2] Skip empty/whitespace-only/punctuation-only text output events — prevents dead air and lonely dandas
+        if not content.strip() or not re.sub(r'[\s।\.,\?!;:।॥\-_]+', '', content):
             return
 
         # Filter out Bedrock system/interruption events from voice stream
@@ -1225,14 +1380,15 @@ async def exotel_stream(websocket: WebSocket):
         # If Nova Sonic attempts to output a welcome greeting on its response turn,
         # we strip out the greeting prefix so ONLY the answer/query response is spoken.
         if role in ("ASSISTANT", "assistant"):
-            import re
+            content = _apply_gender_guard(content)
+            data["content"] = content
             greeting_regexes = [
-                r'(?i)^\s*(hello|hi|namaste|namaskar)?[\s,!]*(welcome to indiiserve healthcare!?)?[\s,!]*(this is asha\.?)?[\s,!]*(how can i (help|assist) you (today)?)?[\s,!]*',
-                r'^\s*(नमस्ते|हेलो)?[\s,!]*(इंडीसर्व हेल्थकेयर में आपका स्वागत है।?)?[\s,!]*(मैं आशा हूँ।?)?[\s,!]*(आज मैं आपकी क्या मदद कर सकती हूँ\??)?[\s,!]*'
+                r'(?i)^\s*(hello|hi|namaste|namaskar)?[\s,!]*(welcome to (sarvodaya|indiiserve) (hospital|healthcare)!?)?[\s,!]*(this is asha\.?)?[\s,!]*(how can i (help|assist) you (today)?)?[\s,!]*',
+                r'^\s*(नमस्ते|हेलो)?[\s,!]*(सर्वोदय हॉस्पिटल|इंडीसर्व हेल्थकेयर में आपका स्वागत है।?)?[\s,!]*(मैं आशा हूँ।?)?[\s,!]*(आज मैं आपकी क्या मदद कर सकती हूँ\??)?[\s,!]*'
             ]
             has_greeting_keyword = any(kw in content.lower() for kw in [
-                "welcome to indiiserve", "this is asha", "how can i help you today",
-                "इंडीसर्व हेल्थकेयर में आपका स्वागत है", "मैं आशा हूँ", "आपका स्वागत है! मैं आशा हूँ"
+                "welcome to sarvodaya", "welcome to indiiserve", "this is asha", "how can i help you today",
+                "सर्वोदय हॉस्पिटल में आपका स्वागत है", "इंडीसर्व हेल्थकेयर में आपका स्वागत है", "मैं आशा हूँ", "आपका स्वागत है! मैं आशा हूँ"
             ])
             if has_greeting_keyword:
                 cleaned_content = content
@@ -1251,13 +1407,12 @@ async def exotel_stream(websocket: WebSocket):
                     content = cleaned_content
 
             # [FIX-6] Strip list numbers, linebreaks, and stray brackets from spoken output
-            import re
-            content = re.sub(r'\n+', ' ', content)
-            content = re.sub(r'^\s*\d+[\.\)]\s*', '', content)
-            content = re.sub(r'\s+\d+[\.\)]\s*', ' ', content)
-            content = re.sub(r'[()[\]{}]', '', content)
-            content = re.sub(r'\s{2,}', ' ', content).strip()
+            content = sanitize_spoken_text(content)
             data["content"] = content
+
+        # [SPOKEN FACT GATE] Pre-Audio Factual Claim Verification
+        content = apply_spoken_fact_gate(content, session, role)
+        data["content"] = content
 
         # Filter out injected system commands/instructions
         if content.strip().startswith("["):
@@ -1279,7 +1434,7 @@ async def exotel_stream(websocket: WebSocket):
                 logger.info("👩‍⚕️ [ASHA] (Call: %s): %s", mask_phone(caller_phone), content)
 
         if DEMO_MODE and role == "ASSISTANT" and is_new:
-            asyncio.ensure_future(websocket.send_text(json.dumps({"event": "text", "text": content})))
+            safe_background_task(websocket.send_text(json.dumps({"event": "text", "text": content})), name="demo_text_push")
 
         # Store transcript (deduplicate)
         if is_new:
@@ -1287,6 +1442,19 @@ async def exotel_stream(websocket: WebSocket):
             transcripts.append({"role": role, "content": content})
 
         if role == "USER" and len(content.strip()) > 2:
+            # [LIVENESS-LOCK] If caller checks in during tool execution, do NOT reset context.
+            if tool_in_progress and _is_liveness_check(content):
+                logger.info("[LIVENESS] Caller check-in '%s' during tool — preserving context, sending ack.", content)
+                safe_background_task(
+                    bedrock_client.send_text_message(
+                        session_id,
+                        "Yes, I'm right here — still checking for you. Just a moment.",
+                        interactive=False
+                    ),
+                    name="liveness_ack"
+                )
+                return  # Skip normal processing; preserve in-flight tool result
+
             current_user_text += content + " "
             reset_idle_timer()
             
@@ -1298,24 +1466,52 @@ async def exotel_stream(websocket: WebSocket):
                     logger.info("Semantic Router HIT: %s -> %s", intent, asset_id)
                     cached_audio = response_cache.get_audio(asset_id)
                     if cached_audio:
-                        asyncio.ensure_future(stream_cached_audio(cached_audio))
+                        safe_background_task(stream_cached_audio(cached_audio), name="stream_cached_audio")
             # --- END OPTIMIZATION ---
 
             # --- START LANGUAGE MIRRORING & FIRST TURN FLUSH ---
             lang = detect_language(content)
-            new_lang_code = "hi" if lang in ["hindi", "hinglish"] else "en"
+            if lang in ["hindi", "hinglish"]:
+                new_lang_code = "hi"
+            elif lang == "bengali":
+                new_lang_code = "bn"
+            else:
+                new_lang_code = "en"
 
-            # Send with interactive=True on initial turn OR actual language switch to interrupt buffer and prevent latency
-            if is_first_user_turn or new_lang_code != previous_language:
-                logger.info("[FIRST-TURN/LANG-SWITCH] %s → %s | Injecting language instruction with INTERRUPT", previous_language, lang)
-                instruction = LANGUAGE_INSTRUCTIONS[lang]
+            should_switch = False
+            if is_first_user_turn:
+                active_language = new_lang_code
+                pending_lang_streak = 0
+                is_first_user_turn = False
+                # Default prompt is English. Only inject on turn 1 if non-English
+                if new_lang_code != "en":
+                    should_switch = True
+            elif new_lang_code != active_language:
+                # If explicit switch request (e.g., "speak bengali", "with bengali") or confirmed streak
+                is_explicit_request = any(p in content.lower() for p in [
+                    "in bengali", "in bangla", "speak bengali", "with bengali", "go with bengali",
+                    "in hindi", "speak hindi", "in english", "speak english"
+                ])
+                if is_explicit_request or pending_lang_streak >= 1 or new_lang_code == pending_lang_code:
+                    should_switch = True
+                    active_language = new_lang_code
+                    pending_lang_streak = 0
+                else:
+                    pending_lang_code = new_lang_code
+                    pending_lang_streak = 1
+            else:
+                pending_lang_streak = 0
+
+            # Send with interactive=True on initial turn OR actual confirmed language switch
+            if should_switch:
+                logger.info("[FIRST-TURN/LANG-SWITCH] Active language set to %s (%s) | Injecting language instruction with INTERRUPT", active_language, lang)
+                instruction = LANGUAGE_INSTRUCTIONS.get(lang, LANGUAGE_INSTRUCTIONS["english"])
                 asyncio.ensure_future(
                     bedrock_client.send_text_message(session_id, instruction, interactive=True)
                 )
-                is_first_user_turn = False
 
-            previous_language = new_lang_code   # Track current turn's detected language
-            detected_language = new_lang_code
+            previous_language = active_language   # Track current turn's active language
+            detected_language = active_language
             # --- END LANGUAGE MIRRORING ---
 
         elif role == "ASSISTANT":
@@ -1337,19 +1533,65 @@ async def exotel_stream(websocket: WebSocket):
 
 
     def _handle_error(data):
-        logger.error("Error in session: %s", data)
+        logger.error("Error in Bedrock session %s: %s", session_id, data)
 
     def _handle_tool_result(data):
         nonlocal tool_in_progress
         tool_in_progress = False
-        logger.info("Tool result received")
+        logger.info("Tool result received: %s", data)
         reset_idle_timer()
+        
+        # [PILLAR 0] Mark T_tool_result
+        turn_t = latency_telemetry.get_or_create_turn(session_id, turn_index)
+        turn_t.mark_tool_result()
+        
+        # State & Provenance Capture (Phase 2 & Conversational Grounding)
+        try:
+            raw_content = data.get("content") or data.get("result") or "{}"
+            result_dict = json.loads(raw_content) if isinstance(raw_content, str) else (raw_content if isinstance(raw_content, dict) else {})
+            
+            # 1. Capture sanitized caller-safe facts with provenance
+            if "facts" in result_dict and isinstance(result_dict["facts"], dict):
+                session.state.last_authoritative_facts = result_dict["facts"]
+            
+            # 2. Capture confirmed appointment state upon successful booking
+            if result_dict.get("status") == "CONFIRMED" and result_dict.get("ref_id"):
+                session.state.current_appointment = {
+                    "doctor_id": result_dict.get("doctor_id", "doc_001"),
+                    "doctor_name": result_dict.get("doctor_name", "Dr. Sameer Kulkarni"),
+                    "department": result_dict.get("department", "Cardiology"),
+                    "date": result_dict.get("date", "tomorrow"),
+                    "time": result_dict.get("time", "10:00 AM"),
+                    "fee": result_dict.get("fee", 1200),
+                    "reference_id": result_dict.get("ref_id"),
+                    "status": "CONFIRMED"
+                }
+                session.state.confirmed_doctor_id = result_dict.get("doctor_id")
+                session.state.confirmed_doctor_name = result_dict.get("doctor_name")
+                session.state.confirmed_date_iso = result_dict.get("date_iso")
+                session.state.confirmed_time_24h = result_dict.get("time_24h")
+                session.state.confirmed_fee = result_dict.get("fee")
+                logger.info("[STATE-UPDATE] Captured COMMITTED appointment: %s (Fee: Rs. %s)", result_dict.get("ref_id"), result_dict.get("fee"))
+            elif result_dict.get("status") == "CANCELLED":
+                if session.state.current_appointment:
+                    session.state.current_appointment["status"] = "CANCELLED"
+                logger.info("[STATE-UPDATE] Updated appointment status to CANCELLED")
+        except Exception as ex:
+            logger.warning("[STATE-UPDATE] Failed to parse tool result for state update: %s", ex)
 
     def _handle_completion_end(data):
-        logger.info("[SYSTEM] Completion ended (stopReason: %s)", data.get("stopReason", "unknown"))
+        nonlocal turn_index
+        logger.info("[SYSTEM] Completion ended (stopReason: %s) for Turn #%d", data.get("stopReason", "unknown"), turn_index)
+        # Advance turn index for next conversation exchange
+        turn_index += 1
+        latency_telemetry.reset_turn(session_id, turn_index)
+
 
     def _handle_stream_complete(data=None):
-        logger.info("Stream completed for client: %s", session.stream_sid)
+        logger.info("Stream completed for client: %s (data: %s)", session.stream_sid, data)
+        if isinstance(data, dict) and data.get("reason") == "natural_timeout":
+            logger.info("[SESSION-END] 8-minute natural timeout reached. Triggering clean hangup.")
+            asyncio.create_task(hangup_call())
 
     async def stream_cached_audio(pcm_bytes: bytes):
         """Helper to stream cached audio bytes back to Exotel while model is thinking."""
@@ -1363,6 +1605,28 @@ async def exotel_stream(websocket: WebSocket):
             }))
         except Exception:
             logger.error("Failed to stream cached audio")
+
+    async def _inject_filler():
+        """Inject a rotating acoustic filler to bridge tool-execution dead air."""
+        nonlocal _last_filler_time
+        now = time.time()
+        if now - _last_filler_time < _FILLER_COOLDOWN_SEC:
+            return
+        _last_filler_time = now
+        lang_key = detected_language if detected_language in _FILLER_PHRASES else "en"
+        phrases = _FILLER_PHRASES.get(lang_key, _FILLER_PHRASES["en"])
+        idx = _filler_index.get(lang_key, 0) % len(phrases)
+        phrase = phrases[idx]
+        _filler_index[lang_key] = idx + 1
+        logger.info("[FILLER] Injecting dead-air bridge: '%s'", phrase)
+        
+        # [PILLAR 0] Mark T_first_filler
+        turn_t = latency_telemetry.get_or_create_turn(session_id, turn_index)
+        turn_t.mark_first_filler()
+        try:
+            await bedrock_client.send_text_message(session_id, phrase, interactive=False)
+        except Exception:
+            logger.warning("[FILLER] Failed to inject filler phrase")
 
     session.on_event("audioOutput", _handle_audio_output)
     session.on_event("contentEnd", _handle_content_end)
@@ -1379,18 +1643,22 @@ async def exotel_stream(websocket: WebSocket):
     silence_frames = 0
     last_interrupt_time = 0.0  # [FIX-1C] Cooldown timestamp to prevent interrupt storm
 
-    # [FIX] Minimum real-speech gate before end-of-turn can fire.
-    # Prevents ghost monologue on silent/dead-air calls: background noise
-    # can increment speech_frames to 4 (user_speaking=True) but never
-    # sustains 10 frames (~200ms) of RMS > 1000 like real speech does.
-    # Also reduces end-of-turn latency: 45 frames (900ms) -> 30 frames (600ms).
-    MIN_SPEECH_FRAMES_TO_COMMIT = 10  # ~200ms of sustained voice required
+    # [LATENCY-OPT] Minimum real-speech gate & adaptive End-of-Turn thresholds
+    MIN_SPEECH_FRAMES_TO_COMMIT = 4  # ~80ms of sustained voice required
+
+    def _get_eot_threshold(sf: int) -> int:
+        """Adaptive EOT: short query (sf<10) fires at 120ms (6 frames), standard at 160ms (8 frames), long at 220ms (11 frames)."""
+        if sf < 10:
+            return 6   # 120ms
+        elif sf < 25:
+            return 8   # 160ms
+        else:
+            return 11  # 220ms
 
     # Helper to process incoming audio with VAD and interruption detection
     async def process_incoming_audio(pcm_samples: bytes):
         nonlocal user_speaking, speech_frames, silence_frames
         try:
-            import numpy as np
             samples = np.frombuffer(pcm_samples, dtype=np.int16).astype(np.float32)
             raw_rms = np.sqrt(np.mean(samples**2)) if len(samples) > 0 else 0.0
 
@@ -1404,17 +1672,13 @@ async def exotel_stream(websocket: WebSocket):
             elif assistant_speaking or tool_in_progress:
                 if assistant_speaking:
                     # Sustained user speech tracking during assistant playback turn
-                    # [FIX-1A] Raised RMS threshold from 1100 → 2500.
-                    # Normal speech on Exotel SIP is RMS 1000–2000. At 1100,
-                    # every spoken syllable triggered an interrupt, wiping Asha's
-                    # audio buffer 15+ times per call. Only deliberate loud speech
-                    # (RMS > 2500) should interrupt Asha's response.
-                    if raw_rms > 2500:
+                    # [FIX-1A] Raised RMS threshold from 2500 → 7500 with 350ms persistence.
+                    # Normal speech on Exotel SIP is RMS 1000–2000; loud voice peaks > 6000.
+                    # 7500 + 17 frames (~350ms) prevents breath and ambient line noise from
+                    # interrupting Asha mid-sentence.
+                    if raw_rms > 2000:
                         speech_frames += 1
-                        # [FIX-1B] Raised sustained frames from 4 (80ms) → 8 (160ms).
-                        # 80ms was too short — a single loud breath/syllable triggered it.
-                        # 160ms ensures the user is actually talking over Asha.
-                        if speech_frames >= 8:  # ~160ms sustained loud voice
+                        if speech_frames >= 6:  # ~120ms sustained conversational voice
                             # [FIX-1C] Cooldown: max 1 interrupt per 2 seconds.
                             # Prevents interrupt storm (100+ events per call) that
                             # causes stutter, dead air, and latency.
@@ -1425,8 +1689,11 @@ async def exotel_stream(websocket: WebSocket):
                                 speech_frames = 0
                             else:
                                 last_interrupt_time = now
-                                # 1. Silence handset immediately
-                                asyncio.create_task(websocket.send_text(json.dumps({"event": "clear"})))
+                                # 1. Silence handset immediately with stream_sid
+                                asyncio.create_task(websocket.send_text(json.dumps({
+                                    "event": "clear",
+                                    "stream_sid": session.stream_sid
+                                })))
 
                                 # 2. Trigger Bedrock interruption and flag content block to discard audio output
                                 session_data = bedrock_client._active_sessions.get(session_id)
@@ -1434,7 +1701,7 @@ async def exotel_stream(websocket: WebSocket):
                                     session_data.audio_paused = False
                                     session_data.interrupted_content_id = session_data.current_content_id
 
-                                logger.info("[INTERRUPT] Loud sustained user speech detected (RMS=%.1f). Cleared handset buffer and triggered interruption.", raw_rms)
+                                logger.info("[INTERRUPT] User speech detected (RMS=%.1f). Cleared handset buffer and triggered interruption.", raw_rms)
                                 user_speaking = True
                                 speech_frames = 0
                                 silence_frames = 0
@@ -1447,29 +1714,35 @@ async def exotel_stream(websocket: WebSocket):
                     silence_frames = 0
             else:
                 # VAD logic when idle (listening to user)
-                if raw_rms > 1000:
+                turn_t = latency_telemetry.get_or_create_turn(session_id, turn_index)
+                if raw_rms > 400:
                     speech_frames += 1
                     silence_frames = 0
-                    if speech_frames >= 4:  # ~80ms of continuous voice (4 frames of 20ms)
+                    if speech_frames >= 3:  # ~60ms of continuous voice
+                        if not user_speaking:
+                            turn_t.mark_t0()  # T0 = caller speech detected
                         user_speaking = True
                 elif user_speaking:
+                    if silence_frames == 0:
+                        turn_t.mark_t1()  # T1 = end of speech (silence onset)
                     silence_frames += 1
-                    # [FIX GHOST-MONOLOGUE] Require user to have spoken >=200ms of real voice
-                    # before we fire end_audio_content(). Dead-air/background noise never
-                    # reaches MIN_SPEECH_FRAMES_TO_COMMIT frames of sustained RMS > 1000.
-                    # Silence threshold also reduced: 45 (900ms) -> 30 (600ms) for lower latency.
-                    if silence_frames >= 18 and speech_frames >= MIN_SPEECH_FRAMES_TO_COMMIT:
+                    target_eot_frames = _get_eot_threshold(speech_frames)
+                    if silence_frames >= target_eot_frames and speech_frames >= MIN_SPEECH_FRAMES_TO_COMMIT:
                         logger.info(
-                            "[VAD] User finished speaking (360ms silence, %d speech frames). Triggering end of turn.",
+                            "[VAD] User finished speaking (%dms silence, %d speech frames). Triggering end of turn.",
+                            silence_frames * 20,
                             speech_frames
                         )
+                        # [PILLAR 0] Mark T2 (turn committed) and T3 (Bedrock request dispatched)
+                        turn_t.mark_t2()
+                        turn_t.mark_t3()
                         # Send contentEnd to trigger Bedrock completion response
                         await session.end_audio_content()
                         # Reset VAD state
                         user_speaking = False
                         speech_frames = 0
                         silence_frames = 0
-                    elif silence_frames >= 30 and speech_frames < MIN_SPEECH_FRAMES_TO_COMMIT:
+                    elif silence_frames >= 20 and speech_frames < MIN_SPEECH_FRAMES_TO_COMMIT:
                         # Noise gate: reset without triggering (background noise / dead air)
                         logger.debug(
                             "[VAD] Noise gate: only %d speech frames (need %d). Resetting without EOT.",
@@ -1523,6 +1796,7 @@ async def exotel_stream(websocket: WebSocket):
                             or ws_call_sid  # fallback from /incoming-call query params
                             or ""
                         )
+                        session.call_sid = call_sid
                         session.stream_sid = (
                             data.get("stream_sid")
                             or data.get("streamSid")
@@ -1532,7 +1806,7 @@ async def exotel_stream(websocket: WebSocket):
                         )
                         if session.stream_sid:
                             logger.info("Exotel stream_sid set for session %s", session.stream_sid)
-                            asyncio.ensure_future(flush_pending_audio_outputs())
+                            safe_background_task(flush_pending_audio_outputs(), name="flush_pending_audio")
 
                         # Extract caller phone - try WS start data, then /incoming-call query param
                         caller_phone = (
@@ -1561,27 +1835,25 @@ async def exotel_stream(websocket: WebSocket):
                                 len(greeting_pcm),
                                 mask_phone(caller_phone),
                             )
-                        else:
-                            logger.warning("greeting.pcm not found in cache/disk - falling back to silence")
-                            greeting_pcm = hello_audio_bytes
+                            if not session.stream_sid:
+                                logger.warning(
+                                    "Attempting to send greeting before stream_sid is available; Exotel may ignore this media event"
+                                )
 
-                        if not session.stream_sid:
-                            logger.warning(
-                                "Attempting to send greeting before stream_sid is available; Exotel may ignore this media event"
+                            exotel_greeting = pcm_to_exotel(greeting_pcm)
+                            greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
+                            await websocket.send_text(json.dumps({
+                                "event": "media",
+                                "stream_sid": session.stream_sid,
+                                "media": {"payload": greeting_b64}
+                            }))
+                            logger.info(
+                                "Sent initial greeting audio to Exotel (stream_sid=%s, bytes=%d)",
+                                session.stream_sid,
+                                len(exotel_greeting),
                             )
-
-                        exotel_greeting = pcm_to_exotel(greeting_pcm)
-                        greeting_b64 = base64.b64encode(exotel_greeting).decode("utf-8")
-                        await websocket.send_text(json.dumps({
-                            "event": "media",
-                            "stream_sid": session.stream_sid,
-                            "media": {"payload": greeting_b64}
-                        }))
-                        logger.info(
-                            "Sent initial greeting audio to Exotel (stream_sid=%s, bytes=%d)",
-                            session.stream_sid,
-                            len(exotel_greeting),
-                        )
+                        else:
+                            logger.info("greeting.pcm not in cache/disk — dynamic conversational greeting via Nova Sonic.")
 
                         # Build system prompt - enrich with memory context if available (parallelized)
                         ist = timezone(timedelta(hours=5, minutes=30))
@@ -1590,7 +1862,6 @@ async def exotel_stream(websocket: WebSocket):
                         
                         # Strip out the DEMO STABILITY section when not in demo mode
                         if not DEMO_MODE:
-                            import re
                             system_prompt = re.sub(
                                 r"## DEMO STABILITY \(FOR PRESENTATIONS\).*?\n+---",
                                 "",
@@ -1604,10 +1875,13 @@ async def exotel_stream(websocket: WebSocket):
                             system_prompt += sandbox_notice
                             logger.info("[SANDBOX] Injected testing disclosure for %s", hospital_id)
                         
-                        memory_context_task = None
+                        returning_caller_ctx = ""
                         if memory_manager and caller_phone:
                             memory_manager.register_session(session_id, caller_phone)
-                            memory_context_task = asyncio.create_task(memory_manager.retrieve_context(session_id))
+                            try:
+                                returning_caller_ctx = memory_manager.get_returning_caller_context(session_id)
+                            except Exception:
+                                logger.exception("Error getting returning caller context")
 
                         # [MED-06] Use asyncio.Event instead of busy-poll for stream readiness.
                         # nova_client sets session._stream_ready when Bedrock stream is open.
@@ -1634,29 +1908,28 @@ async def exotel_stream(websocket: WebSocket):
                         # Now set up Nova session
                         # 3. Setup system prompt (with memory and caller phone context)
                         if caller_phone:
-                            system_prompt += f"\n\nCaller Calling Phone Number: {caller_phone}\n(When confirming appointment, ask whether to use this calling number or a different mobile number.)\n"
+                            masked_caller = mask_phone(caller_phone)
+                            system_prompt += f"\n\nCaller Phone: {masked_caller}\n(When confirming appointment, ask whether to use this calling number or a different mobile number.)\n"
 
-                        if memory_context_task:
-                            try:
-                                # Wait a max of 2s for memory to avoid stalling the call
-                                memory_context = await asyncio.wait_for(memory_context_task, timeout=2.0)
-                                if memory_context:
-                                    system_prompt = build_system_prompt_with_memory(system_prompt, memory_context)
-                                    logger.info("[MEMORY] Using personalized prompt for %s", caller_phone)
-                            except (asyncio.TimeoutError, Exception):
-                                logger.warning("[MEMORY] Context retrieval timed out or failed, using base prompt.")
+                        if returning_caller_ctx:
+                            system_prompt = build_system_prompt_with_memory(system_prompt, returning_caller_ctx)
+                            logger.info("[MEMORY] Injected returning caller context for %s", mask_phone(caller_phone))
 
                         # [D-06] CRITICAL: promptStart MUST be sent before contentStart (system prompt).
                         await session.setup_prompt_start()
                         await session.setup_system_prompt(system_prompt=system_prompt)
+                        # Explicitly prime initial audio content block for incoming speech
+                        await session.setup_start_audio()
                         # [FIX HIGH-01] Do NOT re-send hello_audio_bytes here.
                         # The greeting was already sent to Exotel at line ~1000 (before Nova was ready).
                         # Sending it again via stream_audio() causes a double greeting for the caller.
 
-                        idle_monitor_task = asyncio.ensure_future(idle_monitor())
-                        _background_tasks.add(idle_monitor_task)
-                        idle_monitor_task.add_done_callback(_background_tasks.discard)
-                        logger.info("Nova session setup complete, idle monitor started")
+                        idle_monitor_task = safe_background_task(
+                            idle_monitor(),
+                            name=f"idle_monitor_{session_id}",
+                            on_error_msg="Clinical silence monitor error",
+                        )
+                        logger.info("Nova session setup complete, clinical idle monitor started")
 
                     elif event_type == "media":
                         media_data = data.get("media", {})
@@ -1678,17 +1951,26 @@ async def exotel_stream(websocket: WebSocket):
                         )
                         break
 
-                    elif data.get("type") == "chat" and DEMO_MODE:
-                        # E2E Test Backdoor
-                        text_input = data.get("text", "")
-                        logger.info("[DEMO] Received test input: %s", text_input)
-                        
-                        lang = detect_language(text_input)
-                        instruction = LANGUAGE_INSTRUCTIONS[lang]
-                        combined_text = f"{instruction}\nUser Query: {text_input}"
-                        logger.info("Real-time language injection (chat): %s (combined text: '%s')", lang, combined_text)
-                        
-                        asyncio.ensure_future(bedrock_client.send_text_message(session_id, combined_text))
+                    elif data.get("type") == "chat":
+                        is_prod = os.environ.get("ENVIRONMENT", "development").lower() == "production"
+                        chat_token = data.get("token", "")
+                        admin_key = os.environ.get("ADMIN_API_KEY", "")
+                        is_authenticated = bool(admin_key and chat_token and hmac.compare_digest(chat_token, admin_key))
+
+                        if is_prod and not is_authenticated:
+                            logger.warning("[AUTH] Blocked unauthenticated chat message injection in production environment.")
+                        elif not DEMO_MODE and not is_authenticated:
+                            logger.warning("[AUTH] Chat message rejected: DEMO_MODE is false and no valid admin token provided.")
+                        else:
+                            text_input = data.get("text", "")
+                            logger.info("[DIAGNOSTIC] Received test text input: %s", text_input)
+                            
+                            lang = detect_language(text_input)
+                            instruction = LANGUAGE_INSTRUCTIONS[lang]
+                            combined_text = f"{instruction}\nUser Query: {text_input}"
+                            logger.info("Real-time language injection (chat): %s (combined text: '%s')", lang, combined_text)
+                            
+                            safe_background_task(bedrock_client.send_text_message(session_id, combined_text), name="send_chat_text")
 
                 except json.JSONDecodeError:
                     logger.exception("Error parsing Exotel JSON")
@@ -1719,6 +2001,9 @@ async def exotel_stream(websocket: WebSocket):
         # Clean up memory manager session
         if memory_manager:
             memory_manager.cleanup_session(session_id)
+        
+        # Clean up latency telemetry
+        latency_telemetry.remove_session(session_id)
         
         # Trigger AI Analytics Processor (Post-call Data Science)
         # [FIX LOW-06] Guard against call_start_time being None if 'start' event never arrived

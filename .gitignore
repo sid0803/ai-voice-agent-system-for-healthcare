@@ -1,28 +1,46 @@
-# IDE files
+﻿# IDE files
 .vscode/
+.idea/
 
-# Build output
+# Build output & artifacts
 out/
+dist/
+output/*
+portal/dist/
 
 # Logs
 logs/*.log
 logs/security_audit.log
+logs/
+*.log
 
-# Node modules (if applicable for TypeScript project)
+# Dependencies
 node_modules/
+portal/node_modules/
+venv/
+linux_venv/
 
-# Build artifacts
-dist/
-
-output/*
-
-# Environment variables
+# Environment variables & secrets
 .env
+.env.*
+!.env.example
+
+# Private Keys & Certificates
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+
+# Credential & Service Account files
+credentials.json
+service-account*.json
+client_secret*.json
 
 # Python
 __pycache__/
 *.pyc
-venv/
 .pytest_cache/
 
 # Local Data & DBs
@@ -30,4 +48,6 @@ venv/
 *.sqlite
 data/bookings/
 data/triage/
-logs/
+
+# [AI-17] Development-only scratch scripts — never commit to repo
+scratch/

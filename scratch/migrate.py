@@ -6,46 +6,23 @@ import subprocess
 import boto3
 from cryptography.hazmat.primitives import serialization
 
+from dotenv import load_dotenv
+
 # Define local paths
 LOCAL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENV_FILE = os.path.join(LOCAL_DIR, ".env")
 DB_FILE = os.path.join(LOCAL_DIR, "indiiserve_demo.db")
-KEY_PATH = r"C:\Users\sid08\Downloads\my-server-key.pem"
+KEY_PATH = os.environ.get("EC2_KEY_PATH", "")
 
 print("==================================================")
 print(">> InDiiServe Mumbai Server Migration Automation")
 print("==================================================")
 
-# 1. Parse .env for AWS Credentials
-if not os.path.exists(ENV_FILE):
-    print(f"[ERROR] Local .env file not found at {ENV_FILE}")
-    sys.exit(1)
+if os.path.exists(ENV_FILE):
+    load_dotenv(ENV_FILE)
 
-aws_access_key = None
-aws_secret_key = None
-
-with open(ENV_FILE, "r") as f:
-    for line in f:
-        if line.startswith("AWS_ACCESS_KEY_ID="):
-            aws_access_key = line.split("=")[1].strip()
-        elif line.startswith("AWS_SECRET_ACCESS_KEY="):
-            aws_secret_key = line.split("=")[1].strip()
-
-if not aws_access_key or not aws_secret_key:
-    print("[ERROR] AWS credentials not found in local .env file")
-    sys.exit(1)
-
-# 2. Check local private key file
-if not os.path.exists(KEY_PATH):
-    print(f"[ERROR] SSH key file not found at {KEY_PATH}")
-    sys.exit(1)
-
-# 3. Setup boto3 client
-session = boto3.Session(
-    aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_key,
-    region_name="ap-south-1"
-)
+# Setup boto3 client
+session = boto3.Session(region_name=os.environ.get("AWS_REGION", "ap-south-1"))
 ec2 = session.client("ec2")
 
 # 4. Import key pair if not exists in Mumbai

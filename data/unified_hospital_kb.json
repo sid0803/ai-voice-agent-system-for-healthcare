@@ -1,30 +1,30 @@
 {
   "metadata": {
     "hospital_id": "apollo_metro",
-    "hospital_name": "Indiserve Multi-Specialty Hospital",
+    "hospital_name": "SarvoDaya Hospital",
     "version": "2.0.0",
     "creation_date": "2026-05-28T00:00:00Z",
-    "last_updated": "2026-06-08T18:04:37.823165+00:00",
+    "last_updated": "2026-08-20T12:00:00Z",
     "data_freshness_guarantee": "updated_daily",
     "schema_version": "2.0",
-    "note": "Unified Knowledge Base - Single source of truth for all hospital data"
+    "note": "Unified Knowledge Base - Single source of truth for SarvoDaya Hospital"
   },
   "core_info": {
     "id": "apollo_metro",
-    "name": "Indiserve Multi-Specialty Hospital",
+    "name": "SarvoDaya Hospital",
     "status": "live",
-    "address": "12-B, MG Road, Residency Area, Bengaluru - 560025",
+    "address": "Plot 42, Healthcare Boulevard, Sector 5, Cyber City, Bengaluru - 560025",
     "contact": "+91 80 4000 9000",
     "emergency_contact": "1066",
-    "website": "https://voice.Indiserve.ai",
+    "website": "https://voice.sarvodayahospital.com",
     "pharmacy_hours": "24/7 (Ground Floor, near main exit)",
     "nabh_accredited": true,
     "accreditations": [
       "NABH",
       "ISO 9001:2015"
     ],
-    "address_hi": "12-बी, एमजी रोड, रेजीडेंसी क्षेत्र, बेंगलुरु - 560025 (सेंट्रल मेट्रो स्टेशन के पास)",
-    "address_hinglish": "12-B, MG Road, Residency Area, Bengaluru - 560025 (Central Metro Station ke paas)",
+    "address_hi": "सर्वोदय हॉस्पिटल, प्लॉट 42, हेल्थकेयर बुलेवार्ड, सेक्टर 5, साइबर सिटी, बेंगलुरु - 560025 (सेंट्रल मेट्रो गेट 3 के सामने)",
+    "address_hinglish": "SarvoDaya Hospital, Plot 42, Healthcare Boulevard, Sector 5, Cyber City, Bengaluru - 560025 (Central Metro Gate 3 ke samne)",
     "pharmacy_hours_hi": "24 घंटे खुला (ग्राउंड फ्लोर, मुख्य निकास द्वार के पास)",
     "pharmacy_hours_hinglish": "24 ghante khula (Ground Floor, main exit gate ke paas)"
   },
@@ -213,6 +213,35 @@
       "name_hinglish": "Emergency aur Trauma Care",
       "description_hi": "24 घंटे आपातकालीन चिकित्सा और ट्रॉमा देखभाल",
       "description_hinglish": "24 ghante emergency medical aur accident care"
+    },
+    {
+      "id": "dept_014",
+      "name": "General Medicine & Internal Medicine",
+      "description": "Comprehensive primary care, fever, diabetes, hypertension, and adult health management",
+      "floor": "Ground Floor",
+      "block": "Block B",
+      "specialists": [
+        "Dr. Arjun Mehta",
+        "Dr. Priya Nair"
+      ],
+      "name_hi": "जनरल मेडिसिन एवं आंतरिक रोग विभाग",
+      "name_hinglish": "General Medicine aur General Physician Vibhag",
+      "description_hi": "बुखार, संक्रमण, शुगर, बीपी और सामान्य बीमारियों का संपूर्ण इलाज",
+      "description_hinglish": "Bukhar, infection, diabetes, BP aur general health ka ilaj"
+    },
+    {
+      "id": "dept_015",
+      "name": "Radiology & Diagnostic Imaging",
+      "description": "Comprehensive diagnostic imaging including X-ray, Ultrasound (USG), CT Scan, MRI, and image-guided diagnostic evaluations",
+      "floor": "Ground Floor",
+      "block": "Block B (Diagnostic Wing)",
+      "specialists": [
+        "Dr. Shalini Verma"
+      ],
+      "name_hi": "रेडियोलॉजी एवं डायग्नोस्टिक इमेजिंग विभाग",
+      "name_hinglish": "Radiology aur Diagnostic Imaging Vibhag",
+      "description_hi": "एक्स-रे, अल्ट्रासाउंड, सीटी स्कैन, एमआरआई और सभी प्रकार की डायग्नोस्टिक जांचें",
+      "description_hinglish": "X-ray, Ultrasound, CT Scan, MRI aur diagnostic scans ka complete center"
     }
   ],
   "doctors": [
@@ -1291,6 +1320,305 @@
       "biography": "Dermatologist with expertise in cosmetic dermatology and hair loss management.",
       "availability_summary_hi": "Dr. Meera Singh (Dermatology) के लिए OPD समय सुबह 9:00 बजे से और दोपहर 2:00 बजे उपलब्ध हैं। फीस: ₹900।",
       "availability_summary_hinglish": "Dr. Meera Singh (Dermatology) OPD slots morning 9:00 AM & afternoon 2:00 PM pe available hain. Fee: Rs. 900."
+    },
+    {
+      "id": "doc_016",
+      "name": "Dr. Arjun Mehta",
+      "department": "General Medicine",
+      "designation": "Consultant - General Medicine & Internal Medicine",
+      "experience": "12 years",
+      "specializations": [
+        "Fever & Infections",
+        "Diabetes Management",
+        "Hypertension",
+        "General OPD",
+        "Respiratory Infections"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Hinglish"
+      ],
+      "consultation_type": [
+        "OPD",
+        "General Health Check",
+        "Follow-up"
+      ],
+      "fee": 700,
+      "location": "Block B, Ground Floor, Room 010",
+      "availability": {
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "14:00",
+          "14:30",
+          "15:00"
+        ],
+        "Tuesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Wednesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "14:00",
+          "14:30",
+          "15:00"
+        ],
+        "Thursday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Friday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "14:00",
+          "14:30",
+          "15:00"
+        ],
+        "Saturday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30"
+        ],
+        "Sunday": []
+      },
+      "biography": "Consultant physician with 12 years of experience in general OPD, fever & infection management, diabetes, and hypertension care.",
+      "availability_summary_hi": "Dr. Arjun Mehta (General Medicine) के लिए OPD समय सुबह 9:00 बजे से दोपहर 3:00 बजे तक उपलब्ध हैं। फीस: ₹700।",
+      "availability_summary_hinglish": "Dr. Arjun Mehta (General Medicine) OPD slots morning 9:00 AM se afternoon 3:00 PM tak available hain. Fee: Rs. 700."
+    },
+    {
+      "id": "doc_017",
+      "name": "Dr. Priya Nair",
+      "department": "General Medicine",
+      "designation": "Senior Consultant - General Medicine",
+      "experience": "9 years",
+      "specializations": [
+        "Women's Health",
+        "Thyroid & Hormonal Issues",
+        "Lifestyle Diseases",
+        "Preventive Care"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Malayalam"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Consultation",
+        "Follow-up"
+      ],
+      "fee": 800,
+      "location": "Block B, Ground Floor, Room 012",
+      "availability": {
+        "Monday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
+        "Tuesday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
+        "Wednesday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
+        "Thursday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:00",
+          "17:30"
+        ],
+        "Friday": [
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30"
+        ],
+        "Saturday": [
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30"
+        ],
+        "Sunday": []
+      },
+      "biography": "Senior consultant with 9 years experience, specializing in women's general health, thyroid, lifestyle disease management, and preventive care.",
+      "availability_summary_hi": "Dr. Priya Nair (General Medicine) के लिए OPD समय दोपहर 2:00 बजे से शाम 5:30 बजे तक उपलब्ध हैं। फीस: ₹800।",
+      "availability_summary_hinglish": "Dr. Priya Nair (General Medicine) OPD slots afternoon 2:00 PM se 5:30 PM tak available hain. Fee: Rs. 800."
+    },
+    {
+      "id": "doc_018",
+      "name": "Dr. Shalini Verma",
+      "department": "Radiology & Diagnostic Imaging",
+      "designation": "Senior Consultant - Radiologist & Imaging Specialist",
+      "experience": "14 years",
+      "specializations": [
+        "Diagnostic Radiology",
+        "Ultrasonography & Doppler",
+        "X-Ray & Fluoroscopy Reporting",
+        "CT & MRI Scan Evaluation",
+        "Women's & Fetal Imaging"
+      ],
+      "languages": [
+        "English",
+        "Hindi",
+        "Hinglish"
+      ],
+      "consultation_type": [
+        "OPD",
+        "Scan Consultation",
+        "Report Review"
+      ],
+      "fee": 900,
+      "location": "Block B, Ground Floor, Radiology Wing, Room 008",
+      "availability": {
+        "Monday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00"
+        ],
+        "Tuesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00"
+        ],
+        "Wednesday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00"
+        ],
+        "Thursday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00"
+        ],
+        "Friday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "14:00",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00"
+        ],
+        "Saturday": [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "13:00"
+        ],
+        "Sunday": []
+      },
+      "biography": "Senior Consultant Radiologist with 14 years of experience specializing in Ultrasound, X-Ray diagnostics, CT/MRI evaluation, and cross-sectional imaging.",
+      "availability_summary_hi": "Dr. Shalini Verma (Radiology & Diagnostic Imaging) के लिए OPD समय सुबह 9:00 से दोपहर 12:00 और दोपहर 2:00 से शाम 4:00 बजे तक उपलब्ध हैं। फीस: ₹900।",
+      "availability_summary_hinglish": "Dr. Shalini Verma (Radiology) OPD slots morning 9:00 AM se 12:00 PM aur afternoon 2:00 PM se 4:00 PM tak available hain. Fee: Rs. 900."
     }
   ],
   "services": [
@@ -1551,6 +1879,210 @@
       ],
       "answer_hi": "Liver Function Test (LFT) की फीस ₹500 है। यह लैब ग्राउंड फ्लोर पर उपलब्ध है।",
       "answer_hinglish": "Liver Function Test (LFT) ki fee Rs. 500 hai. Ye lab Ground Floor pe available hai."
+    },
+    {
+      "id": "svc_xray_chest",
+      "category": "Imaging",
+      "name": "Chest X-Ray",
+      "description": "Digital radiography imaging of the chest, lungs, and heart borders",
+      "price": 350,
+      "duration_minutes": 10,
+      "prep_instructions": "Remove metal jewelry and wear comfortable clothing. No fasting required.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "chest x ray",
+        "chest radiograph",
+        "lung xray",
+        "chest x-ray pa view",
+        "xray chest"
+      ],
+      "keywords": [
+        "xray",
+        "x-ray",
+        "chest",
+        "lungs",
+        "radiograph",
+        "radiology"
+      ],
+      "answer_hi": "Chest X-Ray की फीस ₹350 है। यह रेडियोलॉजी विभाग, ग्राउंड फ्लोर पर उपलब्ध है। रिपोर्ट डॉ. शालिनी वर्मा द्वारा तैयार की जाती है।",
+      "answer_hinglish": "Chest X-Ray ki fee Rs. 350 hai. Ye Radiology department, Ground Floor pe available hai. Report Dr. Shalini Verma dwara ready hoti hai."
+    },
+    {
+      "id": "svc_xray_limb",
+      "category": "Imaging",
+      "name": "X-Ray (Limb / Joint)",
+      "description": "Digital X-Ray for arm, leg, knee, shoulder, or bone fracture evaluation",
+      "price": 300,
+      "duration_minutes": 10,
+      "prep_instructions": "No fasting required. Remove metal items near the target joint or limb.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "bone xray",
+        "knee xray",
+        "leg xray",
+        "arm xray",
+        "fracture xray",
+        "hand xray",
+        "foot xray"
+      ],
+      "keywords": [
+        "xray",
+        "x-ray",
+        "bone",
+        "joint",
+        "limb",
+        "fracture",
+        "radiology"
+      ],
+      "answer_hi": "X-Ray (हड्डी / जोड़) की फीस ₹300 है। यह रेडियोलॉजी विभाग, ग्राउंड फ्लोर पर उपलब्ध है। रिपोर्ट डॉ. शालिनी वर्मा द्वारा दी जाती है।",
+      "answer_hinglish": "X-Ray (Limb/Joint) ki fee Rs. 300 hai. Ye Radiology department, Ground Floor pe available hai. Report Dr. Shalini Verma dete hain."
+    },
+    {
+      "id": "svc_xray_spine",
+      "category": "Imaging",
+      "name": "X-Ray Spine",
+      "description": "Digital radiography of cervical, thoracic, or lumbosacral spine",
+      "price": 400,
+      "duration_minutes": 10,
+      "prep_instructions": "No fasting required. Wear loose clothing without metal fasteners.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "spine xray",
+        "back xray",
+        "neck xray",
+        "lumbar xray",
+        "cervical xray"
+      ],
+      "keywords": [
+        "xray",
+        "x-ray",
+        "spine",
+        "back",
+        "neck",
+        "lumbar",
+        "radiology"
+      ],
+      "answer_hi": "X-Ray Spine (रीढ़ की हड्डी) की फीस ₹400 है। यह रेडियोलॉजी विभाग, ग्राउंड फ्लोर पर उपलब्ध है।",
+      "answer_hinglish": "X-Ray Spine ki fee Rs. 400 hai. Ye Radiology department, Ground Floor pe available hai."
+    },
+    {
+      "id": "svc_usg_abdomen",
+      "category": "Imaging",
+      "name": "Ultrasound Abdomen (USG)",
+      "description": "High-resolution sonography for liver, gall bladder, kidneys, pancreas, and spleen",
+      "price": 800,
+      "duration_minutes": 20,
+      "prep_instructions": "Fasting of 6 hours required before scan. Plain water is permitted.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "usg abdomen",
+        "ultrasound abdomen",
+        "abdominal usg",
+        "pet ka ultrasound",
+        "sonography abdomen",
+        "usg whole abdomen"
+      ],
+      "keywords": [
+        "ultrasound",
+        "usg",
+        "abdomen",
+        "sonography",
+        "sonogram",
+        "radiology"
+      ],
+      "answer_hi": "Ultrasound Abdomen (USG) की फीस ₹800 है। 6 घंटे का उपवास (फास्टिंग) जरूरी है। जांच डॉ. शालिनी वर्मा द्वारा ग्राउंड फ्लोर पर की जाती है।",
+      "answer_hinglish": "Ultrasound Abdomen (USG) ki fee Rs. 800 hai. Scan se pehle 6 ghante fasting required hai. Ye test Dr. Shalini Verma dwara Ground Floor pe kiya jata hai."
+    },
+    {
+      "id": "svc_usg_pelvic",
+      "category": "Imaging",
+      "name": "Ultrasound Pelvis",
+      "description": "Pelvic ultrasound for bladder, uterus, ovaries, and prostate evaluation",
+      "price": 900,
+      "duration_minutes": 20,
+      "prep_instructions": "Full bladder required. Drink 4-5 glasses of water 1 hour prior and do not urinate.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "usg pelvis",
+        "pelvic ultrasound",
+        "pelvic sonography",
+        "bladder usg",
+        "usg lower abdomen"
+      ],
+      "keywords": [
+        "ultrasound",
+        "usg",
+        "pelvis",
+        "pelvic",
+        "sonography",
+        "radiology"
+      ],
+      "answer_hi": "Ultrasound Pelvis की फीस ₹900 है। स्कैन के लिए फुल ब्लैडर (पानी पीकर) आना आवश्यक है। डॉ. शालिनी वर्मा ग्राउंड फ्लोर पर उपलब्ध हैं।",
+      "answer_hinglish": "Ultrasound Pelvis ki fee Rs. 900 hai. Full bladder (pani pee kar) aana zaroori hai. Ye test Dr. Shalini Verma dwara Ground Floor pe hota hai."
+    },
+    {
+      "id": "svc_usg_pregnancy",
+      "category": "Imaging",
+      "name": "Obstetric Ultrasound (Pregnancy Scan)",
+      "description": "Fetal well-being, growth, anomaly, and obstetric ultrasound scan",
+      "price": 1000,
+      "duration_minutes": 25,
+      "prep_instructions": "Drink 3-4 glasses of water before scan. Bring previous pregnancy reports.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "pregnancy ultrasound",
+        "pregnancy scan",
+        "fetal ultrasound",
+        "garbhavastha ultrasound",
+        "obstetric scan",
+        "usg pregnancy",
+        "baby scan"
+      ],
+      "keywords": [
+        "ultrasound",
+        "usg",
+        "pregnancy",
+        "fetal",
+        "obstetric",
+        "baby",
+        "sonography"
+      ],
+      "answer_hi": "Obstetric Ultrasound (प्रेग्नेंसी स्कैन) की फीस ₹1000 है। यह रेडियोलॉजी विभाग में डॉ. शालिनी वर्मा द्वारा किया जाता है।",
+      "answer_hinglish": "Obstetric Ultrasound (Pregnancy scan) ki fee Rs. 1000 hai. Ye test Radiology department me Dr. Shalini Verma dwara kiya jata hai."
+    },
+    {
+      "id": "svc_usg_thyroid",
+      "category": "Imaging",
+      "name": "Thyroid / Neck Ultrasound",
+      "description": "High-frequency ultrasound evaluation of thyroid gland and cervical lymph nodes",
+      "price": 750,
+      "duration_minutes": 15,
+      "prep_instructions": "No fasting or full bladder required. Avoid high neck clothing.",
+      "location": "Radiology, Ground Floor, Lab Wing B",
+      "assigned_doctor": "Dr. Shalini Verma",
+      "synonyms": [
+        "neck ultrasound",
+        "thyroid usg",
+        "thyroid sonography",
+        "neck usg",
+        "gale ka ultrasound"
+      ],
+      "keywords": [
+        "ultrasound",
+        "usg",
+        "thyroid",
+        "neck",
+        "sonography",
+        "radiology"
+      ],
+      "answer_hi": "Thyroid / Neck Ultrasound की फीस ₹750 है। इसके लिए किसी उपवास की आवश्यकता नहीं है। जांच ग्राउंड फ्लोर पर डॉ. शालिनी वर्मा द्वारा की जाती है।",
+      "answer_hinglish": "Thyroid / Neck Ultrasound ki fee Rs. 750 hai. Iske liye fasting ki zaroorat nahi hai. Ye test Ground Floor pe Dr. Shalini Verma dwara kiya jata hai."
     }
   ],
   "health_packages": [

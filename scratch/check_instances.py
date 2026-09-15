@@ -2,28 +2,13 @@ import os
 import sys
 import boto3
 
+from dotenv import load_dotenv
+
 # Define local paths
 LOCAL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENV_FILE = os.path.join(LOCAL_DIR, ".env")
-
-# 1. Parse .env for AWS Credentials
-if not os.path.exists(ENV_FILE):
-    print(f"[ERROR] Local .env file not found at {ENV_FILE}")
-    sys.exit(1)
-
-aws_access_key = None
-aws_secret_key = None
-
-with open(ENV_FILE, "r") as f:
-    for line in f:
-        if line.startswith("AWS_ACCESS_KEY_ID="):
-            aws_access_key = line.split("=")[1].strip()
-        elif line.startswith("AWS_SECRET_ACCESS_KEY="):
-            aws_secret_key = line.split("=")[1].strip()
-
-if not aws_access_key or not aws_secret_key:
-    print("[ERROR] AWS credentials not found in local .env file")
-    sys.exit(1)
+if os.path.exists(ENV_FILE):
+    load_dotenv(ENV_FILE)
 
 # 2. Describe instances in Mumbai (ap-south-1) and Virginia (us-east-1)
 regions = ["ap-south-1", "us-east-1"]

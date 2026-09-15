@@ -81,9 +81,8 @@ async def test_mirroring_booking():
             while True:
                 msg = await websocket.recv()
                 data = json.loads(msg)
-                if data.get("event") == "text":
-                    greeting = data.get("text")
-                    print(f"Greeting: {greeting}")
+                if data.get("event") == "media":
+                    print("Greeting audio media chunk received.")
                     break
 
             for q in queries:

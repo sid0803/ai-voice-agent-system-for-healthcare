@@ -92,15 +92,23 @@ class HealthChecker:
         except Exception as e:
             return False, f"AWS Error: {str(e)}"
 
+    _cached_diagnostic: Dict = None
+    _cached_diagnostic_time: float = 0.0
+    _CACHE_TTL_SEC: float = 60.0
+
     @classmethod
-    def run_full_diagnostic(cls) -> Dict:
-        """Run all checks and return a structured report."""
+    def run_full_diagnostic(cls, force: bool = False) -> Dict:
+        """Run all checks and return a structured report (cached for 60s)."""
+        import time as _time
+        now = _time.time()
+        if not force and cls._cached_diagnostic and (now - cls._cached_diagnostic_time) < cls._CACHE_TTL_SEC:
+            return cls._cached_diagnostic
+
         report = {
             "environment": cls.check_env(),
             "assets": cls.check_assets(),
             "database": cls.check_database(),
             "aws": cls.check_aws(),
-            # [LOW FIX] Use actual current timestamp
             "timestamp": __import__("datetime").datetime.now().isoformat()
         }
         
@@ -111,6 +119,8 @@ class HealthChecker:
         aws_ok = report["aws"][0]
         
         report["overall_status"] = "HEALTHY" if all([env_ok, assets_ok, db_ok, aws_ok]) else "DEGRADED"
+        cls._cached_diagnostic = report
+        cls._cached_diagnostic_time = now
         return report
 
 if __name__ == "__main__":

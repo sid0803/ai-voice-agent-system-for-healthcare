@@ -59,7 +59,8 @@ class SyncEngine:
                 return False
             
             stored_token = tenant.get("push_token")
-            if not stored_token or stored_token != push_token:
+            import hmac
+            if not stored_token or not hmac.compare_digest(str(stored_token), str(push_token)):
                 logger.warning(f"[SYNC] Unauthorized push attempt for {hospital_id}")
                 return False
 

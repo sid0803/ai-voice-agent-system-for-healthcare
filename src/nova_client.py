@@ -123,6 +123,9 @@ class SessionData:
     output_audio_tokens: int = 0
     output_text_tokens: int = 0
     total_tokens: int = 0
+    last_detected_lang: str = ""
+    lang_streak: int = 0
+    current_lang: str = "english"
 
 
 class StreamSession:
@@ -136,10 +139,9 @@ class StreamSession:
         self._session_id = session_id
         self._client = client
         self._audio_buffer_queue: list[bytes] = []
-        # [OPT-09] 10 frames = 200ms max buffer (was 200 frames = 4 seconds!).
-        # Audio is forwarded to Nova Sonic immediately instead of being queued,
-        # reducing perceived response start latency.
-        self._max_queue_size: int = 10
+        # [OPT-09] 3 frames = 60ms max buffer (reduced from 10 frames / 200ms).
+        # Audio is forwarded to Nova Sonic immediately without queuing latency.
+        self._max_queue_size: int = 3
         self._is_processing_audio: bool = False
         self._is_active: bool = True
         self.stream_sid: str = ""
@@ -275,6 +277,12 @@ class S2SBidirectionalStreamClient:
         self._session_last_activity: dict[str, float] = {}
         self._session_cleanup_in_progress: set[str] = set()
 
+        # [ARCH-1] Circuit breaker configuration
+        self._consecutive_failures: int = 0
+        self._circuit_open_until: float = 0.0
+        self._CIRCUIT_THRESHOLD: int = 3
+        self._CIRCUIT_OPEN_SECONDS: float = 60.0
+
     # ------------------------------------------------------------------
     # Session creation
     # ------------------------------------------------------------------
@@ -386,7 +394,14 @@ class S2SBidirectionalStreamClient:
                 bytes_=event_json.encode("utf-8")
             )
         )
-        await session.stream.input_stream.send(chunk)
+        try:
+            await session.stream.input_stream.send(chunk)
+        except RuntimeError as re:
+            if "AWS_ERROR_HTTP_STREAM_HAS_COMPLETED" in str(re) or "completed" in str(re):
+                logger.debug("Bedrock stream completed for session %s: %s", session_id[:8], re)
+                session.is_active = False
+            else:
+                raise
 
     def _dispatch_event(self, session_id: str, event_type: str, data: Any = None) -> None:
         """Dispatch an event to the registered handler for the session."""
@@ -424,6 +439,12 @@ class S2SBidirectionalStreamClient:
             await self._activate_mock_mode(session_id, "Incomplete Environment Configuration")
             return
 
+        # [ARCH-1] Check circuit breaker status
+        if time.time() < self._circuit_open_until:
+            logger.warning("[CIRCUIT-BREAKER] Bedrock circuit is OPEN. Switching immediately to fallback mode.")
+            await self._activate_mock_mode(session_id, "Circuit Breaker Active")
+            return
+
         try:
             stream = await asyncio.wait_for(
                 self._bedrock_client.invoke_model_with_bidirectional_stream(
@@ -435,6 +456,7 @@ class S2SBidirectionalStreamClient:
             )
             session.stream = stream
             session.is_active = True
+            self._consecutive_failures = 0
 
             # Send sessionStart event FIRST
             await self._send_event(session_id, {
@@ -446,7 +468,7 @@ class S2SBidirectionalStreamClient:
                             "temperature": session.inference_config.temperature,
                         },
                         "turnDetectionConfiguration": {
-                            "endpointingSensitivity": "MEDIUM",
+                            "endpointingSensitivity": "HIGH",
                         },
                     }
                 }
@@ -458,6 +480,13 @@ class S2SBidirectionalStreamClient:
             # Start processing response stream (blocks until error or completion)
             await self._process_response_stream(session_id)
         except Exception as exc:
+            if session and not session.is_active:
+                logger.info("[BEDROCK] Stream ended naturally for session %s", session_id[:8])
+                return
+            self._consecutive_failures += 1
+            if self._consecutive_failures >= self._CIRCUIT_THRESHOLD:
+                self._circuit_open_until = time.time() + self._CIRCUIT_OPEN_SECONDS
+                logger.critical(f"[CIRCUIT-BREAKER] Tripped — {self._consecutive_failures} consecutive Bedrock failures. Active for {int(self._CIRCUIT_OPEN_SECONDS)}s.")
             await self._activate_mock_mode(session_id, str(exc))
 
     async def _activate_mock_mode(self, session_id: str, reason: str) -> None:
@@ -509,10 +538,13 @@ class S2SBidirectionalStreamClient:
 
                     self._update_session_activity(session_id)
                     text_response = value.bytes_.decode("utf-8")
-                    logger.info("[BEDROCK_RECV] %s", text_response)
                     try:
                         json_response = json.loads(text_response)
                         evt = json_response.get("event", {})
+                        if "audioOutput" in evt:
+                            logger.debug("[BEDROCK_RECV] audioOutput chunk received")
+                        else:
+                            logger.info("[BEDROCK_RECV] %s", text_response)
 
                         if evt.get("contentStart"):
                             self._dispatch_event(session_id, "contentStart", evt["contentStart"])
@@ -553,6 +585,14 @@ class S2SBidirectionalStreamClient:
                             # Keep audio paused during speech generation (tool responses will unpause when done)
                             session.audio_paused = True
                             logger.info("completionStart: paused audio for session %s (tools_in_flight=%d)", session_id[:8], len(session.active_tool_calls))
+                            
+                            # Safety watchdog: unpause audio after 3.5s if completionEnd is missed or dropped
+                            async def _safety_unpause_completion(s_data, s_id):
+                                await asyncio.sleep(3.5)
+                                if s_data.audio_paused and not s_data.active_tool_calls:
+                                    s_data.audio_paused = False
+                                    logger.info("[SAFETY] Audio auto-unpaused after completion timeout for session %s", s_id[:8])
+                            asyncio.create_task(_safety_unpause_completion(session, session_id))
                         elif evt.get("textOutput"):
                             self._dispatch_event(session_id, "textOutput", evt["textOutput"])
                         elif evt.get("audioOutput"):
@@ -560,6 +600,8 @@ class S2SBidirectionalStreamClient:
                         elif evt.get("toolUse"):
                             self._dispatch_event(session_id, "toolUse", evt["toolUse"])
                             session.tool_call_pending = True
+                            session.completion_received = False
+                            session.audio_paused = True
                             session.tool_use_content = evt["toolUse"]
                             session.tool_use_id = evt["toolUse"].get("toolUseId", "")
                             session.tool_name = evt["toolUse"].get("name") or evt["toolUse"].get("toolName", "")
@@ -613,24 +655,21 @@ class S2SBidirectionalStreamClient:
                                     if not session.active_tool_calls:
                                         # All parallel tools done — prepare a fresh audio block for the next user turn
                                         # and un-pause only after Nova's completionEnd has been received.
-                                        # (completionEnd handler will check active_tool_calls and unpause.)
                                         session.tool_call_pending = False
                                         session.audio_content_id = str(uuid4())
-                                        # If Nova already sent completionEnd while we were running tools,
-                                        # audio_paused is still True (completionEnd saw tools in flight).
-                                        # Unpause only if completion has been received.
                                         if session.completion_received:
                                             session.audio_paused = False
                                             logger.info("All parallel tool calls finished and completion received. Unpaused audio for session %s", session_id[:8])
                                         else:
-                                            logger.info("All parallel tool calls finished but completion not yet received — will unpause at completionEnd for session %s", session_id[:8])
+                                            logger.info("All parallel tool calls finished, waiting for assistant speech completionEnd for session %s", session_id[:8])
                                         
-                                        # Safety unpause: if all tools done and audio still paused, force unpause
-                                        # after a brief timeout. This handles any race condition or missed completionEnd.
-                                        await asyncio.sleep(0.3)
-                                        if session.audio_paused:
-                                            session.audio_paused = False
-                                            logger.info("Safety unpause: all parallel tools complete, force-unpaused audio for session %s", session_id[:8])
+                                        # Safety unpause: wait 5.0s if completionEnd is never sent by Bedrock
+                                        async def _safety_tool_unpause(s_data, s_id):
+                                            await asyncio.sleep(5.0)
+                                            if s_data.audio_paused and not s_data.active_tool_calls and not s_data.assistant_speaking:
+                                                s_data.audio_paused = False
+                                                logger.info("[SAFETY] Auto-unpaused audio 5s after tool execution for session %s", s_id[:8])
+                                        asyncio.create_task(_safety_tool_unpause(session, session_id))
                             
                             # Start background execution task
                             asyncio.create_task(run_tool_task(t_name, t_use_content, t_use_id))
@@ -685,6 +724,14 @@ class S2SBidirectionalStreamClient:
                     if not session.is_active:
                         break
                     err_msg = str(e)
+                    if "Model has timed out" in err_msg or "ModelTimeoutException" in err_msg or "timed out in processing" in err_msg:
+                        logger.info("[STREAM-TIMEOUT] Natural 8-minute Bedrock timeout reached for session %s. Closing cleanly.", session_id[:8])
+                        session.is_active = False
+                        self._dispatch_event(session_id, "streamComplete", {
+                            "timestamp": datetime.now(timezone.utc).isoformat(),
+                            "reason": "natural_timeout"
+                        })
+                        return
                     logger.exception("Error processing Bedrock response stream: %s. Terminating stream and re-raising.", err_msg)
                     session.is_active = False
                     raise e
@@ -693,6 +740,8 @@ class S2SBidirectionalStreamClient:
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             })
         except Exception as error:
+            if session and not session.is_active:
+                return
             self._dispatch_event(session_id, "error", {
                 "source": "responseStream",
                 "message": "Error processing response stream",
@@ -737,11 +786,12 @@ class S2SBidirectionalStreamClient:
                 session.is_audio_content_start_sent = False
                 session.is_audio_data_sent = False
                 session.open_content_ids.discard(session.audio_content_id)
-                # Brief pause to let Bedrock process the contentEnd before the TOOL block
-                await asyncio.sleep(0.2)
+                # Event-driven micro-yield: allow event loop to flush contentEnd frame before opening TOOL block
+                await asyncio.sleep(0.01)
 
             # Each tool result gets its own isolated content block ID
             content_id = str(uuid4())
+            t_tool_send_start = time.perf_counter()
             logger.info("_send_tool_result[%s]: sending tool result in content block %s", tool_use_id[:8], content_id[:8])
 
             await self._send_event(session_id, {
@@ -780,7 +830,9 @@ class S2SBidirectionalStreamClient:
                     }
                 }
             })
-            logger.info("_send_tool_result[%s]: tool result block %s sent successfully", tool_use_id[:8], content_id[:8])
+            tool_send_elapsed_ms = (time.perf_counter() - t_tool_send_start) * 1000
+            logger.info("_send_tool_result[%s]: tool result block %s sent in %.1fms", tool_use_id[:8], content_id[:8], tool_send_elapsed_ms)
+
 
     # ------------------------------------------------------------------
     # Session setup events (now async — send directly to stream)
@@ -952,7 +1004,7 @@ class S2SBidirectionalStreamClient:
                 session.is_audio_content_start_sent = False
                 session.open_content_ids.discard(session.audio_content_id)
                 session.audio_content_id = str(uuid4())
-                session.audio_paused = True
+                session.audio_paused = False
                 return
                 
             await self._send_event(session_id, {
@@ -966,8 +1018,8 @@ class S2SBidirectionalStreamClient:
             session.is_audio_content_start_sent = False
             session.is_audio_data_sent = False
             session.open_content_ids.discard(session.audio_content_id)
-            session.audio_content_id = str(uuid4()) # Rotate immediately!
-            session.audio_paused = True # Pause immediately!
+            session.audio_content_id = str(uuid4()) # Rotate immediately for next turn!
+            session.audio_paused = False # Keep audio pipeline open for user speech!
             await asyncio.sleep(0.05)
 
         if acquire_lock:

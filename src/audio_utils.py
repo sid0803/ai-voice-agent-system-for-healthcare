@@ -89,7 +89,7 @@ class AudioPolisher:
     def __init__(self):
         self.threshold = 5000.0
         self.ratio = 4.0        # 4:1 compression
-        self.makeup_gain = 1.6  # 4dB makeup boost
+        self.makeup_gain = 1.3  # 2.3dB makeup boost (clear without clipping artifacts)
         
         # [OPT-01] Pre-compute scipy IIR coefficients for High-Shelf treble boost
         # High-shelf: boosts frequencies above ~3kHz for telephone clarity
@@ -131,58 +131,16 @@ class AudioPolisher:
             logger.exception("Outbound audio polishing failed")
             return data
 
-try:
-    import audioop
-    _HAS_AUDIOOP = True
-except ImportError:
-    _HAS_AUDIOOP = False
-    
-    def _init_mulaw_tables():
-        ulaw_to_lin = np.zeros(256, dtype=np.int16)
-        lin_to_ulaw = np.zeros(65536, dtype=np.uint8)
-        
-        for i in range(256):
-            val = ~i & 0xFF
-            sign = (val & 0x80) >> 7
-            exponent = (val & 0x70) >> 4
-            mantissa = val & 0x0F
-            sample = ((mantissa << 3) + 132) << exponent
-            sample -= 132
-            if sign != 0:
-                sample = -sample
-            ulaw_to_lin[i] = np.clip(sample, -32768, 32767)
-            
-        for i in range(65536):
-            sample = i if i < 32768 else i - 65536
-            sign = 0x80 if sample < 0 else 0x00
-            mag = abs(int(sample))
-            mag = min(mag, 32635)
-            mag += 132
-            
-            exponent = 7
-            for exp in range(7, 0, -1):
-                if (mag & (0x100 << exp)) != 0:
-                    exponent = exp
-                    break
-            else:
-                exponent = 0
-                
-            mantissa = (mag >> (exponent + 3)) & 0x0F
-            val = sign | (exponent << 4) | mantissa
-            lin_to_ulaw[i] = ~val & 0xFF
-            
-        return ulaw_to_lin, lin_to_ulaw
-
-    _ULAW_TO_LIN, _LIN_TO_ULAW = _init_mulaw_tables()
-
 def exotel_to_pcm(data: bytes) -> bytes:
     """Convert Exotel 8kHz PCM to 16-bit linear PCM.
-    Since Exotel uses raw 8kHz 16-bit signed mono PCM, this is a pass-through (no conversion required).
+    Since Exotel media streams deliver 8kHz 16-bit signed mono PCM, this is a pass-through.
     """
     return data
+
 
 def pcm_to_exotel(data: bytes) -> bytes:
     """Convert 16-bit linear PCM to Exotel 8kHz PCM.
-    Since Exotel uses raw 8kHz 16-bit signed mono PCM, this is a pass-through (no conversion required).
+    Since Exotel media streams accept 8kHz 16-bit signed mono PCM, this is a pass-through.
     """
     return data
+

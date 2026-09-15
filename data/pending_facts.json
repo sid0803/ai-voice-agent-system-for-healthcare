@@ -1,0 +1,303 @@
+[
+  {
+    "fact_id": "fact_1787576421_4784",
+    "question": "What is the cost of a Thyroid Profile Test?",
+    "answer": "Rs. 750",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.124778+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_6979",
+    "question": "What is the cost of a Lipid Profile Test?",
+    "answer": "Rs. 600",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125180+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_7812",
+    "question": "What are the parking rates at InDiiServe Healthcare?",
+    "answer": "{'car_rate': 'Rs. 30 per hour', 'two_wheeler_rate': 'Rs. 10 per hour', 'first_2_hours_free': 'with a valid OPD token', 'daily_flat_rate_for_admitted_patient_visitors': 'Rs. 100'}",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125193+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_4217",
+    "question": "What are the departments available in the hospital?",
+    "answer": "Cardiology & Cardiothoracic Surgery, Neurology & Neurosurgery, Orthopedics & Joint Replacement, Pediatrics & Neonatology, Gynecology & Obstetrics, Endocrinology & Diabetes Clinic, Gastroenterology & Hepatology, Pulmonology",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125200+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_2356",
+    "question": "What is the new floor for Dr. Sen's clinic?",
+    "answer": "3rd floor",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125207+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_1108",
+    "question": "Is there any doctor available for radiology?",
+    "answer": "Yes, Dr. Shalini Verma is available in the Radiology department today.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125214+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_6682",
+    "question": "What are the available radiology services?",
+    "answer": "Available radiology services include Chest X-Ray, X-Ray for limbs or joints, X-Ray Spine, Abdominal Ultrasound, Pelvic Ultrasound, Obstetric Ultrasound, and Thyroid/Neck Ultrasound.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125221+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_8241",
+    "question": "What is the fee for Dr. Shalini Verma's radiology consultation?",
+    "answer": "The fee for Dr. Shalini Verma's radiology consultation is 900 rupees.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125228+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_8107",
+    "question": "What are the fees for Chest X-Ray, X-Ray for limbs or joints, and X-Ray Spine?",
+    "answer": "The fees are 350 rupees for Chest X-Ray, 300 rupees for X-Ray for limbs or joints, and 400 rupees for X-Ray Spine.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125235+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_7494",
+    "question": "What are the fees for Abdominal Ultrasound, Pelvic Ultrasound, Obstetric Ultrasound, and Thyroid/Neck Ultrasound?",
+    "answer": "The fees are 800 rupees for Abdominal Ultrasound, 900 rupees for Pelvic Ultrasound, 1,000 rupees for Obstetric Ultrasound, and 750 rupees for Thyroid/Neck Ultrasound.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125244+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_7366",
+    "question": "What is the name of the hospital?",
+    "answer": "SarvoDaya Hospital",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125251+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_8591",
+    "question": "What is the correct name of the hospital mentioned in the greeting?",
+    "answer": "SarvoDaya Hospital",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125259+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_8414",
+    "question": "Is there any doctor available for tomorrow in the range of time between two to three pm?",
+    "answer": "Yes, there are two options: Dr. Rajesh Nair - Cardiology 2:00 PM slot and Dr. Priya Sharma - General Medicine 2:00 PM slot.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125268+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_9622",
+    "question": "Is there a 24/7 pharmacy available?",
+    "answer": "Yes, there is a 24/7 pharmacy located on the Ground Floor near the exit, offering home delivery if needed.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125276+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_8620",
+    "question": "Is there an ATM available?",
+    "answer": "Yes, there is an SBI ATM available 24/7 on the Ground Floor near the pharmacy.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125307+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_1134",
+    "question": "Is Dr. Sen's clinic on the 3rd floor now?",
+    "answer": "Yes, Dr. Sen's clinic is on the 3rd floor.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125316+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_6270",
+    "question": "What is the parking rate at InDiiServe Healthcare?",
+    "answer": "The parking rate is 20 rupees for an hour.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125325+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_1886",
+    "question": "What is the price of a Brain MRI?",
+    "answer": "Rs. 8,500",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125334+00:00"
+  },
+  {
+    "fact_id": "fact_1787576421_2398",
+    "question": "What is the price of a Spine MRI?",
+    "answer": "Rs. 9,000",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:00:21.125343+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_3596",
+    "question": "What is the cost of a Brain MRI?",
+    "answer": "Rs. 8,500",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221496+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_4588",
+    "question": "What is the cost of a Spine MRI?",
+    "answer": "Rs. 9,000",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221538+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_7609",
+    "question": "What is the cost of a Full Abdomen MRI?",
+    "answer": "Rs. 12,000",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221550+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_3255",
+    "question": "Which parking levels are available for multi-level parking?",
+    "answer": "Basement B1 & B2",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221564+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_7633",
+    "question": "What is the parking capacity?",
+    "answer": "500 vehicles",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221573+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_9714",
+    "question": "What is the car rate per hour?",
+    "answer": "Rs. 30",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221582+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_9370",
+    "question": "What is the two-wheeler rate per hour?",
+    "answer": "Rs. 10",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221591+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_6409",
+    "question": "Are the first 2 hours of parking free?",
+    "answer": "Yes, with a valid OPD token",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221601+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_4897",
+    "question": "What is the daily flat rate for admitted patient visitors?",
+    "answer": "Rs. 100",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221610+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_1763",
+    "question": "Are there any doctors available for tomorrow?",
+    "answer": "The AI should note that the user is inquiring about doctor availability for the next day.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221621+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_2387",
+    "question": "What are the departments available in your hospital?",
+    "answer": "The AI should note the list of 13 departments available at IndiiServe Healthcare, including Cardiology & Cardiothoracic Surgery, Neurology & Neurosurgery, Orthopedics & Joint Replacement, Pediatrics & Neonatology, Gynecology & Obstetrics, Endocrinology & Diabetes Clinic, Gastroenterology & Hepatology, Pulmonology.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221631+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_4326",
+    "question": "Why are you referring me to ENT?",
+    "answer": "The AI should note the patient's confusion about being referred to ENT and should understand that it was based on the initial query about doctor availability for the next day.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221641+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_4280",
+    "question": "Are X-ray or ultrasound services available in your hospital?",
+    "answer": "Yes, we offer both X-ray and ultrasound services. The prices are as follows: Chest X-Ray (350 rupees), X-Ray for limbs or joints (300 rupees), X-Ray Spine (400 rupees), Abdominal Ultrasound (800 rupees), Pelvic Ultrasound (900 rupees), Obstetric Ultrasound (1,000 rupees), and Thyroid/Neck Ultrasound (750 rupees). All services are available 24/7.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221654+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_7899",
+    "question": "What is the hospital name?",
+    "answer": "SarvoDaya Hospital",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221704+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_2340",
+    "question": "Why was there confusion about the hospital name?",
+    "answer": "The AI mistakenly referred to it as Indus Health Hospital instead of SarvoDaya Hospital.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221717+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_5988",
+    "question": "What is the new address for Dr. Sen's clinic?",
+    "answer": "The new address for Dr. Sen's clinic is not specified in the transcript.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221728+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_3926",
+    "question": "Is there any change in the appointment booking system?",
+    "answer": "There is no information about changes in the appointment booking system in the transcript.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221748+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_6634",
+    "question": "Are there new medical services offered at InDiiServe Healthcare?",
+    "answer": "There is no information about new medical services in the transcript.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221761+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_5354",
+    "question": "Is there any update on the hospital's floor layout?",
+    "answer": "The transcript does not provide any updates on the hospital's floor layout.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221773+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_1468",
+    "question": "Is there a new doctor at InDiiServe Healthcare?",
+    "answer": "There is no information about new doctors at InDiiServe Healthcare in the transcript.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221786+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_5765",
+    "question": "Is there a pharmacy available?",
+    "answer": "Yes, a 24/7 pharmacy is available on the Ground Floor near the exit.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221798+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_3930",
+    "question": "Is there a doctor available for tomorrow between 2 PM and 3 PM for general medicine and cardiology?",
+    "answer": "Yes, there are two options: Dr. Rajesh Nair for Cardiology at 2:00 PM and Dr. Priya Sharma for General Medicine at 2:00 PM.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221816+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_6205",
+    "question": "Is Dr. Sen's clinic on the 3rd floor?",
+    "answer": "Yes, Dr. Sen's clinic is on the 3rd floor.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221830+00:00"
+  },
+  {
+    "fact_id": "fact_1787578395_6725",
+    "question": "What is the parking rate at the hospital?",
+    "answer": "The parking rate is 20 rupees for an hour.",
+    "status": "PENDING_REVIEW",
+    "submitted_at": "2026-08-24T13:33:15.221843+00:00"
+  }
+]
