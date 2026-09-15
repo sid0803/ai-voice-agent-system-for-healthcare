@@ -32,7 +32,7 @@
 | `TST-03` | Phase 4 | `tests/test_idle_monitor.py` | Idle Monitor & Escalation Suite | High | Completed ✅ |
 | `TST-04` | Phase 4 | `tests/test_rendering_unit.py` (New) | Phonetic Rendering Unit Tests | Medium | Completed ✅ |
 | `TST-05` | Phase 4 | `tests/` (17 test suites) | Full System 176-Test Regression Run | Critical | Completed ✅ |
-| `OPS-01` | Phase 5 | EC2 Server (`voice.indiiserve.ai`) | Safe Staged Production Deployment | Critical | Ready for Window 🟡 |
+| `OPS-01` | Phase 5 | EC2 Server (`voice.indiiserve.ai`) | Safe Staged Production Deployment | Critical | Completed & Verified Live ✅ |
 
 ---
 
@@ -517,6 +517,7 @@ In `src/tools.py`:
 | 2026-09-15 20:31 | `TST-04` | Created `tests/test_rendering_unit.py` (4 tests) | pytest | Passed all 4 tests |
 | 2026-09-15 20:32 | `TST-05` | Ran full project regression test suite (17 test files) | pytest | **176 passed, 0 failed** in 19.51s (100% passing) |
 | 2026-09-15 20:41 | `GIT-01` | Pushed verified commit `3ad9e95` to GitHub remote (`origin/main`) | Git Remote | `f2a7546..3ad9e95 main -> main` (Zero secrets leaked) |
+| 2026-09-15 20:49 | `OPS-01` | Pre-backup taken, code deployed on EC2, service restarted, healthcheck verified | Live Server | Production active: `{"status":"healthy"}` on https://voice.indiiserve.ai/health |
 
 ---
 
