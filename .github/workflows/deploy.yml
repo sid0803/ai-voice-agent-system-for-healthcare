@@ -33,10 +33,23 @@ jobs:
     name: Deploy to EC2
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && secrets.EC2_HOST != ''
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
+      - name: Check deployment secrets
+        id: check_secrets
+        run: |
+          if [ -n "$EC2_HOST" ] && [ -n "$EC2_KEY" ]; then
+            echo "configured=true" >> $GITHUB_OUTPUT
+          else
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "EC2_HOST or EC2_KEY secret not found in repository. Skipping automated deployment."
+          fi
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_KEY: ${{ secrets.EC2_KEY }}
       - name: Set up SSH
+        if: steps.check_secrets.outputs.configured == 'true'
         run: |
           mkdir -p ~/.ssh
           printf '%s' "$EC2_KEY" > ~/.ssh/deploy_key.pem
@@ -46,6 +59,7 @@ jobs:
           EC2_KEY: ${{ secrets.EC2_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
       - name: Sync src/ to EC2
+        if: steps.check_secrets.outputs.configured == 'true'
         run: |
           rsync -avz --delete \
             --exclude '__pycache__' --exclude '*.pyc' \
@@ -55,6 +69,7 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
       - name: Sync data/ to EC2
+        if: steps.check_secrets.outputs.configured == 'true'
         run: |
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key.pem" \
@@ -63,6 +78,7 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
       - name: Restart service and health check
+        if: steps.check_secrets.outputs.configured == 'true'
         run: |
           ssh -i ~/.ssh/deploy_key.pem $EC2_USER@$EC2_HOST \
             "sudo systemctl restart indiiserve.service && sleep 10 && curl -sf http://localhost:8000/health | python3 -c \"import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('status')=='healthy' else 1)\""
