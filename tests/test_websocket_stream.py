@@ -1,4 +1,4 @@
-﻿"""WebSocket integration tests — AI-09.
+"""WebSocket integration tests — AI-09.
 
 Simulates a full Exotel call lifecycle against the live FastAPI app using
 FastAPI's TestClient WebSocket support.
