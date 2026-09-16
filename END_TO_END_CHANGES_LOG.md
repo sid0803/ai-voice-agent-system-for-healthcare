@@ -33,6 +33,7 @@
 | `TST-04` | Phase 4 | `tests/test_rendering_unit.py` (New) | Phonetic Rendering Unit Tests | Medium | Completed ✅ |
 | `TST-05` | Phase 4 | `tests/` (17 test suites) | Full System 176-Test Regression Run | Critical | Completed ✅ |
 | `OPS-01` | Phase 5 | EC2 Server (`voice.indiiserve.ai`) | Safe Staged Production Deployment | Critical | Completed & Verified Live ✅ |
+| `CICD-01` | Post-Phase 5 | `src/server.py` & `.github/workflows/deploy.yml` | CI/CD Pipeline & Null Credential Hardening | High | Completed ✅ |
 
 ---
 
@@ -490,6 +491,51 @@ In `src/tools.py`:
 
 ---
 
+### [CICD-01] GitHub Actions CI/CD Hardening & Port 8000 Healthcheck Correction
+- **File(s)**: `src/server.py`, `.github/workflows/deploy.yml`
+- **Category**: CI/CD Pipeline Reliability & Telephony Client Hardening
+- **Severity**: High
+- **Status**: Completed ✅
+
+#### A. What Was There Previously
+1. In `src/server.py` (line 305):
+   ```python
+   exotel_http = httpx.AsyncClient(
+       auth=(exotel_api_key, exotel_api_token),
+       timeout=30.0,
+   )
+   ```
+   In GitHub Actions CI runners, `.env` is intentionally and securely omitted. As a result, `exotel_api_key` and `exotel_api_token` are `None`. `httpx` crashed with `TypeError: sequence item 0: expected a bytes-like object, NoneType found` when attempting basic auth encoding during test collection across all 9 test suites importing `server.py`.
+2. In `.github/workflows/deploy.yml`:
+   - Line 68 checked `http://localhost:9000/health`, whereas IndiiServe runs on port `8000`.
+   - `ADMIN_JWT_SECRET` in CI environment was only 22 characters, violating production length requirements.
+   - `deploy` job had no presence check on GitHub repository secrets (`EC2_HOST`).
+
+#### B. Why It Was Done
+- To ensure automated CI/CD tests run reliably and pass 100% on every push to GitHub without leaking secrets or requiring mock credentials.
+- To prevent false deploy failures caused by the port 9000 typo.
+
+#### C. What We Have Done
+1. In `src/server.py`: Made `httpx.AsyncClient` authentication conditional:
+   ```python
+   exotel_auth = (exotel_api_key, exotel_api_token) if (exotel_api_key and exotel_api_token) else None
+   exotel_http = httpx.AsyncClient(
+       auth=exotel_auth,
+       timeout=30.0,
+   )
+   ```
+2. In `.github/workflows/deploy.yml`:
+   - Corrected healthcheck endpoint to `http://localhost:8000/health`.
+   - Hardened `ADMIN_JWT_SECRET` in CI env to 32+ characters.
+   - Added guard condition `&& secrets.EC2_HOST != ''` so deploy only executes when repository deployment secrets are configured.
+
+#### D. Safety & Verification
+- Simulated exact CI environment with `.env` removed and clean environment variables.
+- Verified **176 passed, 0 failed** (100% pass rate) in clean CI mode.
+- Verified standard local test suite passes 100%.
+
+---
+
 ## 4. Change Activity Log & Timestamp Ledger
 
 | Timestamp (UTC) | Change ID | Action Performed | Verified By | Notes / Verification Output |
@@ -518,6 +564,7 @@ In `src/tools.py`:
 | 2026-09-15 20:32 | `TST-05` | Ran full project regression test suite (17 test files) | pytest | **176 passed, 0 failed** in 19.51s (100% passing) |
 | 2026-09-15 20:41 | `GIT-01` | Pushed verified commit `3ad9e95` to GitHub remote (`origin/main`) | Git Remote | `f2a7546..3ad9e95 main -> main` (Zero secrets leaked) |
 | 2026-09-15 20:49 | `OPS-01` | Pre-backup taken, code deployed on EC2, service restarted, healthcheck verified | Live Server | Production active: `{"status":"healthy"}` on https://voice.indiiserve.ai/health |
+| 2026-09-16 12:45 | `CICD-01` | Hardened `exotel_http` auth against null env; corrected port 8000 in `deploy.yml` | Clean CI Simulation | 176/176 tests passed in clean environment without `.env` |
 
 ---
 

@@ -1,4 +1,4 @@
-﻿name: InDiiServe Asha - CI/CD
+name: InDiiServe Asha - CI/CD
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
       ENVIRONMENT: test
       AWS_REGION: ap-south-1
       BEDROCK_REGION: us-east-1
-      ADMIN_JWT_SECRET: ci_jwt_secret_not_real
+      ADMIN_JWT_SECRET: ci_jwt_secret_not_real_with_sufficient_length_32_chars
       HOSPITAL_ID: default_tier2
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +33,7 @@ jobs:
     name: Deploy to EC2
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && secrets.EC2_HOST != ''
     steps:
       - uses: actions/checkout@v4
       - name: Set up SSH
@@ -65,7 +65,7 @@ jobs:
       - name: Restart service and health check
         run: |
           ssh -i ~/.ssh/deploy_key.pem $EC2_USER@$EC2_HOST \
-            "sudo systemctl restart indiiserve.service && sleep 10 && curl -sf http://localhost:9000/health | python3 -c \"import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('status')=='healthy' else 1)\""
+            "sudo systemctl restart indiiserve.service && sleep 10 && curl -sf http://localhost:8000/health | python3 -c \"import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('status')=='healthy' else 1)\""
         env:
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_HOST: ${{ secrets.EC2_HOST }}

@@ -302,8 +302,9 @@ else:
     logger.warning("[CONFIG] EXOTEL_SUBDOMAIN or EXOTEL_SID not set. Outbound call/failover endpoints will not work.")
 
 # Exotel HTTP client
+exotel_auth = (exotel_api_key, exotel_api_token) if (exotel_api_key and exotel_api_token) else None
 exotel_http = httpx.AsyncClient(
-    auth=(exotel_api_key, exotel_api_token),
+    auth=exotel_auth,
     timeout=30.0,
 )
 
