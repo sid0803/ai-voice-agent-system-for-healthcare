@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import base64
+from collections import deque
 import json
 import logging
 import os
@@ -138,10 +139,10 @@ class StreamSession:
     def __init__(self, session_id: str, client: S2SBidirectionalStreamClient) -> None:
         self._session_id = session_id
         self._client = client
-        self._audio_buffer_queue: list[bytes] = []
         # [OPT-09] 3 frames = 60ms max buffer (reduced from 10 frames / 200ms).
         # Audio is forwarded to Nova Sonic immediately without queuing latency.
         self._max_queue_size: int = 3
+        self._audio_buffer_queue: deque[bytes] = deque(maxlen=self._max_queue_size)
         self._is_processing_audio: bool = False
         self._is_active: bool = True
         self.stream_sid: str = ""
@@ -187,8 +188,6 @@ class StreamSession:
         """Buffer audio data and trigger queue processing."""
         if self._client.is_audio_paused(self._session_id):
             return  # Drop audio while paused (idle follow-up in progress)
-        if len(self._audio_buffer_queue) >= self._max_queue_size:
-            self._audio_buffer_queue.pop(0)  # Drop oldest
         self._audio_buffer_queue.append(audio_data)
         await self._process_audio_queue()
 
@@ -203,19 +202,19 @@ class StreamSession:
                 and self._is_active
                 and not self._client.is_audio_paused(self._session_id)
             ):
-                audio_chunk = self._audio_buffer_queue.pop(0)
+                audio_chunk = self._audio_buffer_queue.popleft()
                 await self._client.stream_audio_chunk(self._session_id, audio_chunk)
         finally:
             self._is_processing_audio = False
             if self._audio_buffer_queue and self._is_active and not self._client.is_audio_paused(self._session_id):
-                asyncio.ensure_future(self._process_audio_queue())
+                asyncio.create_task(self._process_audio_queue())
 
     async def end_audio_content(self) -> None:
         if not self._is_active:
             return
         # Ensure all buffered audio chunks are fully drained and sent to Bedrock before closing turn
         while self._audio_buffer_queue and self._is_active and not self._client.is_audio_paused(self._session_id):
-            audio_chunk = self._audio_buffer_queue.pop(0)
+            audio_chunk = self._audio_buffer_queue.popleft()
             await self._client.stream_audio_chunk(self._session_id, audio_chunk)
         await self._client.send_content_end(self._session_id)
 
@@ -586,9 +585,9 @@ class S2SBidirectionalStreamClient:
                             session.audio_paused = True
                             logger.info("completionStart: paused audio for session %s (tools_in_flight=%d)", session_id[:8], len(session.active_tool_calls))
                             
-                            # Safety watchdog: unpause audio after 3.5s if completionEnd is missed or dropped
+                            # Safety watchdog: unpause audio after 2.0s if completionEnd is missed or dropped
                             async def _safety_unpause_completion(s_data, s_id):
-                                await asyncio.sleep(3.5)
+                                await asyncio.sleep(2.0)
                                 if s_data.audio_paused and not s_data.active_tool_calls:
                                     s_data.audio_paused = False
                                     logger.info("[SAFETY] Audio auto-unpaused after completion timeout for session %s", s_id[:8])
@@ -663,12 +662,12 @@ class S2SBidirectionalStreamClient:
                                         else:
                                             logger.info("All parallel tool calls finished, waiting for assistant speech completionEnd for session %s", session_id[:8])
                                         
-                                        # Safety unpause: wait 5.0s if completionEnd is never sent by Bedrock
+                                        # Safety unpause: wait 3.0s if completionEnd is never sent by Bedrock
                                         async def _safety_tool_unpause(s_data, s_id):
-                                            await asyncio.sleep(5.0)
+                                            await asyncio.sleep(3.0)
                                             if s_data.audio_paused and not s_data.active_tool_calls and not s_data.assistant_speaking:
                                                 s_data.audio_paused = False
-                                                logger.info("[SAFETY] Auto-unpaused audio 5s after tool execution for session %s", s_id[:8])
+                                                logger.info("[SAFETY] Auto-unpaused audio 3s after tool execution for session %s", s_id[:8])
                                         asyncio.create_task(_safety_tool_unpause(session, session_id))
                             
                             # Start background execution task
@@ -1020,7 +1019,7 @@ class S2SBidirectionalStreamClient:
             session.open_content_ids.discard(session.audio_content_id)
             session.audio_content_id = str(uuid4()) # Rotate immediately for next turn!
             session.audio_paused = False # Keep audio pipeline open for user speech!
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.01)
 
         if acquire_lock:
             async with session.write_lock:
@@ -1048,8 +1047,8 @@ class S2SBidirectionalStreamClient:
             # 1. Pause audio ingestion so no more audioInput events are sent
             session.audio_paused = True
             session.completion_received = False
-            # Wait long enough for any in-flight _process_audio_queue batch to finish
-            await asyncio.sleep(0.5)
+            # Wait briefly for any in-flight _process_audio_queue batch to finish (50ms)
+            await asyncio.sleep(0.05)
 
             # 2. Close current audio content block if it was opened.
             # AWS Nova Sonic requires every content block to be closed before a new
@@ -1065,8 +1064,8 @@ class S2SBidirectionalStreamClient:
                     }
                 })
                 logger.info("send_text_message: closed audio content %s", old_audio_id[:8])
-                # Give Nova time to process the audio content closure
-                await asyncio.sleep(0.5)
+                # Give Nova a brief moment to process the audio content closure (50ms)
+                await asyncio.sleep(0.05)
                 session.is_audio_content_start_sent = False
                 session.is_audio_data_sent = False # Reset for next block
                 session.open_content_ids.discard(old_audio_id)
@@ -1236,7 +1235,7 @@ class S2SBidirectionalStreamClient:
                     }
                 }
             })
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(0.05)
 
         if acquire_lock:
             async with session.write_lock:
@@ -1253,7 +1252,7 @@ class S2SBidirectionalStreamClient:
             await self._send_event(session_id, {
                 "event": {"sessionEnd": {}}
             })
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(0.05)
             session.is_active = False
             # Close the stream
             try:

@@ -10,6 +10,7 @@ import json
 import logging
 import os
 import pathlib
+import re
 import threading
 import time
 import uuid
@@ -104,7 +105,6 @@ def _save_faiss_cache():
 def _save_faiss_cache_async():
     """[OPT-02] Fire-and-forget FAISS save — removes disk I/O from hot path.
     Saves 30-80ms per tool call by not blocking the response stream."""
-    import threading
     threading.Thread(target=_save_faiss_cache, daemon=True).start()
 
 
@@ -262,8 +262,6 @@ def sync_community_knowledge():
 # ---------------------------------------------------------------------------
 # Hospital Tool Implementations (Asha / SarvoDaya Hospital)
 # ---------------------------------------------------------------------------
-
-import re
 
 def _has_word(query: str, word: str) -> bool:
     """Check if a word or phrase exists in the query with word boundaries."""

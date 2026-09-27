@@ -64,6 +64,7 @@ from src.security.audit_logger import audit_logger
 from src.analytics.dynamodb_client import dynamodb_analytics
 from src.analytics.processor import analytics_processor
 from src.transcript_store import save_transcript
+from src.integrations.tenant_manager import tenant_manager
 
 # ---------------------------------------------------------------------------
 # [AI-04] Known consultation fees & Spoken Fact Gate (Delegated to src.guards)
@@ -80,12 +81,10 @@ from src.idle_monitor import IdleMonitorSession
 # ---------------------------------------------------------------------------
 def _check_kb_version():
     try:
-        import json as _json
-        from datetime import datetime, timezone, timedelta
         kb_path = _PROJECT_ROOT / "data" / "unified_hospital_kb.json"
         if not kb_path.exists():
             return
-        meta = _json.loads(kb_path.read_text(encoding="utf-8")).get("metadata", {})
+        meta = json.loads(kb_path.read_text(encoding="utf-8")).get("metadata", {})
         version     = meta.get("version", "unknown")
         last_updated = meta.get("last_updated", "")
         logger = logging.getLogger(__name__)
@@ -652,6 +651,24 @@ async def run_async_startup_checks():
                 except Exception as e:
                     logger.error("[STARTUP] Error seeding tenant %s: %s", hospital_id, e)
 
+            def _seed_admin_sync(action_desc: str = "default"):
+                try:
+                    from src.analytics.dynamodb_client import dynamodb_analytics
+                    if not dynamodb_analytics.get_user("admin_metro"):
+                        is_prod = os.environ.get("ENVIRONMENT", "development").lower() == "production"
+                        admin_hash = os.environ.get("ADMIN_PASSWORD_HASH")
+                        if is_prod and not admin_hash:
+                            logger.error("[SECURITY CRITICAL] ADMIN_PASSWORD_HASH is required in production. Refusing to seed %s admin user.", action_desc)
+                        else:
+                            if not admin_hash:
+                                import bcrypt
+                                admin_hash = bcrypt.hashpw(b"dev_ephemeral_test_secret_2026", bcrypt.gensalt(rounds=10)).decode()
+                                logger.warning("[SECURITY] ADMIN_PASSWORD_HASH not set in development. Using ephemeral dev hash.")
+                            dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
+                            logger.info("[STARTUP] Seeded %s user 'admin_metro'.", action_desc)
+                except Exception as e:
+                    logger.error("[STARTUP] Failed to verify/seed %s user: %s", action_desc, e)
+
             # Check Tenants Table
             tenants_table_name = os.environ.get("DYNAMODB_TENANTS_TABLE", "InDiiServe_Tenants")
             if tenants_table_name not in existing:
@@ -686,38 +703,12 @@ async def run_async_startup_checks():
                 logger.info("[STARTUP] DynamoDB table '%s' created.", users_table_name)
                 try:
                     dynamo.get_waiter("table_exists").wait(TableName=users_table_name, WaiterConfig={"Delay": 2, "MaxAttempts": 10})
-                    from src.analytics.dynamodb_client import dynamodb_analytics
-                    is_prod = os.environ.get("ENVIRONMENT", "development").lower() == "production"
-                    admin_hash = os.environ.get("ADMIN_PASSWORD_HASH")
-                    if is_prod and not admin_hash:
-                        logger.error("[SECURITY CRITICAL] ADMIN_PASSWORD_HASH is required in production. Refusing to seed default admin user.")
-                    else:
-                        if not admin_hash:
-                            import bcrypt
-                            admin_hash = bcrypt.hashpw(b"dev_ephemeral_test_secret_2026", bcrypt.gensalt(rounds=10)).decode()
-                            logger.warning("[SECURITY] ADMIN_PASSWORD_HASH not set in development. Using ephemeral dev hash.")
-                        dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
-                        logger.info("[STARTUP] Seeded user 'admin_metro'.")
+                    _seed_admin_sync("default")
                 except Exception as e:
                     logger.error("[STARTUP] Failed to seed default user: %s", e)
             else:
                 logger.info("[STARTUP] DynamoDB table '%s' already exists. ✅", users_table_name)
-                try:
-                    from src.analytics.dynamodb_client import dynamodb_analytics
-                    if not dynamodb_analytics.get_user("admin_metro"):
-                        is_prod = os.environ.get("ENVIRONMENT", "development").lower() == "production"
-                        admin_hash = os.environ.get("ADMIN_PASSWORD_HASH")
-                        if is_prod and not admin_hash:
-                            logger.error("[SECURITY CRITICAL] ADMIN_PASSWORD_HASH is required in production. Refusing to seed missing admin user.")
-                        else:
-                            if not admin_hash:
-                                import bcrypt
-                                admin_hash = bcrypt.hashpw(b"dev_ephemeral_test_secret_2026", bcrypt.gensalt(rounds=10)).decode()
-                                logger.warning("[SECURITY] ADMIN_PASSWORD_HASH not set in development. Using ephemeral dev hash.")
-                            dynamodb_analytics.save_user("admin_metro", admin_hash, "apollo_metro", "admin")
-                            logger.info("[STARTUP] Seeded missing user 'admin_metro'.")
-                except Exception as e:
-                    logger.error("[STARTUP] Failed to verify/seed default user: %s", e)
+                _seed_admin_sync("missing")
         
         await asyncio.to_thread(setup_dynamo)
     except Exception as e:
@@ -809,7 +800,6 @@ app = FastAPI(
 cors_origins_env = os.environ.get("CORS_ORIGINS", "")
 if not cors_origins_env or cors_origins_env.strip() == "*":
     # Fallback: derive origin from WS_PUBLIC_URL to avoid wildcard "*" allow_credentials issue
-    from urllib.parse import urlsplit
     def _derive_cors_origin(ws_url: str) -> str:
         if not ws_url:
             return "http://localhost:3000"
@@ -1111,7 +1101,6 @@ async def exotel_stream(websocket: WebSocket):
     # SaaS Hardening: Validate Tenant Status (P0)
     # Check if the hospital is set in query params or default
     hospital_id = websocket.query_params.get("hospital_id", os.environ.get("HOSPITAL_ID", "default_tier2"))
-    from src.integrations.tenant_manager import tenant_manager
     tenant_status = tenant_manager.get_status(hospital_id)
     
     if tenant_status == "pending":
@@ -1148,9 +1137,11 @@ async def exotel_stream(websocket: WebSocket):
     # Initiate the Bedrock stream in the background.
     # initiate_session runs forever (_process_response_stream is a while-loop),
     # so we fire-and-forget but poll for session.stream to be ready before setup.
-    task_initiate = asyncio.ensure_future(bedrock_client.initiate_session(session_id))
-    _background_tasks.add(task_initiate)
-    task_initiate.add_done_callback(_background_tasks.discard)
+    task_initiate = safe_background_task(
+        bedrock_client.initiate_session(session_id),
+        name=f"initiate_session_{session_id[:8]}",
+        on_error_msg="Bedrock initiate_session failed",
+    )
 
     call_sid = ""
     hardener = AudioHardener()
@@ -1171,7 +1162,6 @@ async def exotel_stream(websocket: WebSocket):
     current_user_text = ""
     current_assistant_text = ""
     transcript_saved = False
-    call_start_time = None
     turn_index = 1
 
     # -----------------------------------------------------------------------
@@ -1360,7 +1350,11 @@ async def exotel_stream(websocket: WebSocket):
             except Exception:
                 pass
         if DEMO_MODE:
-            asyncio.ensure_future(websocket.send_text(json.dumps({"event": "tool", "name": tool_name})))
+            safe_background_task(
+                websocket.send_text(json.dumps({"event": "tool", "name": tool_name})),
+                name=f"demo_tool_event_{session_id[:8]}",
+                on_error_msg="Failed to send demo tool event",
+            )
 
     def _handle_text_output(data):
         nonlocal detected_language, previous_language, is_first_user_turn, current_user_text, current_assistant_text
@@ -1507,8 +1501,10 @@ async def exotel_stream(websocket: WebSocket):
             if should_switch:
                 logger.info("[FIRST-TURN/LANG-SWITCH] Active language set to %s (%s) | Injecting language instruction with INTERRUPT", active_language, lang)
                 instruction = LANGUAGE_INSTRUCTIONS.get(lang, LANGUAGE_INSTRUCTIONS["english"])
-                asyncio.ensure_future(
-                    bedrock_client.send_text_message(session_id, instruction, interactive=True)
+                safe_background_task(
+                    bedrock_client.send_text_message(session_id, instruction, interactive=True),
+                    name=f"lang_switch_{session_id[:8]}",
+                    on_error_msg="Failed to send language switch instruction",
                 )
 
             previous_language = active_language   # Track current turn's active language
@@ -1522,12 +1518,14 @@ async def exotel_stream(websocket: WebSocket):
             if not idle_prompt_sent:
                 reset_idle_timer()
             if memory_manager and current_user_text.strip() and current_assistant_text.strip():
-                asyncio.ensure_future(
+                safe_background_task(
                     memory_manager.save_interaction(
                         session_id,
                         current_user_text.strip(),
                         current_assistant_text.strip(),
-                    )
+                    ),
+                    name=f"save_interaction_{session_id[:8]}",
+                    on_error_msg="Failed to save interaction to memory manager",
                 )
                 current_user_text = ""
                 current_assistant_text = ""
