@@ -1,4 +1,4 @@
-﻿# IDE files
+# IDE files
 .vscode/
 .idea/
 
@@ -48,6 +48,14 @@ __pycache__/
 *.sqlite
 data/bookings/
 data/triage/
+
+# Mutable runtime data
+data/notifications_log.json
+data/patient_memory.json
+data/pending_facts.json
+
+# Runtime caches
+cache/
 
 # [AI-17] Development-only scratch scripts — never commit to repo
 scratch/
